@@ -10,6 +10,7 @@ struct MediaDetailView: View {
     @State private var epg: [EPGEntry] = []
     @State private var playback: PlaybackRequest?
     @State private var loadError: String?
+    @State private var isResolving = false
 
     var body: some View {
         NavigationStack {
@@ -89,13 +90,21 @@ struct MediaDetailView: View {
 
     private func playButton(label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label(label, systemImage: "play.fill")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
+            HStack {
+                if isResolving {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Image(systemName: "play.fill")
+                }
+                Text(isResolving ? "Loading…" : label)
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
         }
         .buttonStyle(.borderedProminent)
         .tint(Theme.accent)
+        .disabled(isResolving)
     }
 
     private var epgSection: some View {
@@ -174,27 +183,25 @@ struct MediaDetailView: View {
     }
 
     private func play(ref: String, ext: String?) {
-        guard let provider = store.selectedProvider else { return }
+        guard let provider = store.selectedProvider, !isResolving else { return }
         let client = store.client(for: provider)
-        Task {
+        isResolving = true
+        loadError = nil
+        // Stay on the main actor: `playback` and `loadError` drive the UI.
+        Task { @MainActor in
+            defer { isResolving = false }
             do {
                 let url = try await client.streamURL(
-                    kind: item.kind == .series ? .series : item.kind,
+                    kind: item.kind,
                     playbackRef: ref,
                     containerExtension: ext
                 )
-                playback = PlaybackRequest(url: url, title: item.name)
+                playback = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
             } catch {
                 loadError = error.localizedDescription
             }
         }
     }
-}
-
-struct PlaybackRequest: Identifiable {
-    let id = UUID()
-    let url: URL
-    let title: String
 }
 
 extension View {

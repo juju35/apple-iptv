@@ -11,6 +11,12 @@ protocol IPTVClient {
     /// Resolves the final playable URL for an item or episode playback reference.
     func streamURL(kind: MediaKind, playbackRef: String, containerExtension: String?) async throws -> URL
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry]
+    /// HTTP headers the player should send when fetching the stream (e.g. a portal-specific User-Agent).
+    var streamHeaders: [String: String] { get }
+}
+
+extension IPTVClient {
+    var streamHeaders: [String: String] { [:] }
 }
 
 enum IPTVClientFactory {

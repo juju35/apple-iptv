@@ -42,8 +42,7 @@ final class StalkerClient: IPTVClient {
         let mac = provider.macAddress.uppercased()
         let cookie = "mac=\(mac); stb_lang=en; timezone=Europe/Paris"
         req.setValue(cookie, forHTTPHeaderField: "Cookie")
-        req.setValue("Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 250 Safari/533.3",
-                     forHTTPHeaderField: "User-Agent")
+        req.setValue(Self.stbUserAgent, forHTTPHeaderField: "User-Agent")
         req.setValue("Model: MAG250; Link: WiFi", forHTTPHeaderField: "X-User-Agent")
         if let token {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -236,7 +235,7 @@ final class StalkerClient: IPTVClient {
               let url = URL(string: urlString) else {
             throw IPTVError.decoding("create_link cmd: \(rawCmd)")
         }
-        return url
+        return Self.playableURL(from: url, portalBase: provider.baseURL)
     }
 
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry] {
@@ -244,7 +243,39 @@ final class StalkerClient: IPTVClient {
         return []
     }
 
+    var streamHeaders: [String: String] {
+        ["User-Agent": Self.stbUserAgent]
+    }
+
     // MARK: - Helpers
+
+    private static let stbUserAgent =
+        "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 250 Safari/533.3"
+
+    /// AVFoundation cannot play raw MPEG-TS over HTTP; most portals also expose the same
+    /// tokenized stream as HLS, so rewrite `.ts` / `extension=ts` links to their `.m3u8` form.
+    /// Also replaces `localhost` hosts (used by some portals) with the portal host.
+    static func playableURL(from url: URL, portalBase: URL?) -> URL {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return url }
+
+        if let host = components.host?.lowercased(),
+           host == "localhost" || host == "127.0.0.1",
+           let portalHost = portalBase?.host {
+            components.host = portalHost
+            if components.port == nil { components.port = portalBase?.port }
+        }
+
+        if components.path.lowercased().hasSuffix(".ts") {
+            components.path = String(components.path.dropLast(3)) + ".m3u8"
+        }
+        if let items = components.queryItems {
+            components.queryItems = items.map { item in
+                guard item.name == "extension", item.value?.lowercased() == "ts" else { return item }
+                return URLQueryItem(name: item.name, value: "m3u8")
+            }
+        }
+        return components.url ?? url
+    }
 
     private func absoluteURL(_ string: String) -> URL? {
         if string.hasPrefix("http") { return URL(string: string) }

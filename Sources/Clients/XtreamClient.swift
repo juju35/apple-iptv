@@ -49,7 +49,14 @@ final class XtreamClient: IPTVClient {
             let status = userInfo["status"] as? String ?? "unknown"
             throw IPTVError.authenticationFailed(status)
         }
+        if let formats = userInfo["allowed_output_formats"] as? [String] {
+            allowedOutputFormats = formats.map { $0.lowercased() }
+        }
     }
+
+    /// Live output formats the panel allows for this account (e.g. ["m3u8", "ts"]).
+    /// AVFoundation can only play the HLS (`m3u8`) variant.
+    private var allowedOutputFormats: [String] = []
 
     func categories(for kind: MediaKind) async throws -> [ContentCategory] {
         let action: String
@@ -136,6 +143,9 @@ final class XtreamClient: IPTVClient {
         let path: String
         switch kind {
         case .live:
+            if !allowedOutputFormats.isEmpty, !allowedOutputFormats.contains("m3u8") {
+                throw IPTVError.unsupported("HLS live output (this account only allows \(allowedOutputFormats.joined(separator: ", ")))")
+            }
             path = "live/\(user)/\(pass)/\(playbackRef).m3u8"
         case .movie:
             path = "movie/\(user)/\(pass)/\(playbackRef).\(containerExtension ?? "mp4")"

@@ -104,6 +104,15 @@ struct SeriesDetail {
     let seasons: [Int: [Episode]]
 }
 
+/// Everything the player needs to start a stream.
+struct PlaybackRequest: Identifiable {
+    let id = UUID()
+    let url: URL
+    let title: String
+    /// Extra HTTP headers for the media requests (currently only `User-Agent` is honoured).
+    var headers: [String: String] = [:]
+}
+
 struct EPGEntry: Identifiable, Hashable {
     let id: String
     let title: String
