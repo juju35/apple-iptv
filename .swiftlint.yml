@@ -1,0 +1,19 @@
+included:
+  - Sources
+
+line_length:
+  warning: 140
+  error: 200
+
+identifier_name:
+  min_length: 2
+  excluded: [id, p, js]
+
+type_body_length:
+  warning: 400
+
+file_length:
+  warning: 600
+
+disabled_rules:
+  - todo

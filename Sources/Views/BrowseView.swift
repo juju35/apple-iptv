@@ -1,0 +1,62 @@
+import SwiftUI
+
+/// Grid browser for a media kind, with category filter and search.
+struct BrowseView: View {
+    @EnvironmentObject private var store: AppStore
+    let kind: MediaKind
+    let title: String
+
+    @State private var selectedCategory: String?
+    @State private var search = ""
+    @State private var selectedItem: MediaItem?
+
+    private var filtered: [MediaItem] {
+        var items = store.items(for: kind)
+        if let selectedCategory {
+            items = items.filter { $0.categoryId == selectedCategory }
+        }
+        if !search.isEmpty {
+            items = items.filter { $0.name.localizedCaseInsensitiveContains(search) }
+        }
+        return items
+    }
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: Theme.posterWidth, maximum: Theme.posterWidth * 1.4), spacing: 16)]
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 22) {
+                    ForEach(filtered) { item in
+                        Button { selectedItem = item } label: {
+                            PosterCard(item: item)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding()
+            }
+            .background(Theme.background.ignoresSafeArea())
+            .navigationTitle(title)
+            .searchable(text: $search)
+            .toolbar {
+                Menu {
+                    Button("All categories") { selectedCategory = nil }
+                    ForEach(store.categories(for: kind)) { category in
+                        Button(category.name) { selectedCategory = category.id }
+                    }
+                } label: {
+                    Label(
+                        selectedCategory.map { store.categoryName($0, kind: kind) } ?? "Categories",
+                        systemImage: "line.3.horizontal.decrease.circle"
+                    )
+                }
+            }
+            .sheet(item: $selectedItem) { item in
+                MediaDetailView(item: item)
+            }
+        }
+    }
+}
