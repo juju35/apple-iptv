@@ -34,6 +34,8 @@ enum MainTab: Hashable {
 }
 
 struct MainTabView: View {
+    // Only read through its binding, which the analyzer misses since @State became a macro.
+    // swiftlint:disable:next unused_declaration
     @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
 
     var body: some View {
