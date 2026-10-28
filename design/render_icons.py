@@ -3,7 +3,8 @@
 
     python3 design/render_icons.py [--preview out.png]
 
-Needs Python Playwright (Chromium) and Pillow. Writes straight into the asset catalog.
+Needs Python Playwright (Chromium) and Pillow. Writes straight into the asset catalog, and docs/icon.png
+for the README.
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "Sources/Resources/Assets.xcassets"
 APPICON = ASSETS / "AppIcon.appiconset"
 BRAND = ASSETS / "App Icon & Top Shelf Image.brandassets"
+README_ICON = ROOT / "docs/icon.png"
 
 # Palette: deep cinema red, lit from the top.
 BG_TOP = "#ff4a5c"
@@ -162,6 +164,8 @@ def main() -> None:
             return
 
         save(ios_icon, APPICON / "AppIcon-iOS.png")
+        # README logo: the macOS squircle, which already has its rounded corners.
+        save(mac_icon, README_ICON, (256, 256))
         for points in (16, 32, 128, 256, 512):
             save(mac_icon, APPICON / f"AppIcon-mac-{points}.png", (points, points))
             save(mac_icon, APPICON / f"AppIcon-mac-{points}@2x.png", (points * 2, points * 2))

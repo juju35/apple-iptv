@@ -1,0 +1,99 @@
+name: Screenshots
+
+# Takes the App Store, iPhone Duo and Apple TV screenshots (appstore/screenshots) and the README's copies
+# (screenshots/) again from the app's demo mode, and commits them when they change.
+on:
+  push:
+    branches: [main]
+    paths:
+      - Sources/**
+      - project.yml
+      - scripts/screenshots.sh
+      - scripts/screenshots_post.py
+      - scripts/screenshots_unchanged.py
+      - .github/workflows/screenshots.yml
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Commit every new screenshot, even when it barely differs
+        type: boolean
+        default: false
+      only:
+        description: Take only these screenshots (space-separated among iphone ipad duo tv)
+        type: string
+        default: iphone ipad duo tv
+      trial:
+        description: Push the screenshots to the screenshots-trial branch instead of committing them
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: xcode-27
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Tools
+        env:
+          # duoctl folds the iPhone Duo simulator through private simulator interfaces (no network, nothing outside
+          # the simulator): reviewed and pinned at this commit; check the diff before moving it.
+          DUOCTL_SHA: efd5e3d62fd85f555057b429deafcc9c81123454
+        run: |
+          brew install xcodegen
+          python3 -m pip install --break-system-packages pillow
+          git clone -q https://github.com/skarol/duoctl "$RUNNER_TEMP/duoctl"
+          git -C "$RUNNER_TEMP/duoctl" checkout -q "$DUOCTL_SHA"
+          echo "$RUNNER_TEMP/duoctl/skills/duoctl/scripts" >> "$GITHUB_PATH"
+
+      # The image only has the iOS 27.0 simulators; the iPhone Duo comes with the 27.1 runtime.
+      - name: iOS 27.1 simulator runtime
+        if: contains(inputs.only || 'duo', 'duo')
+        run: |
+          xcodebuild -downloadPlatform iOS
+          xcrun simctl list devicetypes | grep -i duo
+
+      - name: Take screenshots
+        env:
+          ONLY: ${{ inputs.only || 'iphone ipad duo tv' }}
+        run: scripts/screenshots.sh
+
+      # A trial (or a run on another branch): its screenshots go to the screenshots-trial branch (replaced each time)
+      # to be looked at, nothing is committed.
+      - name: Trial screenshots
+        if: github.ref != 'refs/heads/main' || inputs.trial
+        run: |
+          trial="$RUNNER_TEMP/trial"
+          mkdir -p "$trial"
+          cp -R appstore/screenshots screenshots "$trial"/
+          cd "$trial"
+          git init -q -b screenshots-trial
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Trial screenshots from ${GITHUB_REF_NAME}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}" HEAD:screenshots-trial
+
+      - name: Commit
+        if: github.ref == 'refs/heads/main' && !inputs.trial
+        run: |
+          if [ "${{ inputs.force }}" != "true" ]; then
+            python3 scripts/screenshots_unchanged.py appstore/screenshots screenshots
+          fi
+          git add appstore/screenshots screenshots
+          if git diff --cached --quiet; then
+            echo "Screenshots unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update screenshots"
+          git pull --rebase origin main
+          git push origin HEAD:main
