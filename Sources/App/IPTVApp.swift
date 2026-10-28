@@ -37,6 +37,12 @@ struct MainTabView: View {
     // Only read through its binding, which the analyzer misses since @State became a macro.
     // swiftlint:disable:next unused_declaration
     @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
+    #if os(macOS)
+    /// Player shown over the whole window: macOS sheets can't fill it.
+    @State private var windowPlayback: PlaybackRequest?
+    /// Title bar and tabs over the player: hidden during playback, shown with the player controls.
+    @State private var playerChromeVisible = true
+    #endif
 
     var body: some View {
         TabView(selection: $tab) {
@@ -58,6 +64,23 @@ struct MainTabView: View {
         }
         .tint(Theme.accent)
         .background(Theme.background)
+        #if os(macOS)
+        .environment(\.presentPlayer) { windowPlayback = $0 }
+        .overlay {
+            if let request = windowPlayback {
+                PlayerView(request: request)
+                    .id(request.id)
+                    .environment(\.closePlayer) {
+                        windowPlayback = nil
+                        playerChromeVisible = true
+                    }
+                    .environment(\.playerChromeVisible, $playerChromeVisible)
+                    .ignoresSafeArea()
+            }
+        }
+        .toolbar(windowPlayback != nil && !playerChromeVisible ? .hidden : .automatic,
+                 for: .windowToolbar)
+        #endif
         #if os(iOS)
         // Screenshot mode: `-demoScreen player` shows the player's fold layout over the tabs.
         .overlay {

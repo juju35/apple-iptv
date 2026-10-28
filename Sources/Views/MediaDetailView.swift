@@ -4,6 +4,7 @@ import SwiftUI
 struct MediaDetailView: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentPlayer) private var presentPlayer
     let item: MediaItem
 
     @State private var detail: SeriesDetail?
@@ -183,7 +184,14 @@ struct MediaDetailView: View {
                     playbackRef: ref,
                     containerExtension: ext
                 )
-                playback = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+                let request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+                if let presentPlayer {
+                    // macOS: close this sheet so the window-sized player isn't hidden behind it.
+                    dismiss()
+                    presentPlayer(request)
+                } else {
+                    playback = request
+                }
             } catch {
                 loadError = error.localizedDescription
             }

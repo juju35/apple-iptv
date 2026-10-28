@@ -101,11 +101,22 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
 
 /// Platform view VLC renders into.
 #if os(macOS)
+/// VLC adds its own video view inside the drawable; keep it matched to our bounds when the sheet
+/// or window resizes, otherwise the picture stays at its initial size.
+private final class VLCDrawableView: NSView {
+    override func layout() {
+        super.layout()
+        for subview in subviews {
+            subview.frame = bounds
+        }
+    }
+}
+
 private struct VLCVideoSurface: NSViewRepresentable {
     let player: VLCMediaPlayer
 
     func makeNSView(context: Context) -> NSView {
-        let view = NSView()
+        let view = VLCDrawableView()
         view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.black.cgColor
         player.drawable = view
@@ -133,11 +144,13 @@ private struct VLCVideoSurface: UIViewRepresentable {
 
 /// VLC-backed player with minimal transport controls, used for containers AVFoundation can't play.
 struct VLCPlayerView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var dismissPresentation
+    @Environment(\.closePlayer) private var closePlayer
     let request: PlaybackRequest
 
     @State private var controller = VLCPlayerController()
     @State private var controlsVisible = true
+    @Environment(\.playerChromeVisible) private var chromeVisible
     @State private var hideControlsTask: Task<Void, Never>?
 
     var body: some View {
@@ -162,6 +175,14 @@ struct VLCPlayerView: View {
         .onChange(of: controller.isPlaying) { _, playing in
             if playing { scheduleHide() } else { controlsVisible = true }
         }
+        .onChange(of: controlsVisible) { _, visible in
+            chromeVisible?.wrappedValue = visible
+        }
+    }
+
+    /// Closes the player: the macOS window overlay's action, else the sheet / full-screen cover.
+    private func dismiss() {
+        if let closePlayer { closePlayer() } else { dismissPresentation() }
     }
 
     // MARK: Layouts
@@ -212,6 +233,10 @@ struct VLCPlayerView: View {
         #if !os(tvOS)
         .contentShape(Rectangle())
         .onTapGesture { toggleControls() }
+        #endif
+        #if os(iOS)
+        .statusBarHidden(!controlsVisible)
+        .persistentSystemOverlays(controlsVisible ? .automatic : .hidden)
         #endif
     }
 

@@ -120,6 +120,9 @@ final class PlayerController {
 /// Full-screen player shared by iOS, macOS and tvOS. Starts with the engine chosen for the
 /// request and falls back to VLC when the system player can't open the stream.
 struct PlayerView: View {
+    #if os(macOS)
+    @Environment(\.closePlayer) private var closePlayer
+    #endif
     let request: PlaybackRequest
 
     @State private var engine: PlaybackEngine
@@ -130,24 +133,41 @@ struct PlayerView: View {
     }
 
     var body: some View {
-        switch engine {
-        case .system:
-            SystemPlayerView(request: request) {
-                // AVFoundation gave up (unsupported container, HLS refused…): retry with VLC.
-                print("[Player] system engine failed, falling back to VLC")
-                engine = .vlc
+        Group {
+            switch engine {
+            case .system:
+                SystemPlayerView(request: request) {
+                    // AVFoundation gave up (unsupported container, HLS refused…): retry with VLC.
+                    print("[Player] system engine failed, falling back to VLC")
+                    engine = .vlc
+                }
+            case .vlc:
+                VLCPlayerView(request: request)
             }
-        case .vlc:
-            VLCPlayerView(request: request)
         }
+        #if os(macOS)
+        // Escape closes the window-overlay player, as it would a sheet.
+        .onExitCommand { closePlayer?() }
+        #endif
     }
+}
+
+extension EnvironmentValues {
+    /// Opens the player over the whole window (macOS); nil where players are presented modally.
+    @Entry var presentPlayer: ((PlaybackRequest) -> Void)?
+    /// Closes the window-overlay player; nil when the player is a sheet or full-screen cover.
+    @Entry var closePlayer: (() -> Void)?
+    /// Whether the window chrome (title bar, tabs) shows over the window-overlay player (macOS).
+    /// Players keep it in step with their own controls, so it appears on click and hides while playing.
+    @Entry var playerChromeVisible: Binding<Bool>?
 }
 
 /// AVFoundation-backed player (HLS, MP4). Reports failures through `onFailure`.
 /// On iPhone Duo (iOS 27.1+), half-folding the device switches to a
 /// Netflix-style laptop layout: video above the fold, controls below.
 struct SystemPlayerView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var dismissPresentation
+    @Environment(\.closePlayer) private var closePlayer
     let request: PlaybackRequest
     let onFailure: () -> Void
 
@@ -193,6 +213,11 @@ struct SystemPlayerView: View {
         }
     }
 
+    /// Closes the player: the macOS window overlay's action, else the sheet / full-screen cover.
+    private func dismiss() {
+        if let closePlayer { closePlayer() } else { dismissPresentation() }
+    }
+
     /// The failing URL; selectable where the platform allows copying it (not on tvOS).
     private var urlText: some View {
         #if os(tvOS)
@@ -227,25 +252,121 @@ struct SystemPlayerView: View {
     }
 }
 
-/// System VideoPlayer with a close button (non-tvOS).
+/// System video player with a close button (non-tvOS). The close button, the window chrome (macOS)
+/// and the status bar / home indicator (iOS) stay hidden during playback; a click or tap brings them back.
 struct StandardPlayerView: View {
     let player: AVPlayer
     let onClose: () -> Void
 
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            VideoPlayer(player: player)
-                .ignoresSafeArea()
+    #if !os(tvOS)
+    @Environment(\.playerChromeVisible) private var chromeVisible
+    @State private var controlsVisible = true
+    @State private var hideControlsTask: Task<Void, Never>?
+    #endif
 
-            #if !os(tvOS)
-            Button(action: onClose) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title)
-                    .foregroundStyle(.white.opacity(0.8))
-                    .padding()
+    var body: some View {
+        #if os(tvOS)
+        VideoPlayer(player: player)
+            .ignoresSafeArea()
+        #else
+        ZStack(alignment: .topLeading) {
+            video
+
+            if controlsVisible {
+                closeButton
             }
-            .buttonStyle(.plain)
-            #endif
+        }
+        .onAppear { scheduleHide() }
+        .onDisappear { hideControlsTask?.cancel() }
+        .onChange(of: controlsVisible) { _, visible in
+            chromeVisible?.wrappedValue = visible
+        }
+        #if os(iOS)
+        .statusBarHidden(!controlsVisible)
+        .persistentSystemOverlays(controlsVisible ? .automatic : .hidden)
+        #endif
+        #endif
+    }
+
+    #if os(macOS)
+    /// AppKit controls follow ours; a transparent layer catches the click while they're hidden.
+    private var video: some View {
+        ZStack {
+            AppKitPlayerView(player: player, showsControls: controlsVisible)
+                .ignoresSafeArea()
+            if !controlsVisible {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { showControls() }
+                    .ignoresSafeArea()
+            }
+        }
+        .onContinuousHover { _ in
+            if controlsVisible { scheduleHide() }
         }
     }
+    #elseif os(iOS)
+    /// The system controls toggle on tap; ours follow the same tap without stealing it.
+    private var video: some View {
+        VideoPlayer(player: player)
+            .ignoresSafeArea()
+            .simultaneousGesture(TapGesture().onEnded {
+                if controlsVisible {
+                    withAnimation { controlsVisible = false }
+                } else {
+                    showControls()
+                }
+            })
+    }
+    #endif
+
+    #if !os(tvOS)
+    private var closeButton: some View {
+        Button(action: onClose) {
+            Image(systemName: "xmark.circle.fill")
+                .font(.title)
+                .foregroundStyle(.white.opacity(0.8))
+                .padding()
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func showControls() {
+        withAnimation { controlsVisible = true }
+        scheduleHide()
+    }
+
+    /// Hides the controls after a few seconds without interaction, while playing.
+    private func scheduleHide() {
+        hideControlsTask?.cancel()
+        hideControlsTask = Task {
+            try? await Task.sleep(for: .seconds(4))
+            guard !Task.isCancelled, player.timeControlStatus != .paused else { return }
+            withAnimation { controlsVisible = false }
+        }
+    }
+    #endif
 }
+
+#if os(macOS)
+/// AppKit's player view. SwiftUI's `VideoPlayer` crashes on macOS with live streams: it builds its
+/// scrubber range from the item duration, which is NaN (indefinite) for live HLS.
+private struct AppKitPlayerView: NSViewRepresentable {
+    let player: AVPlayer
+    let showsControls: Bool
+
+    func makeNSView(context: Context) -> AVPlayerView {
+        let view = AVPlayerView()
+        view.player = player
+        view.showsFullScreenToggleButton = true
+        updateNSView(view, context: context)
+        return view
+    }
+
+    func updateNSView(_ nsView: AVPlayerView, context: Context) {
+        if nsView.player !== player { nsView.player = player }
+        let style: AVPlayerViewControlsStyle = showsControls ? .floating : .none
+        if nsView.controlsStyle != style { nsView.controlsStyle = style }
+    }
+}
+#endif
