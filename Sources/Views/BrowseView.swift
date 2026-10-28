@@ -41,6 +41,7 @@ struct BrowseView: View {
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle(title)
             .searchable(text: $search)
+            .modifier(ClearingSearchDropsFocus(text: $search))
             .toolbar {
                 Menu {
                     Button("All categories") { selectedCategory = nil }
@@ -57,6 +58,28 @@ struct BrowseView: View {
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
+        }
+    }
+}
+
+/// Unfocuses the search field when its clear (×) button empties it, so the keyboard
+/// doesn't come back. Backspacing the last character keeps the focus: only a jump from
+/// several characters to none counts as clearing. Needs `searchFocused` (iOS/tvOS 18, macOS 15).
+private struct ClearingSearchDropsFocus: ViewModifier {
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18, macOS 15, tvOS 18, *) {
+            content
+                .searchFocused($isFocused)
+                .onChange(of: text) { oldValue, newValue in
+                    if newValue.isEmpty && oldValue.count > 1 {
+                        isFocused = false
+                    }
+                }
+        } else {
+            content
         }
     }
 }
