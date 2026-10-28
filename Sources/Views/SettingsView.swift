@@ -54,22 +54,14 @@ struct SettingsView: View {
                     } label: {
                         filterRow("Live TV quality", options: store.qualityOptions, hidden: store.hiddenQualities)
                     }
-                    NavigationLink {
-                        LiveListFilterView(options: store.liveListOptions, hidden: $store.hiddenLiveCategories)
-                    } label: {
-                        let shown = store.liveListOptions.filter { !store.hiddenLiveCategories.contains($0.key) }.count
-                        HStack {
-                            Text("Live TV lists")
-                            Spacer()
-                            Text(shown == store.liveListOptions.count ? "All" : "\(shown) of \(store.liveListOptions.count)")
-                                .foregroundStyle(Theme.textSecondary)
-                        }
-                    }
+                    listFilterLink("Live TV lists", kind: .live)
+                    listFilterLink("Movie lists", kind: .movie)
+                    listFilterLink("Series lists", kind: .series)
                 } header: {
                     Text("Filters")
                 } footer: {
                     Text("Tags are read from category and channel names; untagged content is always shown. "
-                         + "Live TV lists are those of the selected provider.")
+                         + "Lists are those of the selected provider.")
                 }
 
                 Section {
@@ -95,6 +87,21 @@ struct SettingsView: View {
             }
             .sheet(item: $editingProvider) { provider in
                 ProviderFormView(provider: provider)
+            }
+        }
+    }
+
+    private func listFilterLink(_ title: String, kind: MediaKind) -> some View {
+        let options = store.listOptions[kind] ?? []
+        let shown = options.filter { !store.hiddenCategories.contains($0.key) }.count
+        return NavigationLink {
+            ListFilterView(title: title, options: options, hidden: $store.hiddenCategories)
+        } label: {
+            HStack {
+                Text(title)
+                Spacer()
+                Text(shown == options.count ? "All" : "\(shown) of \(options.count)")
+                    .foregroundStyle(Theme.textSecondary)
             }
         }
     }
@@ -152,20 +159,21 @@ struct TagFilterView: View {
     }
 }
 
-/// Toggles for the selected provider's Live TV lists, with a search field (providers have hundreds).
-struct LiveListFilterView: View {
-    let options: [LiveListOption]
+/// Toggles for the selected provider's lists of one kind, with a search field (providers have hundreds).
+struct ListFilterView: View {
+    let title: String
+    let options: [CategoryListOption]
     @Binding var hidden: Set<String>
     @State private var search = ""
 
-    private var filtered: [LiveListOption] {
+    private var filtered: [CategoryListOption] {
         search.isEmpty ? options : options.filter { $0.name.localizedCaseInsensitiveContains(search) }
     }
 
     var body: some View {
         List {
             if options.isEmpty {
-                Text("No Live TV lists for this provider.")
+                Text("No lists for this provider.")
                     .foregroundStyle(Theme.textSecondary)
             } else {
                 Section {
@@ -185,7 +193,7 @@ struct LiveListFilterView: View {
                 }
             }
         }
-        .navigationTitle("Live TV lists")
+        .navigationTitle(title)
         .modifier(BrowseSearch(text: $search))
     }
 

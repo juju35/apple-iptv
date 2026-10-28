@@ -30,12 +30,12 @@ final class AppStore: ObservableObject {
     @Published var hiddenQualities: Set<String> {
         didSet { persistFilters(); applyFilters() }
     }
-    /// Live TV lists to hide, as `<provider id>|<category id>` (see `LiveListOption.key`).
-    @Published var hiddenLiveCategories: Set<String> {
+    /// Lists (categories) to hide, as `<provider id>|<kind>|<category id>` (see `CategoryListOption.key`).
+    @Published var hiddenCategories: Set<String> {
         didSet { persistFilters(); applyFilters() }
     }
-    /// The selected provider's Live TV lists, hidden ones included, offered in Settings.
-    @Published private(set) var liveListOptions: [LiveListOption] = []
+    /// The selected provider's lists of each kind, hidden ones included, offered in Settings.
+    @Published private(set) var listOptions: [MediaKind: [CategoryListOption]] = [:]
     /// Tags found in the current provider's catalog, offered in Settings.
     @Published private(set) var languageOptions: [ContentTags.Option] = []
     @Published private(set) var qualityOptions: [ContentTags.Option] = []
@@ -88,7 +88,7 @@ final class AppStore: ObservableObject {
         let filters = Demo.isOn ? FilterSyncStore.Filters() : filterSync.load()
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
-        hiddenLiveCategories = filters.hiddenLiveCategories
+        hiddenCategories = filters.hiddenCategories
         cacheLifetime = UserDefaults.standard.object(forKey: Self.cacheLifetimeKey) as? TimeInterval
             ?? CatalogCache.defaultLifetime
         if !Demo.isOn {
@@ -145,14 +145,14 @@ final class AppStore: ObservableObject {
     private func persistFilters() {
         guard !Demo.isOn else { return }
         filterSync.save(FilterSyncStore.Filters(hiddenLanguages: hiddenLanguages, hiddenQualities: hiddenQualities,
-                                                hiddenLiveCategories: hiddenLiveCategories))
+                                                hiddenCategories: hiddenCategories))
     }
 
     /// Applies filters changed on another device via iCloud.
     private func applyExternal(_ remote: FilterSyncStore.Filters) {
         if hiddenLanguages != remote.hiddenLanguages { hiddenLanguages = remote.hiddenLanguages }
         if hiddenQualities != remote.hiddenQualities { hiddenQualities = remote.hiddenQualities }
-        if hiddenLiveCategories != remote.hiddenLiveCategories { hiddenLiveCategories = remote.hiddenLiveCategories }
+        if hiddenCategories != remote.hiddenCategories { hiddenCategories = remote.hiddenCategories }
     }
 
     /// Merges providers changed on another device via iCloud.
@@ -288,20 +288,30 @@ final class AppStore: ObservableObject {
         qualityOptions = ContentTags.options(catalog.liveItems.compactMap { ContentTags.quality(of: $0.name) })
 
         let provider = catalogProviderID
-        let hiddenLists = hiddenLiveCategories
-        func isHiddenList(_ categoryId: String?) -> Bool {
-            categoryId.map { hiddenLists.contains(LiveListOption.key(provider: provider, category: $0)) } ?? false
+        let hiddenLists = hiddenCategories
+        func isHiddenList(_ kind: MediaKind, _ categoryId: String?) -> Bool {
+            categoryId.map {
+                hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: $0))
+            } ?? false
         }
-        let liveCounts = Dictionary(catalog.liveItems.compactMap { $0.categoryId.map { ($0, 1) } }, uniquingKeysWith: +)
-        liveListOptions = catalog.liveCategories.map {
-            LiveListOption(key: LiveListOption.key(provider: provider, category: $0.id), name: $0.name,
-                           count: liveCounts[$0.id] ?? 0)
+        func listOptions(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
+            -> [CategoryListOption] {
+            let counts = Dictionary(items.compactMap { $0.categoryId.map { ($0, 1) } }, uniquingKeysWith: +)
+            return categories.map {
+                CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
+                                   name: $0.name, count: counts[$0.id] ?? 0)
+            }
         }
+        self.listOptions = [
+            .live: listOptions(.live, catalog.liveCategories, catalog.liveItems),
+            .movie: listOptions(.movie, catalog.movieCategories, catalog.movieItems),
+            .series: listOptions(.series, catalog.seriesCategories, catalog.seriesItems),
+        ]
 
         let hiddenLanguages = hiddenLanguages
         let hiddenQualities = hiddenQualities
         func isVisible(_ item: MediaItem) -> Bool {
-            if item.kind == .live, isHiddenList(item.categoryId) { return false }
+            if isHiddenList(item.kind, item.categoryId) { return false }
             if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
             if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
                 return false
@@ -313,35 +323,14 @@ final class AppStore: ObservableObject {
             return !hiddenLanguages.contains(tag)
         }
 
-        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList($0.id) }
-        movieCategories = catalog.movieCategories.filter(isVisible)
-        seriesCategories = catalog.seriesCategories.filter(isVisible)
+        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList(.live, $0.id) }
+        movieCategories = catalog.movieCategories.filter { isVisible($0) && !isHiddenList(.movie, $0.id) }
+        seriesCategories = catalog.seriesCategories.filter { isVisible($0) && !isHiddenList(.series, $0.id) }
         liveItems = catalog.liveItems.filter(isVisible)
         movieItems = catalog.movieItems.filter(isVisible)
         seriesItems = catalog.seriesItems.filter(isVisible)
         visibleItemsById = Dictionary((liveItems + movieItems + seriesItems).map { ($0.id, $0) },
                                       uniquingKeysWith: { first, _ in first })
-    }
-
-    /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
-    func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
-                         progress: PlaybackProgressContext? = nil, from start: Double = 0) async throws
-        -> PlaybackRequest {
-        guard let provider = selectedProvider else { throw IPTVError.invalidURL }
-        let client = client(for: provider)
-        let url = try await client.streamURL(
-            kind: item.kind,
-            playbackRef: ref ?? item.playbackRef,
-            containerExtension: ref == nil ? item.containerExtension : containerExtension
-        )
-        var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
-        request.progress = progress
-        request.startPosition = start
-        if item.kind == .live {
-            request.channel = item
-            recordRecentChannel(item)
-        }
-        return request
     }
 
     func items(for kind: MediaKind) -> [MediaItem] {
@@ -366,9 +355,30 @@ final class AppStore: ObservableObject {
     }
 }
 
-// MARK: - Favorites and playback progress
+// MARK: - Playback, favorites and progress
 
 extension AppStore {
+    /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
+    func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
+                         progress: PlaybackProgressContext? = nil, from start: Double = 0) async throws
+        -> PlaybackRequest {
+        guard let provider = selectedProvider else { throw IPTVError.invalidURL }
+        let client = client(for: provider)
+        let url = try await client.streamURL(
+            kind: item.kind,
+            playbackRef: ref ?? item.playbackRef,
+            containerExtension: ref == nil ? item.containerExtension : containerExtension
+        )
+        var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+        request.progress = progress
+        request.startPosition = start
+        if item.kind == .live {
+            request.channel = item
+            recordRecentChannel(item)
+        }
+        return request
+    }
+
     // MARK: - Favorites
 
     func isFavorite(_ item: MediaItem) -> Bool {
@@ -481,19 +491,5 @@ extension AppStore {
             .sorted { $0.updatedAt > $1.updatedAt }
             .prefix(300)
         return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-    }
-}
-
-/// A Live TV list (category) of the selected provider, for Settings.
-struct LiveListOption: Identifiable, Hashable {
-    /// `<provider id>|<category id>`: category ids are only unique within a provider.
-    let key: String
-    let name: String
-    /// Channels in the list, before the other filters.
-    let count: Int
-    var id: String { key }
-
-    static func key(provider: UUID?, category: String) -> String {
-        "\(provider?.uuidString ?? "")|\(category)"
     }
 }
