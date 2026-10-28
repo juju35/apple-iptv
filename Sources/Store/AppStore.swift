@@ -412,6 +412,11 @@ extension AppStore {
         playbackProgress[key].flatMap { $0.isFinished ? nil : $0 }
     }
 
+    /// Whether a movie or episode was watched to the end.
+    func isWatched(_ key: String) -> Bool {
+        playbackProgress[key]?.isFinished == true
+    }
+
     /// The most recently watched, unfinished episode of a series.
     func latestEpisodeProgress(forSeries itemId: String) -> PlaybackProgress? {
         playbackProgress.values
@@ -464,10 +469,10 @@ extension AppStore {
         return pruned(result)
     }
 
-    /// Keeps the store well under the iCloud key-value quota: finished entries for 30 days,
-    /// and the 300 most recent overall.
+    /// Keeps the store well under the iCloud key-value quota: finished entries (the "watched"
+    /// checkmarks) for 180 days, and the 300 most recent overall.
     private static func pruned(_ entries: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
-        let cutoff = Date().addingTimeInterval(-30 * 24 * 3600)
+        let cutoff = Date().addingTimeInterval(-180 * 24 * 3600)
         let kept = entries.values
             .filter { !$0.isFinished || $0.updatedAt > cutoff }
             .sorted { $0.updatedAt > $1.updatedAt }

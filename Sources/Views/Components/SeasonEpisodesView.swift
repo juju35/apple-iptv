@@ -8,6 +8,8 @@ struct SeasonEpisodesView: View {
     let fallbackArtwork: URL?
     /// Watched fraction of an episode, nil when not started.
     var progress: (Episode) -> Double? = { _ in nil }
+    /// Whether an episode was watched to the end.
+    var isWatched: (Episode) -> Bool = { _ in false }
     let onPlay: (Episode) -> Void
 
     private var seasons: [Int] { detail.seasons.keys.sorted() }
@@ -104,9 +106,14 @@ struct SeasonEpisodesView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(episode.episode). \(episode.title)")
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(2)
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text("\(episode.episode). \(episode.title)")
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(2)
+                    if isWatched(episode) {
+                        WatchedBadge()
+                    }
+                }
                 if let plot = episode.plot, !plot.isEmpty {
                     Text(plot)
                         .font(.caption)

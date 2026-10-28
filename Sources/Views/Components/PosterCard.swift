@@ -11,6 +11,11 @@ struct PosterCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             poster
+                .overlay(alignment: .topLeading) {
+                    if item.kind == .movie, store.isWatched(PlaybackProgressContext.movie(item).key) {
+                        WatchedBadge().padding(6)
+                    }
+                }
                 .overlay(alignment: .topTrailing) {
                     if store.isFavorite(item) {
                         Image(systemName: "heart.fill")
@@ -139,5 +144,17 @@ struct WatchProgressBar: View {
             }
         }
         .frame(height: 4)
+    }
+}
+
+/// Checkmark on movies and episodes watched to the end.
+struct WatchedBadge: View {
+    var body: some View {
+        Image(systemName: "checkmark")
+            .font(.caption2.weight(.heavy))
+            .foregroundStyle(.white)
+            .padding(5)
+            .background(Circle().fill(.green.opacity(0.85)))
+            .accessibilityLabel("Watched")
     }
 }

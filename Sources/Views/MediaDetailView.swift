@@ -229,6 +229,7 @@ struct MediaDetailView: View {
                 season: Binding(get: { season }, set: { selectedSeason = $0 }),
                 fallbackArtwork: item.posterURL,
                 progress: { store.progress(for: PlaybackProgressContext.episode($0, of: item).key)?.fraction },
+                isWatched: { store.isWatched(PlaybackProgressContext.episode($0, of: item).key) },
                 onPlay: playEpisode
             )
         } else if detail == nil {
