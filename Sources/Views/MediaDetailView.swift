@@ -90,9 +90,24 @@ struct MediaDetailView: View {
                     .font(.caption)
                     .padding(.horizontal, 8).padding(.vertical, 3)
                     .background(Theme.surface, in: Capsule())
+                favoriteButton
             }
             Spacer()
         }
+    }
+
+    private var favoriteButton: some View {
+        let isFavorite = store.isFavorite(item)
+        return Button {
+            store.toggleFavorite(item)
+        } label: {
+            Label(isFavorite ? "In Favorites" : "Add to Favorites",
+                  systemImage: isFavorite ? "heart.fill" : "heart")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(isFavorite ? Theme.accent : .white)
+        }
+        .buttonStyle(.bordered)
+        .accessibilityLabel(isFavorite ? "Remove from Favorites" : "Add to Favorites")
     }
 
     /// Play, or Resume + Start Over when the movie was started.

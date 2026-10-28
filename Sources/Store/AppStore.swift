@@ -35,12 +35,16 @@ final class AppStore: ObservableObject {
     @Published private(set) var qualityOptions: [ContentTags.Option] = []
 
     private var catalog = Catalog()
-    /// Visible items by id, to resolve Continue Watching entries.
+    /// Visible items by id, to resolve Continue Watching entries and favorites.
     private var visibleItemsById: [String: MediaItem] = [:]
 
     /// Watch progress by `PlaybackProgress.key`, synced through iCloud.
     @Published private(set) var playbackProgress: [String: PlaybackProgress] = [:]
     private let progressSync = PlaybackProgressSyncStore()
+
+    /// Favorite channels, movies and series (`MediaItem.id`s), most recently added first; synced through iCloud.
+    @Published private(set) var favoriteIDs: [String] = []
+    private let favoritesSync = FavoritesSyncStore()
 
     @Published var isLoading = false
     @Published var lastError: String?
@@ -62,6 +66,13 @@ final class AppStore: ObservableObject {
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
         if !Demo.isOn {
+            favoriteIDs = favoritesSync.load()
+            favoritesSync.onExternalChange = { [weak self] remote in
+                Task { @MainActor in
+                    guard let self, self.favoriteIDs != remote else { return }
+                    self.favoriteIDs = remote
+                }
+            }
             filterSync.onExternalChange = { [weak self] remote in
                 Task { @MainActor in self?.applyExternal(remote) }
             }
@@ -236,8 +247,28 @@ final class AppStore: ObservableObject {
         liveItems = catalog.liveItems.filter(isVisible)
         movieItems = catalog.movieItems.filter(isVisible)
         seriesItems = catalog.seriesItems.filter(isVisible)
-        visibleItemsById = Dictionary((movieItems + seriesItems).map { ($0.id, $0) },
+        visibleItemsById = Dictionary((liveItems + movieItems + seriesItems).map { ($0.id, $0) },
                                       uniquingKeysWith: { first, _ in first })
+    }
+
+    // MARK: - Favorites
+
+    func isFavorite(_ item: MediaItem) -> Bool {
+        favoriteIDs.contains(item.id)
+    }
+
+    func toggleFavorite(_ item: MediaItem) {
+        if let index = favoriteIDs.firstIndex(of: item.id) {
+            favoriteIDs.remove(at: index)
+        } else {
+            favoriteIDs.insert(item.id, at: 0)
+        }
+        if !Demo.isOn { favoritesSync.save(favoriteIDs) }
+    }
+
+    /// Visible favorites, most recently added first (`kind` nil for all kinds).
+    func favorites(_ kind: MediaKind?) -> [MediaItem] {
+        favoriteIDs.compactMap { visibleItemsById[$0] }.filter { kind == nil || $0.kind == kind }
     }
 
     // MARK: - Playback progress

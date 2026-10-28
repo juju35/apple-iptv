@@ -29,9 +29,13 @@ struct BrowseView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    // Started movies / series first, unless the user is narrowing the list down.
+                    // Started movies / series and favorites first, unless the user is narrowing the list down.
                     if search.isEmpty && selectedCategory == nil {
                         ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
+                        let favorites = store.favorites(kind)
+                        if !favorites.isEmpty {
+                            MediaRow(title: "Favorites", items: favorites) { selectedItem = $0 }
+                        }
                     }
                     LazyVGrid(columns: columns, spacing: 22) {
                         ForEach(filtered) { item in
