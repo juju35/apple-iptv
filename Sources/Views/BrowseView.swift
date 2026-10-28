@@ -40,8 +40,7 @@ struct BrowseView: View {
             }
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle(title)
-            .searchable(text: $search)
-            .modifier(ClearingSearchDropsFocus(text: $search))
+            .modifier(BrowseSearch(text: $search))
             .toolbar {
                 Menu {
                     Button("All categories") { selectedCategory = nil }
@@ -67,6 +66,70 @@ struct BrowseView: View {
         }
     }
 }
+
+/// System search everywhere except for the iOS app running on a Mac ("Designed for iPad"),
+/// where activating `UISearchController` inside the tab view crashes in UIKit
+/// ("Accessing the focus system through UIScreen is no longer supported").
+/// That case gets a plain text field pinned above the content instead.
+private struct BrowseSearch: ViewModifier {
+    @Binding var text: String
+
+    func body(content: Content) -> some View {
+        #if os(iOS)
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            content.safeAreaInset(edge: .top) { InlineSearchField(text: $text) }
+        } else {
+            systemSearch(content)
+        }
+        #else
+        systemSearch(content)
+        #endif
+    }
+
+    private func systemSearch(_ content: Content) -> some View {
+        content
+            .searchable(text: $text)
+            .modifier(ClearingSearchDropsFocus(text: $text))
+    }
+}
+
+#if os(iOS)
+/// Search field that doesn't go through `UISearchController`. Its clear button also drops
+/// the focus, like `ClearingSearchDropsFocus` does for the system field.
+private struct InlineSearchField: View {
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(Theme.textSecondary)
+            TextField("Search", text: $text)
+                .focused($isFocused)
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                    isFocused = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Clear search")
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Theme.surface, in: .rect(cornerRadius: Theme.cardCornerRadius))
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(Theme.background)
+    }
+}
+#endif
 
 /// Unfocuses the search field when its clear (×) button empties it, so the keyboard
 /// doesn't come back. Backspacing the last character keeps the focus: only a jump from
