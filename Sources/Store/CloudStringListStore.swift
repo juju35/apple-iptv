@@ -1,19 +1,23 @@
 import Foundation
 
-/// Persists favorite channels, movies and series (`MediaItem.id`s, most recently added first)
-/// in iCloud Key-Value Store, with a UserDefaults copy for when iCloud is unavailable.
-final class FavoritesSyncStore {
+/// A list of strings (here `MediaItem.id`s: favorites, recently watched channels) persisted in
+/// iCloud Key-Value Store under `key`, with a UserDefaults copy for when iCloud is unavailable.
+final class CloudStringListStore {
     static let favoritesKey = "iptv.favorites"
+    static let recentChannelsKey = "iptv.recentChannels"
+
+    let key: String
 
     private let kvs = NSUbiquitousKeyValueStore.default
     private let defaults = UserDefaults.standard
 
-    /// Called on the main queue when another device changed the favorites.
+    /// Called on the main queue when another device changed the list.
     var onExternalChange: (([String]) -> Void)?
 
     private var observer: NSObjectProtocol?
 
-    init() {
+    init(key: String) {
+        self.key = key
         observer = NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: kvs,
@@ -21,7 +25,7 @@ final class FavoritesSyncStore {
         ) { [weak self] notification in
             guard let self else { return }
             let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
-            guard changedKeys?.contains(Self.favoritesKey) ?? true else { return }
+            guard changedKeys?.contains(self.key) ?? true else { return }
             self.onExternalChange?(self.load())
         }
         kvs.synchronize()
@@ -32,11 +36,11 @@ final class FavoritesSyncStore {
     }
 
     func load() -> [String] {
-        (kvs.array(forKey: Self.favoritesKey) as? [String]) ?? defaults.stringArray(forKey: Self.favoritesKey) ?? []
+        (kvs.array(forKey: key) as? [String]) ?? defaults.stringArray(forKey: key) ?? []
     }
 
-    func save(_ ids: [String]) {
-        kvs.set(ids, forKey: Self.favoritesKey)
-        defaults.set(ids, forKey: Self.favoritesKey)
+    func save(_ values: [String]) {
+        kvs.set(values, forKey: key)
+        defaults.set(values, forKey: key)
     }
 }

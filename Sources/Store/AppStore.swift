@@ -64,7 +64,11 @@ final class AppStore: ObservableObject {
 
     /// Favorite channels, movies and series (`MediaItem.id`s), most recently added first; synced through iCloud.
     @Published private(set) var favoriteIDs: [String] = []
-    private let favoritesSync = FavoritesSyncStore()
+    private let favoritesSync = CloudStringListStore(key: CloudStringListStore.favoritesKey)
+
+    /// Live channels played lately (`MediaItem.id`s), most recent first; synced through iCloud.
+    @Published private(set) var recentChannelIDs: [String] = []
+    private let recentChannelsSync = CloudStringListStore(key: CloudStringListStore.recentChannelsKey)
 
     @Published var isLoading = false
     @Published var lastError: String?
@@ -93,6 +97,13 @@ final class AppStore: ObservableObject {
                 Task { @MainActor in
                     guard let self, self.favoriteIDs != remote else { return }
                     self.favoriteIDs = remote
+                }
+            }
+            recentChannelIDs = recentChannelsSync.load()
+            recentChannelsSync.onExternalChange = { [weak self] remote in
+                Task { @MainActor in
+                    guard let self, self.recentChannelIDs != remote else { return }
+                    self.recentChannelIDs = remote
                 }
             }
             filterSync.onExternalChange = { [weak self] remote in
@@ -326,6 +337,7 @@ final class AppStore: ObservableObject {
         var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
         request.progress = progress
         request.startPosition = start
+        if item.kind == .live { recordRecentChannel(item) }
         return request
     }
 
@@ -367,6 +379,18 @@ extension AppStore {
             favoriteIDs.insert(item.id, at: 0)
         }
         if !Demo.isOn { favoritesSync.save(favoriteIDs) }
+    }
+
+    /// Recently watched live channels that are still visible, most recent first.
+    func recentChannels() -> [MediaItem] {
+        recentChannelIDs.compactMap { visibleItemsById[$0] }
+    }
+
+    /// Puts `channel` first in the recently watched channels (20 kept).
+    func recordRecentChannel(_ channel: MediaItem) {
+        guard !Demo.isOn else { return }
+        recentChannelIDs = Array(([channel.id] + recentChannelIDs.filter { $0 != channel.id }).prefix(20))
+        recentChannelsSync.save(recentChannelIDs)
     }
 
     /// Visible favorites, most recently added first (`kind` nil for all kinds).

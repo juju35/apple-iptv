@@ -33,6 +33,11 @@ struct HomeView: View {
                         MediaRow(title: "Favorites", items: favorites) { selectedItem = $0 }
                     }
 
+                    let recentChannels = store.recentChannels()
+                    if !recentChannels.isEmpty {
+                        MediaRow(title: "Recently Watched Channels", items: recentChannels) { selectedItem = $0 }
+                    }
+
                     if !store.liveItems.isEmpty {
                         MediaRow(title: "Live TV", items: Array(store.liveItems.prefix(25))) {
                             selectedItem = $0

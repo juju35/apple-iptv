@@ -11,7 +11,7 @@ struct LiveTVView: View {
 
     /// Sidebar / chip selection.
     enum ChannelGroup: Hashable {
-        case all, favorites
+        case all, favorites, recent
         case category(String)
     }
 
@@ -38,6 +38,7 @@ struct LiveTVView: View {
         switch group {
         case .all: items = store.liveItems
         case .favorites: items = store.favorites(.live)
+        case .recent: items = store.recentChannels()
         case .category(let id): items = store.liveItems.filter { $0.categoryId == id }
         }
         if !search.isEmpty {
@@ -54,6 +55,11 @@ struct LiveTVView: View {
         let favorites = store.favorites(.live).count
         if favorites > 0 {
             options.append(ChipOption(id: .favorites, title: "Favorites", systemImage: "heart.fill", count: favorites))
+        }
+        let recent = store.recentChannels().count
+        if recent > 0 {
+            options.append(ChipOption(id: .recent, title: "Recently Watched", systemImage: "clock.arrow.circlepath",
+                                      count: recent))
         }
         options += store.liveCategories.compactMap { category in
             guard let count = counts[category.id] else { return nil }
