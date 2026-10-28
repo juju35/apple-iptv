@@ -1,7 +1,6 @@
 #if os(iOS)
 import SwiftUI
-import AVKit
-import Combine
+import AVFoundation
 
 /// iPhone Duo laptop-mode player (iOS 27.1+).
 ///
@@ -49,19 +48,19 @@ struct VideoSurface: UIViewRepresentable {
 
     final class PlayerLayerView: UIView {
         override static var layerClass: AnyClass { AVPlayerLayer.self }
-        var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+        var playerLayer: AVPlayerLayer? { layer as? AVPlayerLayer }
     }
 
     func makeUIView(context: Context) -> PlayerLayerView {
         let view = PlayerLayerView()
-        view.playerLayer.player = player
-        view.playerLayer.videoGravity = .resizeAspect
+        view.playerLayer?.player = player
+        view.playerLayer?.videoGravity = .resizeAspect
         view.backgroundColor = .black
         return view
     }
 
     func updateUIView(_ uiView: PlayerLayerView, context: Context) {
-        uiView.playerLayer.player = player
+        uiView.playerLayer?.player = player
     }
 }
 

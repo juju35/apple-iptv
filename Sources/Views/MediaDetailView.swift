@@ -61,7 +61,7 @@ struct MediaDetailView: View {
         HStack(alignment: .top, spacing: 16) {
             AsyncImage(url: item.posterURL) { phase in
                 if case .success(let image) = phase {
-                    image.resizable().aspectRatio(contentMode: .fill)
+                    image.resizable().scaledToFill()
                 } else {
                     Theme.surface
                 }

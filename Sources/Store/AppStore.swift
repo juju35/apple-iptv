@@ -1,5 +1,5 @@
+import Combine
 import Foundation
-import SwiftUI
 
 /// Central observable store: providers, their clients, and loaded content.
 @MainActor

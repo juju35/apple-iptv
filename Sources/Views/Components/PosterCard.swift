@@ -18,7 +18,7 @@ struct PosterCard: View {
         AsyncImage(url: item.posterURL) { phase in
             switch phase {
             case .success(let image):
-                image.resizable().aspectRatio(contentMode: .fill)
+                image.resizable().scaledToFill()
             default:
                 placeholder
             }

@@ -2,8 +2,6 @@ import Foundation
 
 /// Protocol-agnostic interface implemented by both Xtream and Stalker clients.
 protocol IPTVClient {
-    var provider: Provider { get }
-
     func authenticate() async throws
     func categories(for kind: MediaKind) async throws -> [ContentCategory]
     func items(kind: MediaKind, categoryId: String?) async throws -> [MediaItem]
