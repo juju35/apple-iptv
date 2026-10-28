@@ -31,6 +31,9 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
         if let userAgent = request.headers["User-Agent"] {
             media.addOption(":http-user-agent=\(userAgent)")
         }
+        if request.startPosition > 0 {
+            media.addOption(":start-time=\(Int(request.startPosition))")
+        }
         player.media = media
         print("[VLC] playing \(request.url.absoluteString)")
         player.play()
@@ -39,6 +42,12 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
     func stop() {
         player.stop()
         player.drawable = nil
+    }
+
+    /// Current position and duration in seconds, for saving watch progress.
+    var progressSample: (position: Double, duration: Double)? {
+        guard player.isSeekable, let length = player.media?.length else { return nil }
+        return (Double(player.time.intValue) / 1000, Double(length.intValue) / 1000)
     }
 
     func togglePlayPause() {
@@ -144,6 +153,7 @@ private struct VLCVideoSurface: UIViewRepresentable {
 
 /// VLC-backed player with minimal transport controls, used for containers AVFoundation can't play.
 struct VLCPlayerView: View {
+    @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismissPresentation
     @Environment(\.closePlayer) private var closePlayer
     let request: PlaybackRequest
@@ -168,8 +178,15 @@ struct VLCPlayerView: View {
             controller.start(request)
             scheduleHide()
         }
+        .task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(10))
+                saveProgress()
+            }
+        }
         .onDisappear {
             hideControlsTask?.cancel()
+            saveProgress()
             controller.stop()
         }
         .onChange(of: controller.isPlaying) { _, playing in
@@ -183,6 +200,11 @@ struct VLCPlayerView: View {
     /// Closes the player: the macOS window overlay's action, else the sheet / full-screen cover.
     private func dismiss() {
         if let closePlayer { closePlayer() } else { dismissPresentation() }
+    }
+
+    private func saveProgress() {
+        guard let context = request.progress, let sample = controller.progressSample else { return }
+        store.recordProgress(context, position: sample.position, duration: sample.duration)
     }
 
     // MARK: Layouts

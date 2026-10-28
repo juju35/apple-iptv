@@ -28,15 +28,22 @@ struct BrowseView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 22) {
-                    ForEach(filtered) { item in
-                        Button { selectedItem = item } label: {
-                            PosterCard(item: item)
-                        }
-                        .buttonStyle(.plain)
+                VStack(alignment: .leading, spacing: 22) {
+                    // Started movies / series first, unless the user is narrowing the list down.
+                    if search.isEmpty && selectedCategory == nil {
+                        ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
                     }
+                    LazyVGrid(columns: columns, spacing: 22) {
+                        ForEach(filtered) { item in
+                            Button { selectedItem = item } label: {
+                                PosterCard(item: item)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
-                .padding()
+                .padding(.vertical)
             }
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle(title)

@@ -10,6 +10,13 @@ final class PlayerController {
     private(set) var errorMessage: String?
     private(set) var isReady = false
 
+    /// Current position and duration in seconds, for saving watch progress.
+    var progressSample: (position: Double, duration: Double)? {
+        guard let player, let item = player.currentItem else { return nil }
+        return (player.currentTime().seconds, item.duration.seconds)
+    }
+
+    private var pendingSeek: Double = 0
     private var statusObservation: NSKeyValueObservation?
     private var playerStatusObservation: NSKeyValueObservation?
     private var failureObserver: (any NSObjectProtocol)?
@@ -23,6 +30,7 @@ final class PlayerController {
         }
         #endif
 
+        pendingSeek = request.startPosition
         var options: [String: Any] = [:]
         if let userAgent = request.headers["User-Agent"] {
             options[AVURLAssetHTTPUserAgentKey] = userAgent
@@ -42,6 +50,7 @@ final class PlayerController {
                 switch status {
                 case .readyToPlay:
                     self?.isReady = true
+                    self?.resumeIfNeeded()
                 case .failed:
                     self?.errorMessage = Self.describe(error, url: request.url)
                 default:
@@ -72,6 +81,14 @@ final class PlayerController {
         self.player = player
         print("[Player] playing \(request.url.absoluteString)")
         player.play()
+    }
+
+    /// Jumps to the saved position once the item can seek.
+    private func resumeIfNeeded() {
+        guard pendingSeek > 0, let player else { return }
+        let time = CMTime(seconds: pendingSeek, preferredTimescale: 600)
+        pendingSeek = 0
+        player.seek(to: time, toleranceBefore: .zero, toleranceAfter: .positiveInfinity)
     }
 
     func stop() {
@@ -166,6 +183,7 @@ extension EnvironmentValues {
 /// On iPhone Duo (iOS 27.1+), half-folding the device switches to a
 /// Netflix-style laptop layout: video above the fold, controls below.
 struct SystemPlayerView: View {
+    @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismissPresentation
     @Environment(\.closePlayer) private var closePlayer
     let request: PlaybackRequest
@@ -207,7 +225,17 @@ struct SystemPlayerView: View {
         }
         .background(Color.black.ignoresSafeArea())
         .onAppear { controller.start(request) }
-        .onDisappear { controller.stop() }
+        .task(id: controller.isReady) {
+            guard controller.isReady else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(10))
+                saveProgress()
+            }
+        }
+        .onDisappear {
+            saveProgress()
+            controller.stop()
+        }
         .onChange(of: controller.errorMessage) { _, message in
             if message != nil { onFailure() }
         }
@@ -216,6 +244,11 @@ struct SystemPlayerView: View {
     /// Closes the player: the macOS window overlay's action, else the sheet / full-screen cover.
     private func dismiss() {
         if let closePlayer { closePlayer() } else { dismissPresentation() }
+    }
+
+    private func saveProgress() {
+        guard let context = request.progress, let sample = controller.progressSample else { return }
+        store.recordProgress(context, position: sample.position, duration: sample.duration)
     }
 
     /// The failing URL; selectable where the platform allows copying it (not on tvOS).

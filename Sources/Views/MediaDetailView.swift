@@ -20,10 +20,15 @@ struct MediaDetailView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     header
 
-                    if item.kind != .series {
-                        playButton(label: item.kind == .live ? "Watch Live" : "Play") {
+                    switch item.kind {
+                    case .live:
+                        playButton(label: "Watch Live") {
                             play(ref: item.playbackRef, ext: item.containerExtension)
                         }
+                    case .movie:
+                        movieButtons
+                    case .series:
+                        EmptyView()
                     }
 
                     if let plot = item.plot, !plot.isEmpty {
@@ -90,6 +95,45 @@ struct MediaDetailView: View {
         }
     }
 
+    /// Play, or Resume + Start Over when the movie was started.
+    @ViewBuilder
+    private var movieButtons: some View {
+        let context = PlaybackProgressContext.movie(item)
+        if let saved = store.progress(for: context.key) {
+            playButton(label: "Resume from \(Self.timeText(saved.position))") {
+                play(ref: item.playbackRef, ext: item.containerExtension, progress: context,
+                     from: saved.position)
+            }
+            startOverButton {
+                play(ref: item.playbackRef, ext: item.containerExtension, progress: context)
+            }
+        } else {
+            playButton(label: "Play") {
+                play(ref: item.playbackRef, ext: item.containerExtension, progress: context)
+            }
+        }
+    }
+
+    private func startOverButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label("Start Over", systemImage: "arrow.counterclockwise")
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 6)
+        }
+        .buttonStyle(.bordered)
+        .disabled(isResolving)
+    }
+
+    /// "1:02:03" or "12:34".
+    private static func timeText(_ seconds: Double) -> String {
+        let total = Int(seconds)
+        let (hours, minutes, secs) = (total / 3600, total / 60 % 60, total % 60)
+        return hours > 0
+            ? String(format: "%d:%02d:%02d", hours, minutes, secs)
+            : String(format: "%d:%02d", minutes, secs)
+    }
+
     private func playButton(label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
@@ -135,19 +179,25 @@ struct MediaDetailView: View {
     @ViewBuilder
     private var episodesSection: some View {
         if let detail, let firstSeason = detail.seasons.keys.min() {
-            let season = selectedSeason ?? firstSeason
-            if let first = detail.seasons[season]?.first {
+            let resumed = resumedEpisode(in: detail)
+            let season = selectedSeason ?? resumed?.episode.season ?? firstSeason
+            if let resumed {
+                playButton(label: "Resume S\(resumed.episode.season) E\(resumed.episode.episode)"
+                           + " · \(Self.timeText(resumed.progress.position))") {
+                    playEpisode(resumed.episode)
+                }
+            } else if let first = detail.seasons[season]?.first {
                 playButton(label: "Play S\(season) E\(first.episode)") {
-                    play(ref: first.playbackRef, ext: first.containerExtension)
+                    playEpisode(first)
                 }
             }
             SeasonEpisodesView(
                 detail: detail,
                 season: Binding(get: { season }, set: { selectedSeason = $0 }),
-                fallbackArtwork: item.posterURL
-            ) { episode in
-                play(ref: episode.playbackRef, ext: episode.containerExtension)
-            }
+                fallbackArtwork: item.posterURL,
+                progress: { store.progress(for: PlaybackProgressContext.episode($0, of: item).key)?.fraction },
+                onPlay: playEpisode
+            )
         } else if detail == nil {
             ProgressView().frame(maxWidth: .infinity)
         } else {
@@ -170,7 +220,23 @@ struct MediaDetailView: View {
         }
     }
 
-    private func play(ref: String, ext: String?) {
+    /// The most recently watched, unfinished episode, if it is still in the series.
+    private func resumedEpisode(in detail: SeriesDetail) -> (episode: Episode, progress: PlaybackProgress)? {
+        guard let saved = store.latestEpisodeProgress(forSeries: item.id),
+              let episode = detail.seasons.values.joined().first(where: { $0.id == saved.episodeId }) else {
+            return nil
+        }
+        return (episode, saved)
+    }
+
+    /// Plays an episode, resuming where it was left.
+    private func playEpisode(_ episode: Episode) {
+        let context = PlaybackProgressContext.episode(episode, of: item)
+        play(ref: episode.playbackRef, ext: episode.containerExtension, progress: context,
+             from: store.progress(for: context.key)?.position ?? 0)
+    }
+
+    private func play(ref: String, ext: String?, progress: PlaybackProgressContext? = nil, from start: Double = 0) {
         guard let provider = store.selectedProvider, !isResolving else { return }
         let client = store.client(for: provider)
         isResolving = true
@@ -184,7 +250,9 @@ struct MediaDetailView: View {
                     playbackRef: ref,
                     containerExtension: ext
                 )
-                let request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+                var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+                request.progress = progress
+                request.startPosition = start
                 if let presentPlayer {
                     // macOS: close this sheet so the window-sized player isn't hidden behind it.
                     dismiss()

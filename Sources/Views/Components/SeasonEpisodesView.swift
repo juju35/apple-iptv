@@ -6,6 +6,8 @@ struct SeasonEpisodesView: View {
     @Binding var season: Int
     /// Shown when an episode has no still of its own.
     let fallbackArtwork: URL?
+    /// Watched fraction of an episode, nil when not started.
+    var progress: (Episode) -> Double? = { _ in nil }
     let onPlay: (Episode) -> Void
 
     private var seasons: [Int] { detail.seasons.keys.sorted() }
@@ -94,6 +96,11 @@ struct SeasonEpisodesView: View {
                     .shadow(radius: 4)
             }
             .frame(width: thumbnailWidth, height: thumbnailWidth * 9 / 16)
+            .overlay(alignment: .bottom) {
+                if let fraction = progress(episode) {
+                    WatchProgressBar(fraction: fraction)
+                }
+            }
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {

@@ -26,6 +26,8 @@ struct HomeView: View {
                         ErrorBanner(message: error) { Task { await store.reload() } }
                     }
 
+                    ContinueWatchingRow(entries: store.continueWatching(nil)) { selectedItem = $0 }
+
                     if !store.liveItems.isEmpty {
                         MediaRow(title: "Live TV", items: Array(store.liveItems.prefix(25))) {
                             selectedItem = $0

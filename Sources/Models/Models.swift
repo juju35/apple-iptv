@@ -137,6 +137,10 @@ struct PlaybackRequest: Identifiable {
     var headers: [String: String] = [:]
     /// Engine to start with; the player falls back to VLC if the system player fails.
     var engine: PlaybackEngine
+    /// Where to save watch progress; nil for live TV.
+    var progress: PlaybackProgressContext?
+    /// Seconds to resume from.
+    var startPosition: Double = 0
 
     init(url: URL, title: String, headers: [String: String] = [:], engine: PlaybackEngine? = nil) {
         self.url = url

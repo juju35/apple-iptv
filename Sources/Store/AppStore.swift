@@ -35,6 +35,12 @@ final class AppStore: ObservableObject {
     @Published private(set) var qualityOptions: [ContentTags.Option] = []
 
     private var catalog = Catalog()
+    /// Visible items by id, to resolve Continue Watching entries.
+    private var visibleItemsById: [String: MediaItem] = [:]
+
+    /// Watch progress by `PlaybackProgress.key`, synced through iCloud.
+    @Published private(set) var playbackProgress: [String: PlaybackProgress] = [:]
+    private let progressSync = PlaybackProgressSyncStore()
 
     @Published var isLoading = false
     @Published var lastError: String?
@@ -54,6 +60,15 @@ final class AppStore: ObservableObject {
         let defaults = UserDefaults.standard
         hiddenLanguages = Set(defaults.stringArray(forKey: Self.hiddenLanguagesKey) ?? [])
         hiddenQualities = Set(defaults.stringArray(forKey: Self.hiddenQualitiesKey) ?? [])
+        if !Demo.isOn {
+            playbackProgress = Self.merged(progressSync.load(), into: [:])
+            progressSync.onExternalChange = { [weak self] remote in
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.playbackProgress = Self.merged(remote, into: self.playbackProgress)
+                }
+            }
+        }
         if Demo.isOn {
             // Screenshot mode: one made-up provider, nothing read from or written to iCloud.
             providers = [Demo.provider]
@@ -212,6 +227,85 @@ final class AppStore: ObservableObject {
         liveItems = catalog.liveItems.filter(isVisible)
         movieItems = catalog.movieItems.filter(isVisible)
         seriesItems = catalog.seriesItems.filter(isVisible)
+        visibleItemsById = Dictionary((movieItems + seriesItems).map { ($0.id, $0) },
+                                      uniquingKeysWith: { first, _ in first })
+    }
+
+    // MARK: - Playback progress
+
+    /// A movie or series being watched, with its most recent progress.
+    struct ContinueWatchingEntry: Identifiable {
+        let item: MediaItem
+        let progress: PlaybackProgress
+        var id: String { item.id }
+    }
+
+    /// Unfinished progress for a movie or an episode.
+    func progress(for key: String) -> PlaybackProgress? {
+        playbackProgress[key].flatMap { $0.isFinished ? nil : $0 }
+    }
+
+    /// The most recently watched, unfinished episode of a series.
+    func latestEpisodeProgress(forSeries itemId: String) -> PlaybackProgress? {
+        playbackProgress.values
+            .filter { $0.itemId == itemId && $0.episodeId != nil && !$0.isFinished }
+            .max { $0.updatedAt < $1.updatedAt }
+    }
+
+    /// Started movies and series, most recent first (`kind` nil for both).
+    func continueWatching(_ kind: MediaKind?) -> [ContinueWatchingEntry] {
+        var seen: Set<String> = []
+        return playbackProgress.values
+            .filter { !$0.isFinished }
+            .sorted { $0.updatedAt > $1.updatedAt }
+            .compactMap { progress in
+                guard let item = visibleItemsById[progress.itemId], kind == nil || item.kind == kind,
+                      seen.insert(item.id).inserted else { return nil }
+                return ContinueWatchingEntry(item: item, progress: progress)
+            }
+    }
+
+    /// Saves where playback is; called periodically by the players and when they close.
+    func recordProgress(_ context: PlaybackProgressContext, position: Double, duration: Double) {
+        // Live streams and unknown durations have nothing to resume.
+        guard !Demo.isOn, position.isFinite, duration.isFinite, duration > 60 else { return }
+        let existing = playbackProgress[context.key]
+        // Barely started: not worth a Continue Watching entry.
+        guard position >= 10 || existing != nil else { return }
+        playbackProgress[context.key] = PlaybackProgress(
+            key: context.key,
+            itemId: context.itemId,
+            episodeId: context.episodeId,
+            season: context.season,
+            episode: context.episode,
+            position: position,
+            duration: duration,
+            updatedAt: Date(),
+            isFinished: position / duration >= 0.95
+        )
+        playbackProgress = Self.pruned(playbackProgress)
+        progressSync.save(Array(playbackProgress.values))
+    }
+
+    /// Union of both sides, the most recent entry winning for each key.
+    private static func merged(_ entries: [PlaybackProgress],
+                               into current: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
+        var result = current
+        for entry in entries where (result[entry.key]?.updatedAt ?? .distantPast) < entry.updatedAt {
+            result[entry.key] = entry
+        }
+        return pruned(result)
+    }
+
+    /// Keeps the store well under the iCloud key-value quota: finished entries for 30 days,
+    /// and the 300 most recent overall.
+    private static func pruned(_ entries: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
+        let cutoff = Date().addingTimeInterval(-30 * 24 * 3600)
+        let kept = entries.values
+            .filter { !$0.isFinished || $0.updatedAt > cutoff }
+            .sorted { $0.updatedAt > $1.updatedAt }
+            .prefix(300)
+        return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
     }
 
     func items(for kind: MediaKind) -> [MediaItem] {
