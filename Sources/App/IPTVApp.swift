@@ -35,7 +35,6 @@ enum MainTab: Hashable {
 
 struct MainTabView: View {
     @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
-    @State private var showsDemoPlayer = false
 
     var body: some View {
         TabView(selection: $tab) {
@@ -58,9 +57,11 @@ struct MainTabView: View {
         .tint(Theme.accent)
         .background(Theme.background)
         #if os(iOS)
-        .task { showsDemoPlayer = Demo.isOn && Demo.screen == .player }
-        .fullScreenCover(isPresented: $showsDemoPlayer) {
-            if #available(iOS 27.1, *) { DemoPlayerView() }
+        // Screenshot mode: `-demoScreen player` shows the player's fold layout over the tabs.
+        .overlay {
+            if Demo.isOn && Demo.screen == .player {
+                if #available(iOS 27.1, *) { DemoPlayerView() }
+            }
         }
         #endif
     }

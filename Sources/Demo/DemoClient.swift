@@ -43,21 +43,36 @@ enum DemoCatalog {
         ("Arena Sport 2", "sport"), ("Horizons TV", "ent"),
     ]
 
-    private static let movies: [(String, String, String, Double)] = [
-        ("The Long Horizon", "drama", "2025", 4.3), ("Midnight Harbor", "thriller", "2024", 4.1),
-        ("Echoes of Glass", "drama", "2023", 3.9), ("Paper Satellites", "comedy", "2025", 3.7),
-        ("Northbound", "thriller", "2022", 4.0), ("The Quiet Engine", "docs", "2024", 4.4),
-        ("Saltwater Kings", "drama", "2021", 3.8), ("Lantern Season", "comedy", "2023", 3.6),
-        ("Cold Light Avenue", "thriller", "2025", 4.2), ("After the Tide", "drama", "2024", 4.0),
-        ("Signal Lost", "thriller", "2023", 3.9), ("Golden Hour Club", "comedy", "2022", 3.5),
-        ("Deep Field", "docs", "2025", 4.5), ("The Glass Orchard", "drama", "2022", 3.8),
+    /// A made-up film or series: name, category, year, rating.
+    private struct Title {
+        let name: String
+        let category: String
+        let year: String
+        let rating: Double
+
+        init(_ name: String, _ category: String, _ year: String, _ rating: Double) {
+            self.name = name
+            self.category = category
+            self.year = year
+            self.rating = rating
+        }
+    }
+
+    private static let movies: [Title] = [
+        Title("The Long Horizon", "drama", "2025", 4.3), Title("Midnight Harbor", "thriller", "2024", 4.1),
+        Title("Echoes of Glass", "drama", "2023", 3.9), Title("Paper Satellites", "comedy", "2025", 3.7),
+        Title("Northbound", "thriller", "2022", 4.0), Title("The Quiet Engine", "docs", "2024", 4.4),
+        Title("Saltwater Kings", "drama", "2021", 3.8), Title("Lantern Season", "comedy", "2023", 3.6),
+        Title("Cold Light Avenue", "thriller", "2025", 4.2), Title("After the Tide", "drama", "2024", 4.0),
+        Title("Signal Lost", "thriller", "2023", 3.9), Title("Golden Hour Club", "comedy", "2022", 3.5),
+        Title("Deep Field", "docs", "2025", 4.5), Title("The Glass Orchard", "drama", "2022", 3.8),
     ]
 
-    private static let series: [(String, String, String, Double)] = [
-        ("Harbor Lights", "s-drama", "2023", 4.4), ("The Cartographers", "s-drama", "2024", 4.2),
-        ("Night Shift Diaries", "s-crime", "2022", 4.0), ("Copper & Rust", "s-crime", "2025", 4.3),
-        ("Blue Meridian", "s-drama", "2021", 3.9), ("Wildwood", "s-drama", "2024", 4.1),
-        ("The Archive", "s-crime", "2023", 4.2), ("Second Orbit", "s-drama", "2025", 4.0),
+    private static let series: [Title] = [
+        Title("Harbor Lights", "s-drama", "2023", 4.4), Title("The Cartographers", "s-drama", "2024", 4.2),
+        Title("Night Shift Diaries", "s-crime", "2022", 4.0), Title("Copper & Rust", "s-crime", "2025", 4.3),
+        Title("Blue Meridian", "s-drama", "2021", 3.9), Title("Wildwood", "s-drama", "2024", 4.1),
+        Title("The Archive", "s-crime", "2023", 4.2), Title("Second Orbit", "s-drama", "2025", 4.0),
     ]
 
     private static let plots = [
@@ -79,8 +94,9 @@ enum DemoCatalog {
         case .movie, .series:
             let source = kind == .movie ? movies : series
             return source.enumerated().map { index, title in
-                MediaItem(id: "demo-\(kind.rawValue)-\(index)", kind: kind, name: title.0, categoryId: title.1,
-                          playbackRef: "\(index)", rating: title.3, plot: plots[index % plots.count], year: title.2)
+                MediaItem(id: "demo-\(kind.rawValue)-\(index)", kind: kind, name: title.name, categoryId: title.category,
+                          playbackRef: "\(index)", rating: title.rating, plot: plots[index % plots.count],
+                          year: title.year)
             }
         }
     }

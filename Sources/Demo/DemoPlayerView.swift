@@ -5,7 +5,6 @@ import SwiftUI
 /// controls as during playback.
 @available(iOS 27.1, *)
 struct DemoPlayerView: View {
-    @State private var position = 0.38
     private let title = "The Long Horizon"
 
     var body: some View {
@@ -16,7 +15,7 @@ struct DemoPlayerView: View {
                 title: title,
                 isPlaying: true,
                 isSeekable: true,
-                position: $position,
+                position: .constant(0.38),
                 elapsed: "41:12",
                 remaining: "-1:06:48",
                 onPlayPause: {},
