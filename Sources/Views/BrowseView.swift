@@ -64,13 +64,17 @@ struct BrowseView: View {
 
 /// Unfocuses the search field when its clear (×) button empties it, so the keyboard
 /// doesn't come back. Backspacing the last character keeps the focus: only a jump from
-/// several characters to none counts as clearing. Needs `searchFocused` (iOS/tvOS 18, macOS 15).
+/// several characters to none counts as clearing. Needs `searchFocused` (iOS 18, macOS 15; not on tvOS).
 private struct ClearingSearchDropsFocus: ViewModifier {
     @Binding var text: String
     @FocusState private var isFocused: Bool
 
     func body(content: Content) -> some View {
-        if #available(iOS 18, macOS 15, tvOS 18, *) {
+        #if os(tvOS)
+        // No searchFocused on tvOS: the search screen has its own keyboard and dismisses it itself.
+        content
+        #else
+        if #available(iOS 18, macOS 15, *) {
             content
                 .searchFocused($isFocused)
                 .onChange(of: text) { oldValue, newValue in
@@ -81,5 +85,6 @@ private struct ClearingSearchDropsFocus: ViewModifier {
         } else {
             content
         }
+        #endif
     }
 }
