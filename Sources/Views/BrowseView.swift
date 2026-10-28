@@ -58,6 +58,12 @@ struct BrowseView: View {
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
+            .task(id: filtered.count) {
+                // Screenshot mode: `-demoScreen detail` opens the first series.
+                if Demo.isOn, Demo.screen == .detail, kind == .series, selectedItem == nil {
+                    selectedItem = filtered.first
+                }
+            }
         }
     }
 }

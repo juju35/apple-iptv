@@ -64,7 +64,7 @@ struct MediaDetailView: View {
                 if case .success(let image) = phase {
                     image.resizable().scaledToFill()
                 } else {
-                    Theme.surface
+                    GeneratedArtwork(title: item.name, kind: item.kind)
                 }
             }
             .frame(width: Theme.posterWidth, height: Theme.posterWidth / Theme.posterAspect)

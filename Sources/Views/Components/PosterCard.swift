@@ -32,12 +32,7 @@ struct PosterCard: View {
     }
 
     private var placeholder: some View {
-        ZStack {
-            Theme.surface
-            Image(systemName: item.kind == .live ? "tv" : "film")
-                .font(.largeTitle)
-                .foregroundStyle(Theme.textSecondary)
-        }
+        GeneratedArtwork(title: item.name, kind: item.kind)
     }
 }
 

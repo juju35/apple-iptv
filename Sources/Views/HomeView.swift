@@ -6,7 +6,8 @@ struct HomeView: View {
     @State private var selectedItem: MediaItem?
 
     private var heroItem: MediaItem? {
-        store.movieItems.first { $0.posterURL != nil } ?? store.seriesItems.first ?? store.liveItems.first
+        store.movieItems.first { $0.posterURL != nil } ?? store.movieItems.first ?? store.seriesItems.first
+            ?? store.liveItems.first
     }
 
     var body: some View {
@@ -70,7 +71,7 @@ struct HeroBanner: View {
                 if case .success(let image) = phase {
                     image.resizable().scaledToFill()
                 } else {
-                    Theme.surface
+                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
                 }
             }
             .frame(height: Theme.heroHeight)

@@ -29,21 +29,52 @@ struct RootView: View {
     }
 }
 
+enum MainTab: Hashable {
+    case home, live, movies, series, settings
+}
+
 struct MainTabView: View {
+    @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
+    @State private var showsDemoPlayer = false
+
     var body: some View {
-        TabView {
+        TabView(selection: $tab) {
             HomeView()
                 .tabItem { Label("Home", systemImage: "house.fill") }
+                .tag(MainTab.home)
             BrowseView(kind: .live, title: "Live TV")
                 .tabItem { Label("Live TV", systemImage: "tv") }
+                .tag(MainTab.live)
             BrowseView(kind: .movie, title: "Movies")
                 .tabItem { Label("Movies", systemImage: "film") }
+                .tag(MainTab.movies)
             BrowseView(kind: .series, title: "Series")
                 .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
+                .tag(MainTab.series)
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(MainTab.settings)
         }
         .tint(Theme.accent)
         .background(Theme.background)
+        #if os(iOS)
+        .task { showsDemoPlayer = Demo.isOn && Demo.screen == .player }
+        .fullScreenCover(isPresented: $showsDemoPlayer) {
+            if #available(iOS 27.1, *) { DemoPlayerView() }
+        }
+        #endif
+    }
+}
+
+extension Demo.Screen {
+    /// The tab a demo screen opens on.
+    var tab: MainTab {
+        switch self {
+        case .home, .player: return .home
+        case .live: return .live
+        case .movies: return .movies
+        case .series, .detail: return .series
+        case .settings: return .settings
+        }
     }
 }

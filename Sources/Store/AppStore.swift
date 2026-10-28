@@ -34,6 +34,12 @@ final class AppStore: ObservableObject {
     }
 
     init() {
+        if Demo.isOn {
+            // Screenshot mode: one made-up provider, nothing read from or written to iCloud.
+            providers = [Demo.provider]
+            selectedProviderID = Demo.provider.id
+            return
+        }
         providers = syncStore.load()
         if let raw = UserDefaults.standard.string(forKey: Self.selectedKey),
            let id = UUID(uuidString: raw) {
@@ -49,6 +55,7 @@ final class AppStore: ObservableObject {
     // MARK: - Persistence (iCloud KVS + UserDefaults fallback)
 
     private func persistProviders() {
+        guard !Demo.isOn else { return }
         syncStore.save(providers)
     }
 
@@ -88,7 +95,7 @@ final class AppStore: ObservableObject {
 
     func client(for provider: Provider) -> IPTVClient {
         if let existing = clients[provider.id] { return existing }
-        let client = IPTVClientFactory.client(for: provider)
+        let client: IPTVClient = Demo.isOn ? DemoClient() : IPTVClientFactory.client(for: provider)
         clients[provider.id] = client
         return client
     }
