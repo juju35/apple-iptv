@@ -165,7 +165,8 @@ struct LiveTVView: View {
         Task { @MainActor in
             defer { resolvingID = nil }
             do {
-                let request = try await store.playbackRequest(for: channel)
+                var request = try await store.playbackRequest(for: channel)
+                request.channelList = channels
                 if let presentPlayer { presentPlayer(request) } else { playback = request }
             } catch {
                 playError = error.localizedDescription

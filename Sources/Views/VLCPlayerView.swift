@@ -161,6 +161,7 @@ struct VLCPlayerView: View {
     @State private var controller = VLCPlayerController()
     @State private var controlsVisible = true
     @Environment(\.playerChromeVisible) private var chromeVisible
+    @Environment(\.channelSwitcher) private var channelSwitcher
     @State private var hideControlsTask: Task<Void, Never>?
 
     var body: some View {
@@ -272,9 +273,13 @@ struct VLCPlayerView: View {
                 }
                 .buttonStyle(.plain)
                 Spacer()
-                Text(request.title)
-                    .font(.headline)
-                    .lineLimit(1)
+                if channelSwitcher != nil {
+                    ChannelSwitchBar()
+                } else {
+                    Text(request.title)
+                        .font(.headline)
+                        .lineLimit(1)
+                }
                 Spacer()
                 Text("VLC")
                     .font(.caption2.weight(.bold))

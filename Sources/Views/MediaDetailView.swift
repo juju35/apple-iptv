@@ -278,8 +278,12 @@ struct MediaDetailView: View {
         Task { @MainActor in
             defer { isResolving = false }
             do {
-                let request = try await store.playbackRequest(for: item, ref: ref, containerExtension: ext,
+                var request = try await store.playbackRequest(for: item, ref: ref, containerExtension: ext,
                                                               progress: progress, from: start)
+                if item.kind == .live {
+                    // Zap through the channel's list.
+                    request.channelList = store.liveItems.filter { $0.categoryId == item.categoryId }
+                }
                 if let presentPlayer {
                     // macOS: close this sheet so the window-sized player isn't hidden behind it.
                     dismiss()

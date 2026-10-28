@@ -140,12 +140,15 @@ struct PlayerView: View {
     #if os(macOS)
     @Environment(\.closePlayer) private var closePlayer
     #endif
-    let request: PlaybackRequest
+    @EnvironmentObject private var store: AppStore
 
+    /// Replaced when zapping to another channel.
+    @State private var request: PlaybackRequest
     @State private var engine: PlaybackEngine
+    @State private var showsChannelList = false
 
     init(request: PlaybackRequest) {
-        self.request = request
+        _request = State(initialValue: request)
         _engine = State(initialValue: request.engine)
     }
 
@@ -162,10 +165,50 @@ struct PlayerView: View {
                 VLCPlayerView(request: request)
             }
         }
+        // A new request (zapping) restarts the player from scratch.
+        .id(request.id)
+        .environment(\.channelSwitcher, channelSwitcher)
+        .overlay(alignment: .trailing) {
+            if showsChannelList {
+                ChannelListPanel(channels: request.channelList, current: request.channel,
+                                 onSelect: { zap(to: $0) }, onClose: { showsChannelList = false })
+                    .transition(.move(edge: .trailing))
+            }
+        }
+        .animation(.easeOut(duration: 0.2), value: showsChannelList)
         #if os(macOS)
         // Escape closes the window-overlay player, as it would a sheet.
         .onExitCommand { closePlayer?() }
         #endif
+    }
+
+    /// Zapping, when a live channel plays from a list of several.
+    private var channelSwitcher: ChannelSwitcher? {
+        guard let channel = request.channel, request.channelList.count > 1 else { return nil }
+        return ChannelSwitcher(
+            channelName: channel.name,
+            previous: { zap(by: -1) },
+            next: { zap(by: 1) },
+            toggleList: { showsChannelList.toggle() }
+        )
+    }
+
+    private func zap(by offset: Int) {
+        let list = request.channelList
+        guard let index = list.firstIndex(where: { $0.id == request.channel?.id }) else { return }
+        zap(to: list[(index + offset + list.count) % list.count])
+    }
+
+    private func zap(to channel: MediaItem) {
+        showsChannelList = false
+        guard channel.id != request.channel?.id else { return }
+        let list = request.channelList
+        Task { @MainActor in
+            guard var next = try? await store.playbackRequest(for: channel) else { return }
+            next.channelList = list
+            engine = next.engine
+            request = next
+        }
     }
 }
 
@@ -307,6 +350,9 @@ struct StandardPlayerView: View {
 
             if controlsVisible {
                 closeButton
+                ChannelSwitchBar()
+                    .padding(.top, 12)
+                    .frame(maxWidth: .infinity)
             }
         }
         .onAppear { scheduleHide() }

@@ -337,7 +337,10 @@ final class AppStore: ObservableObject {
         var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
         request.progress = progress
         request.startPosition = start
-        if item.kind == .live { recordRecentChannel(item) }
+        if item.kind == .live {
+            request.channel = item
+            recordRecentChannel(item)
+        }
         return request
     }
 

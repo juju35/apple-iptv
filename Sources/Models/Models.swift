@@ -141,6 +141,9 @@ struct PlaybackRequest: Identifiable {
     var progress: PlaybackProgressContext?
     /// Seconds to resume from.
     var startPosition: Double = 0
+    /// The live channel playing, and the list it was started from, for zapping.
+    var channel: MediaItem?
+    var channelList: [MediaItem] = []
 
     init(url: URL, title: String, headers: [String: String] = [:], engine: PlaybackEngine? = nil) {
         self.url = url
