@@ -36,19 +36,19 @@ struct Provider: Identifiable, Codable, Hashable {
 
 // MARK: - Content
 
-struct ContentCategory: Identifiable, Hashable {
+struct ContentCategory: Identifiable, Hashable, Codable {
     let id: String
     let name: String
 }
 
-enum MediaKind: String, Hashable {
+enum MediaKind: String, Hashable, Codable {
     case live
     case movie
     case series
 }
 
 /// Unified media item across both protocols.
-struct MediaItem: Identifiable, Hashable {
+struct MediaItem: Identifiable, Hashable, Codable {
     let id: String
     let kind: MediaKind
     let name: String

@@ -23,7 +23,7 @@ struct HomeView: View {
                     }
 
                     if let error = store.lastError {
-                        ErrorBanner(message: error) { Task { await store.reload() } }
+                        ErrorBanner(message: error) { Task { await store.reload(force: true) } }
                     }
 
                     ContinueWatchingRow(entries: store.continueWatching(nil)) { selectedItem = $0 }
@@ -60,7 +60,7 @@ struct HomeView: View {
                 .padding(.bottom, 40)
             }
             .background(Theme.background.ignoresSafeArea())
-            .refreshableIfSupported { await store.reload() }
+            .refreshableIfSupported { await store.reload(force: true) }
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }

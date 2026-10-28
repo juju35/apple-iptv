@@ -61,7 +61,20 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Button("Refresh content") { Task { await store.reload() } }
+                    Picker("Keep lists for", selection: $store.cacheLifetime) {
+                        ForEach(CatalogCache.lifetimes, id: \.seconds) { option in
+                            Text(option.label).tag(option.seconds)
+                        }
+                    }
+                    Button("Refresh content") { Task { await store.reload(force: true) } }
+                } header: {
+                    Text("Cache")
+                } footer: {
+                    if let updatedAt = store.catalogUpdatedAt {
+                        Text("Lists updated \(updatedAt, format: .relative(presentation: .named)).")
+                    } else {
+                        Text("Lists are kept on this device so the app opens without waiting for the provider.")
+                    }
                 }
             }
             .navigationTitle("Settings")

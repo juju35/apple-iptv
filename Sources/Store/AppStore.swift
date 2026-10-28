@@ -34,7 +34,21 @@ final class AppStore: ObservableObject {
     @Published private(set) var languageOptions: [ContentTags.Option] = []
     @Published private(set) var qualityOptions: [ContentTags.Option] = []
 
+    /// Everything the provider returned, before filtering.
     private var catalog = Catalog()
+    /// Provider `catalog` belongs to, so switching providers doesn't show the previous lists.
+    private var catalogProviderID: Provider.ID?
+    /// When the shown lists were fetched from the provider (from the cache or just now).
+    @Published private(set) var catalogUpdatedAt: Date?
+
+    /// How long cached lists are used without asking the provider; 0 disables the cache.
+    @Published var cacheLifetime: TimeInterval {
+        didSet {
+            UserDefaults.standard.set(cacheLifetime, forKey: Self.cacheLifetimeKey)
+            if cacheLifetime == 0 { CatalogCache.removeAll() }
+        }
+    }
+    private static let cacheLifetimeKey = "iptv.cacheLifetime"
     /// Visible items by id, to resolve Continue Watching entries and favorites.
     private var visibleItemsById: [String: MediaItem] = [:]
 
@@ -65,6 +79,8 @@ final class AppStore: ObservableObject {
                                 : filterSync.load()
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
+        cacheLifetime = UserDefaults.standard.object(forKey: Self.cacheLifetimeKey) as? TimeInterval
+            ?? CatalogCache.defaultLifetime
         if !Demo.isOn {
             favoriteIDs = favoritesSync.load()
             favoritesSync.onExternalChange = { [weak self] remote in
@@ -123,6 +139,10 @@ final class AppStore: ObservableObject {
     /// Merges providers changed on another device via iCloud.
     private func applyExternal(_ remote: [Provider]) {
         guard remote != providers else { return }
+        // Edited elsewhere (URL, credentials…): their cached lists may be wrong.
+        for provider in remote where providers.first(where: { $0.id == provider.id }) != provider {
+            CatalogCache.remove(providerID: provider.id)
+        }
         clients.removeAll()
         providers = remote
         if let selected = selectedProviderID, !remote.contains(where: { $0.id == selected }) {
@@ -143,12 +163,14 @@ final class AppStore: ObservableObject {
         guard let index = providers.firstIndex(where: { $0.id == provider.id }) else { return }
         providers[index] = provider
         clients[provider.id] = nil
-        if provider.id == selectedProviderID { Task { await reload() } }
+        CatalogCache.remove(providerID: provider.id)
+        if provider.id == selectedProviderID { Task { await reload(force: true) } }
     }
 
     func removeProvider(_ provider: Provider) {
         providers.removeAll { $0.id == provider.id }
         clients[provider.id] = nil
+        CatalogCache.remove(providerID: provider.id)
         if selectedProviderID == provider.id {
             selectedProviderID = providers.first?.id
         }
@@ -163,12 +185,32 @@ final class AppStore: ObservableObject {
 
     // MARK: - Loading
 
-    func reload() async {
+    /// Loads the selected provider's lists: from the cache while it is fresh, otherwise from the
+    /// provider (an expired cache is shown meanwhile). `force` always asks the provider.
+    func reload(force: Bool = false) async {
         guard let provider = selectedProvider else {
             catalog = Catalog()
+            catalogProviderID = nil
+            catalogUpdatedAt = nil
             applyFilters()
             return
         }
+        if catalogProviderID != provider.id {
+            // Don't keep showing another provider's lists.
+            catalog = Catalog()
+            catalogProviderID = provider.id
+            catalogUpdatedAt = nil
+            applyFilters()
+        }
+        let usesCache = cacheLifetime > 0 && !Demo.isOn
+        if usesCache, !force, let cached = await CatalogCache.load(providerID: provider.id),
+           selectedProvider?.id == provider.id {
+            catalog = cached.catalog
+            catalogUpdatedAt = cached.savedAt
+            applyFilters()
+            if Date().timeIntervalSince(cached.savedAt) < cacheLifetime { return }
+        }
+
         isLoading = true
         lastError = nil
         defer { isLoading = false }
@@ -183,7 +225,7 @@ final class AppStore: ObservableObject {
             async let movies = client.items(kind: .movie, categoryId: nil)
             async let series = client.items(kind: .series, categoryId: nil)
 
-            catalog = Catalog(
+            let fetched = Catalog(
                 liveCategories: (try? await liveCats) ?? [],
                 movieCategories: (try? await movieCats) ?? [],
                 seriesCategories: (try? await seriesCats) ?? [],
@@ -191,6 +233,15 @@ final class AppStore: ObservableObject {
                 movieItems: (try? await movies) ?? [],
                 seriesItems: (try? await series) ?? []
             )
+            // The user may have switched providers while this one was loading.
+            guard selectedProvider?.id == provider.id else { return }
+            // An empty answer is more likely a portal hiccup than an empty catalog:
+            // keep what is shown (and cached) rather than wiping it.
+            if !fetched.isEmpty || catalog.isEmpty {
+                catalog = fetched
+                catalogUpdatedAt = Date()
+                if usesCache, !fetched.isEmpty { CatalogCache.save(fetched, providerID: provider.id) }
+            }
         } catch {
             lastError = error.localizedDescription
         }
@@ -198,16 +249,6 @@ final class AppStore: ObservableObject {
     }
 
     // MARK: - Filters
-
-    /// Everything the provider returned, before filtering.
-    private struct Catalog {
-        var liveCategories: [ContentCategory] = []
-        var movieCategories: [ContentCategory] = []
-        var seriesCategories: [ContentCategory] = []
-        var liveItems: [MediaItem] = []
-        var movieItems: [MediaItem] = []
-        var seriesItems: [MediaItem] = []
-    }
 
     /// Recomputes the published content and the available tags from `catalog`.
     private func applyFilters() {
@@ -251,6 +292,31 @@ final class AppStore: ObservableObject {
                                       uniquingKeysWith: { first, _ in first })
     }
 
+    func items(for kind: MediaKind) -> [MediaItem] {
+        switch kind {
+        case .live: return liveItems
+        case .movie: return movieItems
+        case .series: return seriesItems
+        }
+    }
+
+    func categories(for kind: MediaKind) -> [ContentCategory] {
+        switch kind {
+        case .live: return liveCategories
+        case .movie: return movieCategories
+        case .series: return seriesCategories
+        }
+    }
+
+    func categoryName(_ id: String?, kind: MediaKind) -> String {
+        guard let id else { return "Other" }
+        return categories(for: kind).first { $0.id == id }?.name ?? "Other"
+    }
+}
+
+// MARK: - Favorites and playback progress
+
+extension AppStore {
     // MARK: - Favorites
 
     func isFavorite(_ item: MediaItem) -> Bool {
@@ -346,26 +412,5 @@ final class AppStore: ObservableObject {
             .sorted { $0.updatedAt > $1.updatedAt }
             .prefix(300)
         return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-    }
-
-    func items(for kind: MediaKind) -> [MediaItem] {
-        switch kind {
-        case .live: return liveItems
-        case .movie: return movieItems
-        case .series: return seriesItems
-        }
-    }
-
-    func categories(for kind: MediaKind) -> [ContentCategory] {
-        switch kind {
-        case .live: return liveCategories
-        case .movie: return movieCategories
-        case .series: return seriesCategories
-        }
-    }
-
-    func categoryName(_ id: String?, kind: MediaKind) -> String {
-        guard let id else { return "Other" }
-        return categories(for: kind).first { $0.id == id }?.name ?? "Other"
     }
 }
