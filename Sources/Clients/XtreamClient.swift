@@ -110,27 +110,42 @@ final class XtreamClient: IPTVClient {
     func seriesDetail(for item: MediaItem) async throws -> SeriesDetail {
         let json = try await fetchJSON(action: "get_series_info",
                                        extra: [URLQueryItem(name: "series_id", value: item.playbackRef)])
-        guard let dict = json as? [String: Any],
-              let episodesDict = dict["episodes"] as? [String: [[String: Any]]] else {
+        guard let dict = json as? [String: Any] else {
             return SeriesDetail(item: item, seasons: [:])
         }
+        // Panels send `episodes` either as {"1": [...], "2": [...]} or as an array of season arrays.
+        let groups: [(key: Int?, list: [[String: Any]])]
+        if let byKey = dict["episodes"] as? [String: [[String: Any]]] {
+            groups = byKey.map { (Int($0.key), $0.value) }
+        } else if let byIndex = dict["episodes"] as? [[[String: Any]]] {
+            groups = byIndex.map { (nil, $0) }
+        } else {
+            return SeriesDetail(item: item, seasons: [:])
+        }
+
         var seasons: [Int: [Episode]] = [:]
-        for (seasonKey, list) in episodesDict {
-            let season = Int(seasonKey) ?? 0
-            seasons[season] = list.compactMap { ep in
-                guard let id = Self.string(ep["id"]) else { return nil }
+        for group in groups {
+            for (index, ep) in group.list.enumerated() {
+                guard let id = Self.string(ep["id"]) else { continue }
                 let info = ep["info"] as? [String: Any]
-                return Episode(
+                // The episode's own `season` field is more reliable than the grouping key.
+                let season = Self.int(ep["season"]) ?? group.key ?? 1
+                let number = Self.int(ep["episode_num"]).flatMap { $0 > 0 ? $0 : nil } ?? index + 1
+                let episode = Episode(
                     id: id,
-                    title: ep["title"] as? String ?? "Episode",
+                    title: ep["title"] as? String ?? "Episode \(number)",
                     season: season,
-                    episode: Self.int(ep["episode_num"]) ?? 0,
+                    episode: number,
                     plot: info?["plot"] as? String,
                     posterURL: (info?["movie_image"] as? String).flatMap(URL.init(string:)),
                     playbackRef: id,
                     containerExtension: ep["container_extension"] as? String
                 )
-            }.sorted { $0.episode < $1.episode }
+                seasons[season, default: []].append(episode)
+            }
+        }
+        for key in seasons.keys {
+            seasons[key]?.sort { $0.episode < $1.episode }
         }
         return SeriesDetail(item: item, seasons: seasons)
     }

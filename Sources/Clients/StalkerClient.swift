@@ -172,37 +172,115 @@ final class StalkerClient: IPTVClient {
     }
 
     func seriesDetail(for item: MediaItem) async throws -> SeriesDetail {
-        // Stalker portals vary a lot here; expose the series itself as a single playable item
-        // and list seasons when the portal provides them via get_ordered_list with movie_id.
+        // Ministra: `movie_id=<series id>&season_id=0` lists the seasons, `season_id=<season id>` its episodes.
+        // Portals that don't support it ignore `movie_id` and return the whole catalog: those entries are
+        // filtered out by id and the series is then exposed as a single playable item.
         try await ensureToken()
-        let js = try? await fetchJS(type: "series", action: "get_ordered_list",
-                                    extra: [URLQueryItem(name: "movie_id", value: item.playbackRef)])
-        guard let dict = js as? [String: Any],
-              let data = dict["data"] as? [[String: Any]], !data.isEmpty else {
-            return SeriesDetail(item: item, seasons: [:])
+        let seriesId = Self.rawId(of: item)
+        let seriesBase = seriesId.components(separatedBy: ":").first ?? seriesId
+        let seasonEntries = await orderedList(movieId: seriesId, seasonId: "0").filter { entry in
+            guard let id = entry["id"].map({ "\($0)" }), id != seriesId else { return false }
+            return Self.flag(entry["is_season"]) || id.hasPrefix("\(seriesBase):")
         }
+
         var seasons: [Int: [Episode]] = [:]
-        for entry in data {
-            guard let id = entry["id"].map({ "\($0)" }) else { continue }
-            let season = Int("\(entry["season_number"] ?? "1")") ?? 1
-            let episodes = (entry["series"] as? [Int]) ?? []
-            let cmd = entry["cmd"] as? String ?? ""
-            let eps = episodes.isEmpty ? [0] : episodes
-            for ep in eps {
-                let episode = Episode(
-                    id: "\(id)-\(ep)",
-                    title: entry["name"] as? String ?? item.name,
-                    season: season,
-                    episode: ep,
-                    plot: entry["description"] as? String,
-                    posterURL: (entry["screenshot_uri"] as? String).flatMap { self.absoluteURL($0) },
-                    playbackRef: ep == 0 ? cmd : "\(cmd)|episode=\(ep)",
-                    containerExtension: nil
-                )
-                seasons[season, default: []].append(episode)
+        for (index, entry) in seasonEntries.enumerated() {
+            guard let seasonId = entry["id"].map({ "\($0)" }) else { continue }
+            let season = Self.seasonNumber(of: entry, id: seasonId) ?? index + 1
+            seasons[season] = await episodes(of: entry, seasonId: seasonId, season: season, series: item)
+                .sorted { $0.episode < $1.episode }
+        }
+        return SeriesDetail(item: item, seasons: seasons.filter { !$0.value.isEmpty })
+    }
+
+    /// Episodes of a season: either listed inline (`series: [1, 2, …]`, played through the season's cmd)
+    /// or fetched as their own entries, each with its own cmd.
+    private func episodes(of seasonEntry: [String: Any], seasonId: String, season: Int,
+                          series item: MediaItem) async -> [Episode] {
+        let poster = (seasonEntry["screenshot_uri"] as? String).flatMap { self.absoluteURL($0) }
+        let inline = ((seasonEntry["series"] as? [Any]) ?? []).compactMap { Int("\($0)") }
+        if !inline.isEmpty, let cmd = seasonEntry["cmd"] as? String, !cmd.isEmpty {
+            return inline.map { number in
+                Episode(id: "\(seasonId)-\(number)", title: "Episode \(number)", season: season, episode: number,
+                        plot: seasonEntry["description"] as? String, posterURL: poster,
+                        playbackRef: "\(cmd)|episode=\(number)", containerExtension: nil)
             }
         }
-        return SeriesDetail(item: item, seasons: seasons)
+
+        let entries = await orderedList(movieId: Self.rawId(of: item), seasonId: seasonId)
+        return entries.enumerated().compactMap { index, entry in
+            guard let id = entry["id"].map({ "\($0)" }), id != seasonId,
+                  let cmd = entry["cmd"] as? String, !cmd.isEmpty else { return nil }
+            let name = entry["name"] as? String
+            let number = (entry["series_number"]).flatMap { Int("\($0)") }
+                ?? name.flatMap(Self.episodeNumber(inName:)) ?? index + 1
+            return Episode(
+                id: id,
+                title: name ?? "Episode \(number)",
+                season: season,
+                episode: number,
+                plot: entry["description"] as? String,
+                posterURL: (entry["screenshot_uri"] as? String).flatMap { self.absoluteURL($0) } ?? poster,
+                playbackRef: cmd,
+                containerExtension: nil
+            )
+        }
+    }
+
+    /// `get_ordered_list` for a series level, following pagination (portals return ~14 per page).
+    private func orderedList(movieId: String, seasonId: String) async -> [[String: Any]] {
+        var entries: [[String: Any]] = []
+        var page = 1
+        var totalPages = 1
+        while page <= min(totalPages, 20) {
+            let extra = [URLQueryItem(name: "movie_id", value: movieId),
+                         URLQueryItem(name: "season_id", value: seasonId),
+                         URLQueryItem(name: "episode_id", value: "0"),
+                         URLQueryItem(name: "p", value: String(page))]
+            guard let dict = try? await fetchJS(type: "series", action: "get_ordered_list", extra: extra)
+                    as? [String: Any],
+                  let data = dict["data"] as? [[String: Any]], !data.isEmpty else { break }
+            if page == 1 {
+                let total = Int("\(dict["total_items"] ?? "")") ?? data.count
+                totalPages = max(1, Int(ceil(Double(total) / Double(data.count))))
+            }
+            entries.append(contentsOf: data)
+            page += 1
+        }
+        return entries
+    }
+
+    /// The portal's own id of an item (`MediaItem.id` is `<provider>-<kind>-<id>`).
+    private static func rawId(of item: MediaItem) -> String {
+        let prefix = "\(item.kind.rawValue)-"
+        guard let range = item.id.range(of: prefix, options: .backwards) else { return item.playbackRef }
+        return String(item.id[range.upperBound...])
+    }
+
+    /// Portals send booleans as true, 1 or "1".
+    private static func flag(_ value: Any?) -> Bool {
+        guard let value else { return false }
+        return (value as? Bool) ?? ["1", "true"].contains("\(value)".lowercased())
+    }
+
+    /// Season number from `season_number`, the name ("Season 2", "Saison 2", "S02") or the `<series>:<season>` id.
+    private static func seasonNumber(of entry: [String: Any], id: String) -> Int? {
+        if let value = entry["season_number"], let number = Int("\(value)") { return number }
+        if let name = entry["name"] as? String, let number = seasonNumber(inName: name) { return number }
+        return id.split(separator: ":").last.flatMap { Int($0) }
+    }
+
+    /// Number following an episode keyword ("Episode 3", "Épisode 03", "S01E03", "E03").
+    private static func episodeNumber(inName name: String) -> Int? {
+        let pattern = /(?i)(?:épisode|episode|\bs\d{1,3}\s*e|\be)\s*0*(\d{1,4})(?!\d)/
+        return name.firstMatch(of: pattern).flatMap { Int($0.1) }
+    }
+
+    /// Number following a season keyword ("Season 2", "Saison 02", "S2"), else a name that is only a number.
+    private static func seasonNumber(inName name: String) -> Int? {
+        let pattern = /(?i)(?:season|saison|staffel|temporada|stagione|\bs)\s*0*(\d{1,3})(?!\d)/
+        if let match = name.firstMatch(of: pattern) { return Int(match.1) }
+        return Int(name.trimmingCharacters(in: .whitespaces))
     }
 
     func streamURL(kind: MediaKind, playbackRef: String, containerExtension: String?) async throws -> URL {
