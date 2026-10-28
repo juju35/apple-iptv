@@ -34,8 +34,6 @@ enum MainTab: Hashable {
 }
 
 struct MainTabView: View {
-    // Only read through its binding, which the analyzer misses since @State became a macro.
-    // swiftlint:disable:next unused_declaration
     @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
     #if os(macOS)
     /// Player shown over the whole window: macOS sheets can't fill it.
@@ -64,6 +62,7 @@ struct MainTabView: View {
         }
         .tint(Theme.accent)
         .background(Theme.background)
+        .environment(\.showSettings) { tab = .settings }
         #if os(macOS)
         .environment(\.presentPlayer) { windowPlayback = $0 }
         .overlay {

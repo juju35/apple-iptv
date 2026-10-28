@@ -73,6 +73,7 @@ struct LiveTVView: View {
             }
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle("Live TV")
+            .providerToolbar()
             .modifier(BrowseSearch(text: $search))
             .sheet(item: $detailItem) { item in
                 MediaDetailView(item: item)

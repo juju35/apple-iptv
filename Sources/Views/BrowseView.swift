@@ -61,6 +61,7 @@ struct BrowseView: View {
             }
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle(title)
+            .providerToolbar()
             .modifier(BrowseSearch(text: $search))
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)

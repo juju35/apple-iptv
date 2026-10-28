@@ -61,6 +61,7 @@ struct HomeView: View {
             }
             .background(Theme.background.ignoresSafeArea())
             .refreshableIfSupported { await store.reload(force: true) }
+            .providerToolbar()
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
