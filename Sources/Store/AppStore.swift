@@ -30,6 +30,12 @@ final class AppStore: ObservableObject {
     @Published var hiddenQualities: Set<String> {
         didSet { persistFilters(); applyFilters() }
     }
+    /// Live TV lists to hide, as `<provider id>|<category id>` (see `LiveListOption.key`).
+    @Published var hiddenLiveCategories: Set<String> {
+        didSet { persistFilters(); applyFilters() }
+    }
+    /// The selected provider's Live TV lists, hidden ones included, offered in Settings.
+    @Published private(set) var liveListOptions: [LiveListOption] = []
     /// Tags found in the current provider's catalog, offered in Settings.
     @Published private(set) var languageOptions: [ContentTags.Option] = []
     @Published private(set) var qualityOptions: [ContentTags.Option] = []
@@ -75,10 +81,10 @@ final class AppStore: ObservableObject {
 
     init() {
         // Screenshot mode shows everything and leaves the user's iCloud filters alone.
-        let filters = Demo.isOn ? FilterSyncStore.Filters(hiddenLanguages: [], hiddenQualities: [])
-                                : filterSync.load()
+        let filters = Demo.isOn ? FilterSyncStore.Filters() : filterSync.load()
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
+        hiddenLiveCategories = filters.hiddenLiveCategories
         cacheLifetime = UserDefaults.standard.object(forKey: Self.cacheLifetimeKey) as? TimeInterval
             ?? CatalogCache.defaultLifetime
         if !Demo.isOn {
@@ -127,13 +133,15 @@ final class AppStore: ObservableObject {
 
     private func persistFilters() {
         guard !Demo.isOn else { return }
-        filterSync.save(FilterSyncStore.Filters(hiddenLanguages: hiddenLanguages, hiddenQualities: hiddenQualities))
+        filterSync.save(FilterSyncStore.Filters(hiddenLanguages: hiddenLanguages, hiddenQualities: hiddenQualities,
+                                                hiddenLiveCategories: hiddenLiveCategories))
     }
 
     /// Applies filters changed on another device via iCloud.
     private func applyExternal(_ remote: FilterSyncStore.Filters) {
         if hiddenLanguages != remote.hiddenLanguages { hiddenLanguages = remote.hiddenLanguages }
         if hiddenQualities != remote.hiddenQualities { hiddenQualities = remote.hiddenQualities }
+        if hiddenLiveCategories != remote.hiddenLiveCategories { hiddenLiveCategories = remote.hiddenLiveCategories }
     }
 
     /// Merges providers changed on another device via iCloud.
@@ -268,9 +276,21 @@ final class AppStore: ObservableObject {
         languageOptions = ContentTags.options(allItems.compactMap(language(of:)))
         qualityOptions = ContentTags.options(catalog.liveItems.compactMap { ContentTags.quality(of: $0.name) })
 
+        let provider = catalogProviderID
+        let hiddenLists = hiddenLiveCategories
+        func isHiddenList(_ categoryId: String?) -> Bool {
+            categoryId.map { hiddenLists.contains(LiveListOption.key(provider: provider, category: $0)) } ?? false
+        }
+        let liveCounts = Dictionary(catalog.liveItems.compactMap { $0.categoryId.map { ($0, 1) } }, uniquingKeysWith: +)
+        liveListOptions = catalog.liveCategories.map {
+            LiveListOption(key: LiveListOption.key(provider: provider, category: $0.id), name: $0.name,
+                           count: liveCounts[$0.id] ?? 0)
+        }
+
         let hiddenLanguages = hiddenLanguages
         let hiddenQualities = hiddenQualities
         func isVisible(_ item: MediaItem) -> Bool {
+            if item.kind == .live, isHiddenList(item.categoryId) { return false }
             if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
             if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
                 return false
@@ -282,7 +302,7 @@ final class AppStore: ObservableObject {
             return !hiddenLanguages.contains(tag)
         }
 
-        liveCategories = catalog.liveCategories.filter(isVisible)
+        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList($0.id) }
         movieCategories = catalog.movieCategories.filter(isVisible)
         seriesCategories = catalog.seriesCategories.filter(isVisible)
         liveItems = catalog.liveItems.filter(isVisible)
@@ -429,5 +449,19 @@ extension AppStore {
             .sorted { $0.updatedAt > $1.updatedAt }
             .prefix(300)
         return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
+    }
+}
+
+/// A Live TV list (category) of the selected provider, for Settings.
+struct LiveListOption: Identifiable, Hashable {
+    /// `<provider id>|<category id>`: category ids are only unique within a provider.
+    let key: String
+    let name: String
+    /// Channels in the list, before the other filters.
+    let count: Int
+    var id: String { key }
+
+    static func key(provider: UUID?, category: String) -> String {
+        "\(provider?.uuidString ?? "")|\(category)"
     }
 }

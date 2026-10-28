@@ -54,10 +54,22 @@ struct SettingsView: View {
                     } label: {
                         filterRow("Live TV quality", options: store.qualityOptions, hidden: store.hiddenQualities)
                     }
+                    NavigationLink {
+                        LiveListFilterView(options: store.liveListOptions, hidden: $store.hiddenLiveCategories)
+                    } label: {
+                        let shown = store.liveListOptions.filter { !store.hiddenLiveCategories.contains($0.key) }.count
+                        HStack {
+                            Text("Live TV lists")
+                            Spacer()
+                            Text(shown == store.liveListOptions.count ? "All" : "\(shown) of \(store.liveListOptions.count)")
+                                .foregroundStyle(Theme.textSecondary)
+                        }
+                    }
                 } header: {
                     Text("Filters")
                 } footer: {
-                    Text("Tags are read from category and channel names. Untagged content is always shown.")
+                    Text("Tags are read from category and channel names; untagged content is always shown. "
+                         + "Live TV lists are those of the selected provider.")
                 }
 
                 Section {
@@ -135,6 +147,53 @@ struct TagFilterView: View {
             get: { !hidden.contains(tag) },
             set: { shown in
                 if shown { hidden.remove(tag) } else { hidden.insert(tag) }
+            }
+        )
+    }
+}
+
+/// Toggles for the selected provider's Live TV lists, with a search field (providers have hundreds).
+struct LiveListFilterView: View {
+    let options: [LiveListOption]
+    @Binding var hidden: Set<String>
+    @State private var search = ""
+
+    private var filtered: [LiveListOption] {
+        search.isEmpty ? options : options.filter { $0.name.localizedCaseInsensitiveContains(search) }
+    }
+
+    var body: some View {
+        List {
+            if options.isEmpty {
+                Text("No Live TV lists for this provider.")
+                    .foregroundStyle(Theme.textSecondary)
+            } else {
+                Section {
+                    Button(search.isEmpty ? "Show all" : "Show these") { hidden.subtract(filtered.map(\.key)) }
+                    Button(search.isEmpty ? "Hide all" : "Hide these") { hidden.formUnion(filtered.map(\.key)) }
+                }
+                Section {
+                    ForEach(filtered) { option in
+                        Toggle(isOn: isShown(option.key)) {
+                            HStack {
+                                Text(option.name)
+                                Spacer()
+                                Text("\(option.count)").foregroundStyle(Theme.textSecondary)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Live TV lists")
+        .modifier(BrowseSearch(text: $search))
+    }
+
+    private func isShown(_ key: String) -> Binding<Bool> {
+        Binding(
+            get: { !hidden.contains(key) },
+            set: { shown in
+                if shown { hidden.remove(key) } else { hidden.insert(key) }
             }
         )
     }
