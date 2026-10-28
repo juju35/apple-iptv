@@ -175,6 +175,15 @@ struct VideoSurface: UIViewRepresentable {
     final class PlayerLayerView: UIView {
         override static var layerClass: AnyClass { AVPlayerLayer.self }
         var playerLayer: AVPlayerLayer? { layer as? AVPlayerLayer }
+
+        /// A layer that changes window (fold layout switch, other screen) can stop showing the
+        /// picture while the sound goes on: attach the player again.
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            guard window != nil, let player = playerLayer?.player else { return }
+            playerLayer?.player = nil
+            playerLayer?.player = player
+        }
     }
 
     func makeUIView(context: Context) -> PlayerLayerView {

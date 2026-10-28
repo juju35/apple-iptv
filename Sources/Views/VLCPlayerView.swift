@@ -9,6 +9,17 @@ import VLCKitSPM
 @Observable
 final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
     let player = VLCMediaPlayer()
+    #if !os(macOS)
+    /// The one view VLC renders into for the whole playback. On iOS VLC can't switch to another view
+    /// mid-stream (the picture vanishes, the sound goes on), so layout changes (iPhone Duo folding,
+    /// moving to the other screen) move this view into the new surface instead.
+    let videoView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        return view
+    }()
+    #endif
 
     private(set) var isPlaying = false
     private(set) var isBuffering = true
@@ -22,6 +33,9 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
     override init() {
         super.init()
         player.delegate = self
+        #if !os(macOS)
+        player.drawable = videoView
+        #endif
     }
 
     func start(_ request: PlaybackRequest) {
@@ -122,30 +136,40 @@ private final class VLCDrawableView: NSView {
 }
 
 private struct VLCVideoSurface: NSViewRepresentable {
-    let player: VLCMediaPlayer
+    let controller: VLCPlayerController
 
     func makeNSView(context: Context) -> NSView {
         let view = VLCDrawableView()
         view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.black.cgColor
-        player.drawable = view
+        controller.player.drawable = view
         return view
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
 #else
+/// Hosts the controller's persistent `videoView`; the newest surface takes it.
 private struct VLCVideoSurface: UIViewRepresentable {
-    let player: VLCMediaPlayer
+    let controller: VLCPlayerController
 
     func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .black
-        player.drawable = view
-        return view
+        let container = UIView()
+        container.backgroundColor = .black
+        attach(to: container)
+        return container
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ container: UIView, context: Context) {
+        // Only take the video back when no other surface has it (both exist during a transition).
+        if controller.videoView.superview == nil { attach(to: container) }
+    }
+
+    private func attach(to container: UIView) {
+        let videoView = controller.videoView
+        videoView.frame = container.bounds
+        container.addSubview(videoView)
+    }
 }
 #endif
 
@@ -216,7 +240,7 @@ struct VLCPlayerView: View {
         #if os(iOS)
         if #available(iOS 27.1, *) {
             FoldAwarePlayerLayout {
-                VLCVideoSurface(player: controller.player)
+                VLCVideoSurface(controller: controller)
             } controls: {
                 FoldControlsPanel(
                     title: request.title,
@@ -246,7 +270,7 @@ struct VLCPlayerView: View {
     /// Full-screen video with overlaid controls that hide while playing.
     private var flatPlayer: some View {
         ZStack {
-            VLCVideoSurface(player: controller.player)
+            VLCVideoSurface(controller: controller)
                 .ignoresSafeArea()
 
             if controlsVisible && controller.errorMessage == nil {
