@@ -49,18 +49,22 @@ final class AppStore: ObservableObject {
     private let syncStore = ProviderSyncStore()
 
     private static let selectedKey = "iptv.selectedProvider"
-    private static let hiddenLanguagesKey = "iptv.hiddenLanguages"
-    private static let hiddenQualitiesKey = "iptv.hiddenQualities"
+    private let filterSync = FilterSyncStore()
 
     var selectedProvider: Provider? {
         providers.first { $0.id == selectedProviderID } ?? providers.first
     }
 
     init() {
-        let defaults = UserDefaults.standard
-        hiddenLanguages = Set(defaults.stringArray(forKey: Self.hiddenLanguagesKey) ?? [])
-        hiddenQualities = Set(defaults.stringArray(forKey: Self.hiddenQualitiesKey) ?? [])
+        // Screenshot mode shows everything and leaves the user's iCloud filters alone.
+        let filters = Demo.isOn ? FilterSyncStore.Filters(hiddenLanguages: [], hiddenQualities: [])
+                                : filterSync.load()
+        hiddenLanguages = filters.hiddenLanguages
+        hiddenQualities = filters.hiddenQualities
         if !Demo.isOn {
+            filterSync.onExternalChange = { [weak self] remote in
+                Task { @MainActor in self?.applyExternal(remote) }
+            }
             playbackProgress = Self.merged(progressSync.load(), into: [:])
             progressSync.onExternalChange = { [weak self] remote in
                 Task { @MainActor in
@@ -96,8 +100,13 @@ final class AppStore: ObservableObject {
 
     private func persistFilters() {
         guard !Demo.isOn else { return }
-        UserDefaults.standard.set(hiddenLanguages.sorted(), forKey: Self.hiddenLanguagesKey)
-        UserDefaults.standard.set(hiddenQualities.sorted(), forKey: Self.hiddenQualitiesKey)
+        filterSync.save(FilterSyncStore.Filters(hiddenLanguages: hiddenLanguages, hiddenQualities: hiddenQualities))
+    }
+
+    /// Applies filters changed on another device via iCloud.
+    private func applyExternal(_ remote: FilterSyncStore.Filters) {
+        if hiddenLanguages != remote.hiddenLanguages { hiddenLanguages = remote.hiddenLanguages }
+        if hiddenQualities != remote.hiddenQualities { hiddenQualities = remote.hiddenQualities }
     }
 
     /// Merges providers changed on another device via iCloud.
