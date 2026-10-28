@@ -25,8 +25,8 @@ final class AppStore: ObservableObject {
     @Published var lastError: String?
 
     private var clients: [Provider.ID: IPTVClient] = [:]
+    private let syncStore = ProviderSyncStore()
 
-    private static let providersKey = "iptv.providers"
     private static let selectedKey = "iptv.selectedProvider"
 
     var selectedProvider: Provider? {
@@ -34,27 +34,33 @@ final class AppStore: ObservableObject {
     }
 
     init() {
-        loadProviders()
-    }
-
-    // MARK: - Persistence
-
-    private func loadProviders() {
-        if let data = UserDefaults.standard.data(forKey: Self.providersKey),
-           let decoded = try? JSONDecoder().decode([Provider].self, from: data) {
-            providers = decoded
-        }
+        providers = syncStore.load()
         if let raw = UserDefaults.standard.string(forKey: Self.selectedKey),
            let id = UUID(uuidString: raw) {
             selectedProviderID = id
         } else {
             selectedProviderID = providers.first?.id
         }
+        syncStore.onExternalChange = { [weak self] remote in
+            Task { @MainActor in self?.applyExternal(remote) }
+        }
     }
 
+    // MARK: - Persistence (iCloud KVS + UserDefaults fallback)
+
     private func persistProviders() {
-        if let data = try? JSONEncoder().encode(providers) {
-            UserDefaults.standard.set(data, forKey: Self.providersKey)
+        syncStore.save(providers)
+    }
+
+    /// Merges providers changed on another device via iCloud.
+    private func applyExternal(_ remote: [Provider]) {
+        guard remote != providers else { return }
+        clients.removeAll()
+        providers = remote
+        if let selected = selectedProviderID, !remote.contains(where: { $0.id == selected }) {
+            selectedProviderID = remote.first?.id
+        } else {
+            Task { await reload() }
         }
     }
 

@@ -117,7 +117,9 @@ final class PlayerController {
     }
 }
 
-/// Full-screen AVPlayer wrapper shared by iOS, macOS and tvOS.
+/// Full-screen player shared by iOS, macOS and tvOS.
+/// On iPhone Duo (iOS 27.1+), half-folding the device switches to a
+/// Netflix-style laptop layout: video above the fold, controls below.
 struct PlayerView: View {
     @Environment(\.dismiss) private var dismiss
     let request: PlaybackRequest
@@ -127,8 +129,25 @@ struct PlayerView: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if let player = controller.player {
-                VideoPlayer(player: player)
-                    .ignoresSafeArea()
+                #if os(iOS)
+                if #available(iOS 27.1, *) {
+                    FoldAwarePlayerView(player: player, title: request.title) { dismiss() }
+                } else {
+                    StandardPlayerView(player: player) { dismiss() }
+                }
+                #else
+                StandardPlayerView(player: player) { dismiss() }
+                #endif
+            } else {
+                #if !os(tvOS)
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(.white.opacity(0.8))
+                        .padding()
+                }
+                .buttonStyle(.plain)
+                #endif
             }
 
             if let message = controller.errorMessage {
@@ -138,18 +157,6 @@ struct PlayerView: View {
                     .tint(.white)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-
-            #if !os(tvOS)
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title)
-                    .foregroundStyle(.white.opacity(0.8))
-                    .padding()
-            }
-            .buttonStyle(.plain)
-            #endif
         }
         .background(Color.black.ignoresSafeArea())
         .onAppear { controller.start(request) }
@@ -187,5 +194,28 @@ struct PlayerView: View {
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .foregroundStyle(.white)
+    }
+}
+
+/// System VideoPlayer with a close button (non-tvOS).
+struct StandardPlayerView: View {
+    let player: AVPlayer
+    let onClose: () -> Void
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            VideoPlayer(player: player)
+                .ignoresSafeArea()
+
+            #if !os(tvOS)
+            Button(action: onClose) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title)
+                    .foregroundStyle(.white.opacity(0.8))
+                    .padding()
+            }
+            .buttonStyle(.plain)
+            #endif
+        }
     }
 }

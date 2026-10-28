@@ -16,7 +16,8 @@ Multiple providers can be configured; switch the active one in Settings.
 - Detail view: poster, plot, rating, seasons/episodes for series, short EPG for live channels (Xtream)
 - Full-screen playback via AVPlayer (HLS live streams, VOD mp4/mkv), AirPlay enabled
 - Provider form with connection test and automatic MAC formatting/validation
-- Providers persisted locally (UserDefaults)
+- Providers synced across devices via iCloud Key-Value Store (UserDefaults fallback; active provider stays per-device)
+- iPhone Duo laptop mode (iOS 27.1+): half-fold the device during playback and the video fills the upper panel with Netflix-style transport controls (play/pause, ±10 s, scrubber) below the fold — laid out from the fold's reserved division region
 
 ## Project structure
 
