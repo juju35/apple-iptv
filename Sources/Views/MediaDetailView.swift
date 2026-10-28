@@ -7,6 +7,7 @@ struct MediaDetailView: View {
     let item: MediaItem
 
     @State private var detail: SeriesDetail?
+    @State private var selectedSeason: Int?
     @State private var epg: [EPGEntry] = []
     @State private var playback: PlaybackRequest?
     @State private var loadError: String?
@@ -132,33 +133,19 @@ struct MediaDetailView: View {
 
     @ViewBuilder
     private var episodesSection: some View {
-        if let detail, !detail.seasons.isEmpty {
-            ForEach(detail.seasons.keys.sorted(), id: \.self) { season in
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Season \(season)").font(.headline)
-                    ForEach(detail.seasons[season] ?? []) { episode in
-                        Button {
-                            play(ref: episode.playbackRef, ext: episode.containerExtension)
-                        } label: {
-                            HStack {
-                                Image(systemName: "play.circle")
-                                VStack(alignment: .leading) {
-                                    Text("E\(episode.episode) · \(episode.title)")
-                                        .font(.subheadline)
-                                    if let plot = episode.plot, !plot.isEmpty {
-                                        Text(plot).font(.caption)
-                                            .foregroundStyle(Theme.textSecondary)
-                                            .lineLimit(2)
-                                    }
-                                }
-                                Spacer()
-                            }
-                            .padding(10)
-                            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 10))
-                        }
-                        .buttonStyle(.plain)
-                    }
+        if let detail, let firstSeason = detail.seasons.keys.min() {
+            let season = selectedSeason ?? firstSeason
+            if let first = detail.seasons[season]?.first {
+                playButton(label: "Play S\(season) E\(first.episode)") {
+                    play(ref: first.playbackRef, ext: first.containerExtension)
                 }
+            }
+            SeasonEpisodesView(
+                detail: detail,
+                season: Binding(get: { season }, set: { selectedSeason = $0 }),
+                fallbackArtwork: item.posterURL
+            ) { episode in
+                play(ref: episode.playbackRef, ext: episode.containerExtension)
             }
         } else if detail == nil {
             ProgressView().frame(maxWidth: .infinity)

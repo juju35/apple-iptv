@@ -1,4 +1,7 @@
 import SwiftUI
+// VLCKitSPM only re-exports MobileVLCKit / TVVLCKit / VLCKit (@_exported), which the analyzer
+// reads as an unused import; it is the module the package exposes, so keep it.
+// swiftlint:disable:next unused_import
 import VLCKitSPM
 
 /// Drives a `VLCMediaPlayer` and exposes its state to SwiftUI.
