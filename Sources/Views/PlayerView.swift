@@ -341,15 +341,14 @@ struct StandardPlayerView: View {
     #elseif os(iOS)
     /// The system controls toggle on tap; ours follow the same tap without stealing it.
     private var video: some View {
-        VideoPlayer(player: player)
-            .ignoresSafeArea()
-            .simultaneousGesture(TapGesture().onEnded {
-                if controlsVisible {
-                    withAnimation { controlsVisible = false }
-                } else {
-                    showControls()
-                }
-            })
+        UIKitPlayerView(player: player) {
+            if controlsVisible {
+                withAnimation { controlsVisible = false }
+            } else {
+                showControls()
+            }
+        }
+        .ignoresSafeArea()
     }
     #endif
 
@@ -400,6 +399,48 @@ private struct AppKitPlayerView: NSViewRepresentable {
         if nsView.player !== player { nsView.player = player }
         let style: AVPlayerViewControlsStyle = showsControls ? .floating : .none
         if nsView.controlsStyle != style { nsView.controlsStyle = style }
+    }
+}
+#endif
+
+#if os(iOS)
+/// `AVPlayerViewController` with a tap recognizer that runs alongside its own. SwiftUI's
+/// `VideoPlayer` keeps taps to itself, so a SwiftUI gesture on it never fires.
+private struct UIKitPlayerView: UIViewControllerRepresentable {
+    let player: AVPlayer
+    let onTap: () -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(onTap: onTap) }
+
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.tapped))
+        tap.cancelsTouchesInView = false
+        tap.delegate = context.coordinator
+        controller.view.addGestureRecognizer(tap)
+        return controller
+    }
+
+    func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
+        if controller.player !== player { controller.player = player }
+        context.coordinator.onTap = onTap
+    }
+
+    @MainActor
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var onTap: () -> Void
+
+        init(onTap: @escaping () -> Void) {
+            self.onTap = onTap
+        }
+
+        @objc func tapped() { onTap() }
+
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                               shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+            true
+        }
     }
 }
 #endif
