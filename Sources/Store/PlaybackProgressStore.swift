@@ -25,6 +25,36 @@ struct PlaybackProgress: Codable, Hashable {
     }
 }
 
+extension PlaybackProgress {
+    /// Union of both sides, the most recent entry winning for each key.
+    static func merged(_ entries: [PlaybackProgress],
+                       into current: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
+        var result = current
+        for entry in entries where (result[entry.key]?.updatedAt ?? .distantPast) < entry.updatedAt {
+            result[entry.key] = entry
+        }
+        return pruned(result)
+    }
+
+    /// Keeps the store well under the iCloud key-value quota: finished entries (the "watched"
+    /// checkmarks) for 180 days, and the 300 most recent overall.
+    static func pruned(_ entries: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
+        let cutoff = Date().addingTimeInterval(-180 * 24 * 3600)
+        let kept = entries.values
+            .filter { !$0.isFinished || $0.updatedAt > cutoff }
+            .sorted { $0.updatedAt > $1.updatedAt }
+            .prefix(300)
+        return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
+    }
+}
+
+/// A movie or series being watched, with its most recent progress.
+struct ContinueWatchingEntry: Identifiable {
+    let item: MediaItem
+    let progress: PlaybackProgress
+    var id: String { item.id }
+}
+
 /// Identifies what a playback request should save its progress under (nil for live TV).
 struct PlaybackProgressContext {
     let key: String

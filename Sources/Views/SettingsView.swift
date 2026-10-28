@@ -57,6 +57,16 @@ struct SettingsView: View {
                     listFilterLink("Live TV lists", kind: .live)
                     listFilterLink("Movie lists", kind: .movie)
                     listFilterLink("Series lists", kind: .series)
+                    NavigationLink {
+                        ListNameCleanupView()
+                    } label: {
+                        HStack {
+                            Text("Clean up list names")
+                            Spacer()
+                            Text(store.listNameRemovals.isEmpty ? "Off" : "\(store.listNameRemovals.count)")
+                                .foregroundStyle(Theme.textSecondary)
+                        }
+                    }
                 } header: {
                     Text("Filters")
                 } footer: {
@@ -156,6 +166,86 @@ struct TagFilterView: View {
                 if shown { hidden.remove(tag) } else { hidden.insert(tag) }
             }
         )
+    }
+}
+
+/// Text to remove from list names ("FR |", "VIP"…), with a before / after preview of the lists it changes.
+struct ListNameCleanupView: View {
+    @EnvironmentObject private var store: AppStore
+    @State private var newText = ""
+
+    /// Lists whose shown name differs from the provider's, all kinds together.
+    private var changedLists: [CategoryListOption] {
+        [MediaKind.live, .movie, .series].flatMap { store.listOptions[$0] ?? [] }
+            .filter { $0.name != $0.originalName }
+    }
+
+    var body: some View {
+        List {
+            Section {
+                HStack {
+                    TextField("Text to remove, e.g. FR |", text: $newText)
+                        .autocorrectionDisabledIfSupported()
+                        .onSubmit(add)
+                    Button("Add", action: add)
+                        .disabled(newText.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            } footer: {
+                Text("Removed from every list name shown, ignoring case. Separators left at the start or end "
+                     + "(|, -, :) go too. Language detection still reads the original names.")
+            }
+
+            if !store.listNameRemovals.isEmpty {
+                Section("Removed text") {
+                    ForEach(store.listNameRemovals, id: \.self) { text in
+                        HStack {
+                            Text("\"\(text)\"").font(.body.monospaced())
+                            Spacer()
+                            Button(role: .destructive) {
+                                store.listNameRemovals.removeAll { $0 == text }
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("Stop removing \(text)")
+                        }
+                    }
+                }
+            }
+
+            if !changedLists.isEmpty {
+                Section("Preview") {
+                    ForEach(changedLists.prefix(30)) { option in
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(option.name)
+                            Text(option.originalName)
+                                .font(.caption)
+                                .foregroundStyle(Theme.textSecondary)
+                                .strikethrough()
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Clean up list names")
+    }
+
+    private func add() {
+        let text = newText.trimmingCharacters(in: .whitespaces)
+        guard !text.isEmpty, !store.listNameRemovals.contains(text) else { return }
+        store.listNameRemovals.append(text)
+        newText = ""
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func autocorrectionDisabledIfSupported() -> some View {
+        #if os(macOS)
+        self
+        #else
+        autocorrectionDisabled().textInputAutocapitalization(.never)
+        #endif
     }
 }
 

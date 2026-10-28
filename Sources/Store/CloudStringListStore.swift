@@ -1,10 +1,11 @@
 import Foundation
 
-/// A list of strings (here `MediaItem.id`s: favorites, recently watched channels) persisted in
+/// A list of strings (`MediaItem.id`s of favorites and recent channels, text removed from list names) persisted in
 /// iCloud Key-Value Store under `key`, with a UserDefaults copy for when iCloud is unavailable.
 final class CloudStringListStore {
     static let favoritesKey = "iptv.favorites"
     static let recentChannelsKey = "iptv.recentChannels"
+    static let listNameRemovalsKey = "iptv.listNameRemovals"
 
     let key: String
 

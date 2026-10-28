@@ -92,7 +92,10 @@ final class FilterSyncStore {
 struct CategoryListOption: Identifiable, Hashable {
     /// `<provider id>|<kind>|<category id>`: category ids are only unique within a provider and a kind.
     let key: String
+    /// Shown name, without the text removed from list names.
     let name: String
+    /// Name as the provider sends it.
+    let originalName: String
     /// Items in the list, before the other filters.
     let count: Int
     var id: String { key }

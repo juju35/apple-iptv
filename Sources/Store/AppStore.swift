@@ -34,6 +34,14 @@ final class AppStore: ObservableObject {
     @Published var hiddenCategories: Set<String> {
         didSet { persistFilters(); applyFilters() }
     }
+    /// Text removed from list names for display ("FR |", "VIP"…); synced through iCloud.
+    @Published var listNameRemovals: [String] {
+        didSet {
+            if !Demo.isOn { listNameRemovalsSync.save(listNameRemovals) }
+            applyFilters()
+        }
+    }
+    private let listNameRemovalsSync = CloudStringListStore(key: CloudStringListStore.listNameRemovalsKey)
     /// The selected provider's lists of each kind, hidden ones included, offered in Settings.
     @Published private(set) var listOptions: [MediaKind: [CategoryListOption]] = [:]
     /// Tags found in the current provider's catalog, offered in Settings.
@@ -89,6 +97,7 @@ final class AppStore: ObservableObject {
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
         hiddenCategories = filters.hiddenCategories
+        listNameRemovals = Demo.isOn ? [] : listNameRemovalsSync.load()
         cacheLifetime = UserDefaults.standard.object(forKey: Self.cacheLifetimeKey) as? TimeInterval
             ?? CatalogCache.defaultLifetime
         if !Demo.isOn {
@@ -106,14 +115,20 @@ final class AppStore: ObservableObject {
                     self.recentChannelIDs = remote
                 }
             }
+            listNameRemovalsSync.onExternalChange = { [weak self] remote in
+                Task { @MainActor in
+                    guard let self, self.listNameRemovals != remote else { return }
+                    self.listNameRemovals = remote
+                }
+            }
             filterSync.onExternalChange = { [weak self] remote in
                 Task { @MainActor in self?.applyExternal(remote) }
             }
-            playbackProgress = Self.merged(progressSync.load(), into: [:])
+            playbackProgress = PlaybackProgress.merged(progressSync.load(), into: [:])
             progressSync.onExternalChange = { [weak self] remote in
                 Task { @MainActor in
                     guard let self else { return }
-                    self.playbackProgress = Self.merged(remote, into: self.playbackProgress)
+                    self.playbackProgress = PlaybackProgress.merged(remote, into: self.playbackProgress)
                 }
             }
         }
@@ -267,71 +282,6 @@ final class AppStore: ObservableObject {
         applyFilters()
     }
 
-    // MARK: - Filters
-
-    /// Recomputes the published content and the available tags from `catalog`.
-    private func applyFilters() {
-        let all = [catalog.liveCategories, catalog.movieCategories, catalog.seriesCategories]
-        let categoryLanguage: [String: String] = Dictionary(
-            all.joined().compactMap { category in
-                ContentTags.language(of: category.name).map { (category.id, $0) }
-            },
-            uniquingKeysWith: { first, _ in first }
-        )
-        // An item's own tag ("… (VOSTFR)") wins over its category's ("FR | Movies").
-        func language(of item: MediaItem) -> String? {
-            ContentTags.language(of: item.name) ?? item.categoryId.flatMap { categoryLanguage[$0] }
-        }
-
-        let allItems = catalog.liveItems + catalog.movieItems + catalog.seriesItems
-        languageOptions = ContentTags.options(allItems.compactMap(language(of:)))
-        qualityOptions = ContentTags.options(catalog.liveItems.compactMap { ContentTags.quality(of: $0.name) })
-
-        let provider = catalogProviderID
-        let hiddenLists = hiddenCategories
-        func isHiddenList(_ kind: MediaKind, _ categoryId: String) -> Bool {
-            hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: categoryId))
-        }
-        func listOptions(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
-            -> [CategoryListOption] {
-            let counts = Dictionary(items.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
-            return categories.map {
-                CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
-                                   name: $0.name, count: counts[$0.id] ?? 0)
-            }
-        }
-        self.listOptions = [
-            .live: listOptions(.live, catalog.liveCategories, catalog.liveItems),
-            .movie: listOptions(.movie, catalog.movieCategories, catalog.movieItems),
-            .series: listOptions(.series, catalog.seriesCategories, catalog.seriesItems),
-        ]
-
-        let hiddenLanguages = hiddenLanguages
-        let hiddenQualities = hiddenQualities
-        func isVisible(_ item: MediaItem) -> Bool {
-            // Hidden as soon as one of its lists is.
-            if item.categoryIds.contains(where: { isHiddenList(item.kind, $0) }) { return false }
-            if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
-            if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
-                return false
-            }
-            return true
-        }
-        func isVisible(_ category: ContentCategory) -> Bool {
-            guard let tag = categoryLanguage[category.id] else { return true }
-            return !hiddenLanguages.contains(tag)
-        }
-
-        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList(.live, $0.id) }
-        movieCategories = catalog.movieCategories.filter { isVisible($0) && !isHiddenList(.movie, $0.id) }
-        seriesCategories = catalog.seriesCategories.filter { isVisible($0) && !isHiddenList(.series, $0.id) }
-        liveItems = catalog.liveItems.filter(isVisible)
-        movieItems = catalog.movieItems.filter(isVisible)
-        seriesItems = catalog.seriesItems.filter(isVisible)
-        visibleItemsById = Dictionary((liveItems + movieItems + seriesItems).map { ($0.id, $0) },
-                                      uniquingKeysWith: { first, _ in first })
-    }
-
     func items(for kind: MediaKind) -> [MediaItem] {
         switch kind {
         case .live: return liveItems
@@ -357,6 +307,79 @@ final class AppStore: ObservableObject {
 // MARK: - Playback, favorites and progress
 
 extension AppStore {
+    // MARK: - Filters
+
+    /// Recomputes the published content and the available tags from `catalog`.
+    private func applyFilters() {
+        let all = [catalog.liveCategories, catalog.movieCategories, catalog.seriesCategories]
+        let categoryLanguage: [String: String] = Dictionary(
+            all.joined().compactMap { category in
+                ContentTags.language(of: category.name).map { (category.id, $0) }
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        // An item's own tag ("… (VOSTFR)") wins over its category's ("FR | Movies").
+        func language(of item: MediaItem) -> String? {
+            ContentTags.language(of: item.name) ?? item.categoryId.flatMap { categoryLanguage[$0] }
+        }
+
+        let allItems = catalog.liveItems + catalog.movieItems + catalog.seriesItems
+        languageOptions = ContentTags.options(allItems.compactMap(language(of:)))
+        qualityOptions = ContentTags.options(catalog.liveItems.compactMap { ContentTags.quality(of: $0.name) })
+
+        let removals = listNameRemovals
+        func displayName(_ name: String) -> String { ContentTags.cleanedName(name, removing: removals) }
+        func displayed(_ category: ContentCategory) -> ContentCategory {
+            ContentCategory(id: category.id, name: displayName(category.name))
+        }
+
+        let provider = catalogProviderID
+        let hiddenLists = hiddenCategories
+        func isHiddenList(_ kind: MediaKind, _ categoryId: String) -> Bool {
+            hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: categoryId))
+        }
+        func listOptions(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
+            -> [CategoryListOption] {
+            let counts = Dictionary(items.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
+            return categories.map {
+                CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
+                                   name: displayName($0.name), originalName: $0.name, count: counts[$0.id] ?? 0)
+            }
+        }
+        self.listOptions = [
+            .live: listOptions(.live, catalog.liveCategories, catalog.liveItems),
+            .movie: listOptions(.movie, catalog.movieCategories, catalog.movieItems),
+            .series: listOptions(.series, catalog.seriesCategories, catalog.seriesItems),
+        ]
+
+        let hiddenLanguages = hiddenLanguages
+        let hiddenQualities = hiddenQualities
+        func isVisible(_ item: MediaItem) -> Bool {
+            // Hidden as soon as one of its lists is.
+            if item.categoryIds.contains(where: { isHiddenList(item.kind, $0) }) { return false }
+            if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
+            if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
+                return false
+            }
+            return true
+        }
+        func isVisible(_ category: ContentCategory) -> Bool {
+            guard let tag = categoryLanguage[category.id] else { return true }
+            return !hiddenLanguages.contains(tag)
+        }
+
+        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList(.live, $0.id) }.map(displayed)
+        movieCategories = catalog.movieCategories.filter { isVisible($0) && !isHiddenList(.movie, $0.id) }
+            .map(displayed)
+        seriesCategories = catalog.seriesCategories.filter { isVisible($0) && !isHiddenList(.series, $0.id) }
+            .map(displayed)
+        liveItems = catalog.liveItems.filter(isVisible)
+        movieItems = catalog.movieItems.filter(isVisible)
+        seriesItems = catalog.seriesItems.filter(isVisible)
+        visibleItemsById = Dictionary((liveItems + movieItems + seriesItems).map { ($0.id, $0) },
+                                      uniquingKeysWith: { first, _ in first })
+    }
+
     /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
     func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
                          progress: PlaybackProgressContext? = nil, from start: Double = 0) async throws
@@ -412,13 +435,6 @@ extension AppStore {
 
     // MARK: - Playback progress
 
-    /// A movie or series being watched, with its most recent progress.
-    struct ContinueWatchingEntry: Identifiable {
-        let item: MediaItem
-        let progress: PlaybackProgress
-        var id: String { item.id }
-    }
-
     /// Unfinished progress for a movie or an episode.
     func progress(for key: String) -> PlaybackProgress? {
         playbackProgress[key].flatMap { $0.isFinished ? nil : $0 }
@@ -467,28 +483,8 @@ extension AppStore {
             updatedAt: Date(),
             isFinished: position / duration >= 0.95
         )
-        playbackProgress = Self.pruned(playbackProgress)
+        playbackProgress = PlaybackProgress.pruned(playbackProgress)
         progressSync.save(Array(playbackProgress.values))
     }
 
-    /// Union of both sides, the most recent entry winning for each key.
-    private static func merged(_ entries: [PlaybackProgress],
-                               into current: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
-        var result = current
-        for entry in entries where (result[entry.key]?.updatedAt ?? .distantPast) < entry.updatedAt {
-            result[entry.key] = entry
-        }
-        return pruned(result)
-    }
-
-    /// Keeps the store well under the iCloud key-value quota: finished entries (the "watched"
-    /// checkmarks) for 180 days, and the 300 most recent overall.
-    private static func pruned(_ entries: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
-        let cutoff = Date().addingTimeInterval(-180 * 24 * 3600)
-        let kept = entries.values
-            .filter { !$0.isFinished || $0.updatedAt > cutoff }
-            .sorted { $0.updatedAt > $1.updatedAt }
-            .prefix(300)
-        return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-    }
 }

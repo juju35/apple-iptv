@@ -1,3 +1,5 @@
+import Foundation
+
 /// Language and quality tags that providers put in category and channel names
 /// ("FR | Sport", "|UK| BBC One FHD", "One Piece (VOSTFR)", "TF1 4K").
 enum ContentTags {
@@ -43,6 +45,26 @@ enum ContentTags {
         ("SD", ["SD", "480P", "576P"]),
         ("HEVC", ["HEVC", "H265"]),
     ]
+
+    /// `name` without each of `removals` (case-insensitive), then without the separators and spaces
+    /// left at its ends: "FR | Sport" minus "FR" gives "Sport". The original name if nothing is left.
+    static func cleanedName(_ name: String, removing removals: [String]) -> String {
+        var result = name
+        for removal in removals where !removal.isEmpty {
+            // Whole words only where the text starts / ends with a letter or digit: "FR" leaves "FRANCE" alone.
+            let isWordy: (Character?) -> Bool = { $0?.isLetter == true || $0?.isNumber == true }
+            let pattern = (isWordy(removal.first) ? "(?<![\\p{L}\\p{N}])" : "")
+                + NSRegularExpression.escapedPattern(for: removal)
+                + (isWordy(removal.last) ? "(?![\\p{L}\\p{N}])" : "")
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else { continue }
+            result = regex.stringByReplacingMatches(in: result, range: NSRange(result.startIndex..., in: result),
+                                                    withTemplate: " ")
+        }
+        let edges = CharacterSet.whitespaces.union(CharacterSet(charactersIn: "|-:•·/[]()"))
+        result = result.trimmingCharacters(in: edges)
+            .split(separator: " ", omittingEmptySubsequences: true).joined(separator: " ")
+        return result.isEmpty ? name : result
+    }
 
     /// Distinct tags with their number of occurrences, most common first.
     static func options(_ tags: [String]) -> [Option] {

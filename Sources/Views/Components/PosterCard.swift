@@ -101,7 +101,7 @@ struct MediaRow: View {
 
 /// Movies and series being watched, with their progress; hidden when empty.
 struct ContinueWatchingRow: View {
-    let entries: [AppStore.ContinueWatchingEntry]
+    let entries: [ContinueWatchingEntry]
     let onSelect: (MediaItem) -> Void
 
     var body: some View {
