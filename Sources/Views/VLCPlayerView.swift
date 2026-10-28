@@ -139,24 +139,15 @@ struct VLCPlayerView: View {
 
     var body: some View {
         ZStack {
-            VLCVideoSurface(player: controller.player)
-                .ignoresSafeArea()
+            playerLayout
 
             if let message = controller.errorMessage {
                 errorOverlay(message)
             } else if controller.isBuffering {
                 ProgressView().tint(.white)
             }
-
-            if controlsVisible && controller.errorMessage == nil {
-                controls
-            }
         }
         .background(Color.black.ignoresSafeArea())
-        #if !os(tvOS)
-        .contentShape(Rectangle())
-        .onTapGesture { toggleControls() }
-        #endif
         .onAppear {
             controller.start(request)
             scheduleHide()
@@ -168,6 +159,57 @@ struct VLCPlayerView: View {
         .onChange(of: controller.isPlaying) { _, playing in
             if playing { scheduleHide() } else { controlsVisible = true }
         }
+    }
+
+    // MARK: Layouts
+
+    /// iPhone Duo half-folded: video and controls on either side of the fold (iOS 27.1+).
+    @ViewBuilder
+    private var playerLayout: some View {
+        #if os(iOS)
+        if #available(iOS 27.1, *) {
+            FoldAwarePlayerLayout {
+                VLCVideoSurface(player: controller.player)
+            } controls: {
+                FoldControlsPanel(
+                    title: request.title,
+                    isPlaying: controller.isPlaying,
+                    isSeekable: controller.isSeekable,
+                    position: Binding(
+                        get: { Double(controller.position) },
+                        set: { controller.seek(to: Float($0)) }
+                    ),
+                    elapsed: controller.elapsedText,
+                    remaining: controller.remainingText,
+                    onPlayPause: { controller.togglePlayPause() },
+                    onSkip: { controller.jump(seconds: Int32($0)) },
+                    onClose: { dismiss() }
+                )
+            } flat: {
+                flatPlayer
+            }
+        } else {
+            flatPlayer
+        }
+        #else
+        flatPlayer
+        #endif
+    }
+
+    /// Full-screen video with overlaid controls that hide while playing.
+    private var flatPlayer: some View {
+        ZStack {
+            VLCVideoSurface(player: controller.player)
+                .ignoresSafeArea()
+
+            if controlsVisible && controller.errorMessage == nil {
+                controls
+            }
+        }
+        #if !os(tvOS)
+        .contentShape(Rectangle())
+        .onTapGesture { toggleControls() }
+        #endif
     }
 
     // MARK: Controls

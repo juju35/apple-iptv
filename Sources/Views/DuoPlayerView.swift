@@ -2,13 +2,155 @@
 import SwiftUI
 import AVFoundation
 
-/// iPhone Duo laptop-mode player (iOS 27.1+).
+/// Lays a player out around the fold of iPhone Duo (iOS 27.1+), Netflix-style.
 ///
-/// Uses the fold's reserved *division* region (Apple's recommended layout API,
-/// rather than the hinge angle): while the device is half-folded with a
-/// horizontal hinge, the video fills the upper panel and Netflix-style
-/// transport controls fill the lower panel. Flat or fully open, it falls back
-/// to the standard system player.
+/// Uses the active *division* reserved region (Apple's recommended layout API, rather than
+/// the hinge angle); it exists only while the device is partially folded:
+/// - horizontal fold (laptop / tabletop): video above the fold, controls below;
+/// - vertical fold (book): video on the leading side, controls on the trailing side.
+/// Flat, closed or on any other iPhone, the regular full-screen player is shown.
+/// Shared by the system (AVFoundation) and VLC engines.
+@available(iOS 27.1, *)
+struct FoldAwarePlayerLayout<Video: View, Controls: View, Flat: View>: View {
+    private let video: Video
+    private let controls: Controls
+    private let flat: Flat
+
+    init(
+        @ViewBuilder video: () -> Video,
+        @ViewBuilder controls: () -> Controls,
+        @ViewBuilder flat: () -> Flat
+    ) {
+        self.video = video()
+        self.controls = controls()
+        self.flat = flat()
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            // Only active regions are returned: none while flat or closed.
+            let fold = proxy.reservedRegions(kind: .division).first?.frame
+
+            Group {
+                if let fold, fold.width > fold.height {
+                    tabletop(fold: fold, size: proxy.size)
+                } else if let fold {
+                    book(fold: fold, size: proxy.size)
+                } else {
+                    flat
+                }
+            }
+            .animation(.smooth, value: fold)
+        }
+    }
+
+    private func tabletop(fold: CGRect, size: CGSize) -> some View {
+        VStack(spacing: 0) {
+            video
+                .frame(maxWidth: .infinity)
+                .frame(height: max(fold.minY, 0))
+            Color.black
+                .frame(height: fold.height)
+            controls
+                .frame(maxWidth: .infinity)
+                .frame(height: max(size.height - fold.maxY, 0))
+                .background(Theme.background)
+        }
+    }
+
+    private func book(fold: CGRect, size: CGSize) -> some View {
+        HStack(spacing: 0) {
+            video
+                .frame(width: max(fold.minX, 0))
+                .frame(maxHeight: .infinity)
+            Color.black
+                .frame(width: fold.width)
+            controls
+                .frame(width: max(size.width - fold.maxX, 0))
+                .frame(maxHeight: .infinity)
+                .background(Theme.background)
+        }
+    }
+}
+
+/// Netflix-style transport panel shown on the controls side of the fold.
+struct FoldControlsPanel: View {
+    let title: String
+    let isPlaying: Bool
+    let isSeekable: Bool
+    /// Playback progress, 0…1; only used when `isSeekable`.
+    @Binding var position: Double
+    let elapsed: String
+    let remaining: String
+    var onScrubbingChanged: (Bool) -> Void = { _ in }
+    let onPlayPause: () -> Void
+    let onSkip: (Int) -> Void
+    let onClose: () -> Void
+
+    var body: some View {
+        VStack(spacing: 24) {
+            HStack {
+                Text(title)
+                    .font(.headline)
+                    .lineLimit(1)
+                Spacer()
+                Button(action: onClose) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.white.opacity(0.8))
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            HStack(spacing: 56) {
+                if isSeekable {
+                    transportButton("gobackward.10") { onSkip(-10) }
+                }
+                transportButton(isPlaying ? "pause.fill" : "play.fill", size: 54, action: onPlayPause)
+                if isSeekable {
+                    transportButton("goforward.10") { onSkip(10) }
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            if isSeekable {
+                VStack(spacing: 6) {
+                    Slider(value: $position, in: 0...1, onEditingChanged: onScrubbingChanged)
+                        .tint(Theme.accent)
+                    HStack {
+                        Text(elapsed)
+                        Spacer()
+                        Text(remaining)
+                    }
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(Theme.textSecondary)
+                }
+            } else {
+                Label("LIVE", systemImage: "circle.fill")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Theme.accent)
+            }
+        }
+        .buttonStyle(.plain)
+        .padding(28)
+        .foregroundStyle(.white)
+    }
+
+    private func transportButton(_ systemName: String, size: CGFloat = 32,
+                                 action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: size, weight: .semibold))
+                .contentTransition(.symbolEffect(.replace))
+        }
+    }
+}
+
+// MARK: - System engine
+
+/// AVFoundation player wired into the fold layout.
 @available(iOS 27.1, *)
 struct FoldAwarePlayerView: View {
     let player: AVPlayer
@@ -16,33 +158,17 @@ struct FoldAwarePlayerView: View {
     let onClose: () -> Void
 
     var body: some View {
-        GeometryReader { proxy in
-            let fold = proxy.reservedRegions(kind: .division)
-                .first { $0.isActive && $0.frame.width > $0.frame.height }
-
-            if let fold {
-                VStack(spacing: 0) {
-                    VideoSurface(player: player)
-                        .frame(height: max(0, fold.frame.minY))
-                        .frame(maxWidth: .infinity)
-                        .background(Color.black)
-
-                    Color.black
-                        .frame(height: fold.frame.height)
-
-                    TransportControls(player: player, title: title, onClose: onClose)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Theme.background)
-                }
-                .ignoresSafeArea()
-            } else {
-                StandardPlayerView(player: player, onClose: onClose)
-            }
+        FoldAwarePlayerLayout {
+            VideoSurface(player: player)
+        } controls: {
+            AVTransportControls(player: player, title: title, onClose: onClose)
+        } flat: {
+            StandardPlayerView(player: player, onClose: onClose)
         }
     }
 }
 
-/// Raw AVPlayerLayer surface (no system chrome) for the upper fold panel.
+/// Raw AVPlayerLayer surface (no system chrome) for the video side of the fold.
 struct VideoSurface: UIViewRepresentable {
     let player: AVPlayer
 
@@ -64,8 +190,8 @@ struct VideoSurface: UIViewRepresentable {
     }
 }
 
-/// Netflix-style transport panel: title row, big center transport, scrubber.
-struct TransportControls: View {
+/// Feeds AVPlayer state into `FoldControlsPanel`.
+struct AVTransportControls: View {
     let player: AVPlayer
     let title: String
     let onClose: () -> Void
@@ -76,89 +202,35 @@ struct TransportControls: View {
     @State private var isScrubbing = false
     @State private var timeObserver: Any?
 
-    private var isLive: Bool { duration <= 0 || !duration.isFinite }
+    private var isSeekable: Bool { duration > 0 && duration.isFinite }
 
     var body: some View {
-        VStack(spacing: 24) {
-            HStack {
-                Text(title)
-                    .font(.headline)
-                    .lineLimit(1)
-                Spacer()
-                Button(action: onClose) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white.opacity(0.8))
+        FoldControlsPanel(
+            title: title,
+            isPlaying: isPlaying,
+            isSeekable: isSeekable,
+            position: Binding(
+                get: { isSeekable ? currentTime / duration : 0 },
+                set: { currentTime = $0 * duration }
+            ),
+            elapsed: Self.timeString(currentTime),
+            remaining: "-" + Self.timeString(max(0, duration - currentTime)),
+            onScrubbingChanged: { editing in
+                isScrubbing = editing
+                if !editing {
+                    player.seek(to: CMTime(seconds: currentTime, preferredTimescale: 600))
                 }
-                .buttonStyle(.plain)
-            }
-
-            Spacer()
-
-            HStack(spacing: 56) {
-                if !isLive {
-                    transportButton("gobackward.10") { seek(by: -10) }
-                }
-                transportButton(isPlaying ? "pause.fill" : "play.fill", size: 54) {
-                    togglePlayback()
-                }
-                if !isLive {
-                    transportButton("goforward.10") { seek(by: 10) }
-                }
-            }
-
-            Spacer()
-
-            if isLive {
-                Label("LIVE", systemImage: "circle.fill")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(Theme.accent)
-            } else {
-                VStack(spacing: 6) {
-                    Slider(
-                        value: Binding(
-                            get: { currentTime },
-                            set: { currentTime = $0 }
-                        ),
-                        in: 0...max(duration, 1)
-                    ) { editing in
-                        isScrubbing = editing
-                        if !editing {
-                            player.seek(to: CMTime(seconds: currentTime, preferredTimescale: 600))
-                        }
-                    }
-                    .tint(Theme.accent)
-
-                    HStack {
-                        Text(timeString(currentTime))
-                        Spacer()
-                        Text("-" + timeString(max(0, duration - currentTime)))
-                    }
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(Theme.textSecondary)
-                }
-            }
-        }
-        .padding(28)
-        .foregroundStyle(.white)
+            },
+            onPlayPause: togglePlayback,
+            onSkip: { seek(by: Double($0)) },
+            onClose: onClose
+        )
         .onAppear(perform: attachObserver)
         .onDisappear(perform: detachObserver)
     }
 
-    private func transportButton(_ systemName: String, size: CGFloat = 32,
-                                 action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: size, weight: .semibold))
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: - Playback
-
     private func togglePlayback() {
-        if isPlaying { player.pause() } else { player.play() }
-        isPlaying.toggle()
+        if player.timeControlStatus == .paused { player.play() } else { player.pause() }
     }
 
     private func seek(by seconds: Double) {
@@ -167,14 +239,13 @@ struct TransportControls: View {
     }
 
     private func attachObserver() {
-        isPlaying = player.timeControlStatus != .paused
         timeObserver = player.addPeriodicTimeObserver(
             forInterval: CMTime(seconds: 0.5, preferredTimescale: 600),
             queue: .main
         ) { time in
+            isPlaying = player.timeControlStatus != .paused
             if !isScrubbing { currentTime = time.seconds }
-            if let itemDuration = player.currentItem?.duration.seconds,
-               itemDuration.isFinite {
+            if let itemDuration = player.currentItem?.duration.seconds, itemDuration.isFinite {
                 duration = itemDuration
             }
         }
@@ -185,7 +256,7 @@ struct TransportControls: View {
         timeObserver = nil
     }
 
-    private func timeString(_ seconds: Double) -> String {
+    private static func timeString(_ seconds: Double) -> String {
         guard seconds.isFinite else { return "--:--" }
         let total = Int(seconds)
         let h = total / 3600, m = (total % 3600) / 60, s = total % 60
