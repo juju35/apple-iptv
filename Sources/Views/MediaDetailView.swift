@@ -282,7 +282,9 @@ struct MediaDetailView: View {
                                                               progress: progress, from: start)
                 if item.kind == .live {
                     // Zap through the channel's list.
-                    request.channelList = store.liveItems.filter { $0.categoryId == item.categoryId }
+                    request.channelList = store.liveItems.filter { channel in
+                        item.categoryId.map(channel.belongs(to:)) ?? (channel.categoryId == nil)
+                    }
                 }
                 if let presentPlayer {
                     // macOS: close this sheet so the window-sized player isn't hidden behind it.

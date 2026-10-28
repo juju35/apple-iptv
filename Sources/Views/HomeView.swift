@@ -48,7 +48,7 @@ struct HomeView: View {
                             selectedItem = $0
                         }
                         ForEach(store.movieCategories.prefix(6)) { category in
-                            let items = store.movieItems.filter { $0.categoryId == category.id }
+                            let items = store.movieItems.filter { $0.belongs(to: category.id) }
                             if !items.isEmpty {
                                 MediaRow(title: category.name, items: Array(items.prefix(25))) {
                                     selectedItem = $0

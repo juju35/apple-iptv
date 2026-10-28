@@ -54,6 +54,8 @@ struct MediaItem: Identifiable, Hashable, Codable {
     let name: String
     let posterURL: URL?
     let categoryId: String?
+    /// Further categories of an item listed in several (Xtream `category_ids`).
+    var otherCategoryIds: [String]?
     /// Xtream: stream/vod/series id. Stalker: channel `cmd` or VOD id.
     let playbackRef: String
     /// Container extension for Xtream VOD (mp4, mkv…).
@@ -72,18 +74,31 @@ struct MediaItem: Identifiable, Hashable, Codable {
         containerExtension: String? = nil,
         rating: Double? = nil,
         plot: String? = nil,
-        year: String? = nil
+        year: String? = nil,
+        otherCategoryIds: [String]? = nil
     ) {
         self.id = id
         self.kind = kind
         self.name = name
         self.posterURL = posterURL
         self.categoryId = categoryId
+        self.otherCategoryIds = otherCategoryIds
         self.playbackRef = playbackRef
         self.containerExtension = containerExtension
         self.rating = rating
         self.plot = plot
         self.year = year
+    }
+}
+
+extension MediaItem {
+    /// Every category the item is listed in, the main one first.
+    var categoryIds: [String] {
+        (categoryId.map { [$0] } ?? []) + (otherCategoryIds ?? [])
+    }
+
+    func belongs(to category: String) -> Bool {
+        categoryId == category || otherCategoryIds?.contains(category) == true
     }
 }
 

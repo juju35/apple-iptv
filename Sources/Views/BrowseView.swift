@@ -13,7 +13,7 @@ struct BrowseView: View {
     private var filtered: [MediaItem] {
         var items = store.items(for: kind)
         if let selectedCategory {
-            items = items.filter { $0.categoryId == selectedCategory }
+            items = items.filter { $0.belongs(to: selectedCategory) }
         }
         if !search.isEmpty {
             items = items.filter { $0.name.localizedCaseInsensitiveContains(search) }
@@ -23,7 +23,7 @@ struct BrowseView: View {
 
     /// "All" then the categories that still have items once filters apply.
     private var categoryOptions: [ChipOption<String?>] {
-        let used = Set(store.items(for: kind).compactMap(\.categoryId))
+        let used = Set(store.items(for: kind).flatMap(\.categoryIds))
         return [ChipOption(id: nil, title: "All")]
             + store.categories(for: kind).filter { used.contains($0.id) }
                 .map { ChipOption(id: Optional($0.id), title: $0.name) }

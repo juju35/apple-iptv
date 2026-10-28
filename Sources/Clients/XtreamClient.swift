@@ -92,17 +92,21 @@ final class XtreamClient: IPTVClient {
                   let name = dict["name"] as? String else { return nil }
             let posterKey = kind == .series ? "cover" : "stream_icon"
             let poster = (dict[posterKey] as? String).flatMap(URL.init(string:))
+            // Recent panels list every category in `category_ids` and may leave `category_id` empty.
+            let categoryIds = ((dict["category_ids"] as? [Any]) ?? []).compactMap(Self.string)
+            let categoryId = Self.string(dict["category_id"]) ?? categoryIds.first
             return MediaItem(
                 id: "\(provider.id)-\(kind.rawValue)-\(rawId)",
                 kind: kind,
                 name: name,
                 posterURL: poster,
-                categoryId: Self.string(dict["category_id"]),
+                categoryId: categoryId,
                 playbackRef: rawId,
                 containerExtension: dict["container_extension"] as? String,
                 rating: Self.double(dict["rating"] ?? dict["rating_5based"]),
                 plot: dict["plot"] as? String,
-                year: Self.string(dict["year"] ?? dict["releaseDate"])
+                year: Self.string(dict["year"] ?? dict["releaseDate"]),
+                otherCategoryIds: categoryIds.filter { $0 != categoryId }.nilIfEmpty
             )
         }
     }
@@ -217,4 +221,8 @@ final class XtreamClient: IPTVClient {
         }
         return string
     }
+}
+
+private extension Array {
+    var nilIfEmpty: Self? { isEmpty ? nil : self }
 }

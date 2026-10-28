@@ -39,7 +39,7 @@ struct LiveTVView: View {
         case .all: items = store.liveItems
         case .favorites: items = store.favorites(.live)
         case .recent: items = store.recentChannels()
-        case .category(let id): items = store.liveItems.filter { $0.categoryId == id }
+        case .category(let id): items = store.liveItems.filter { $0.belongs(to: id) }
         }
         if !search.isEmpty {
             items = items.filter { $0.name.localizedCaseInsensitiveContains(search) }
@@ -49,7 +49,7 @@ struct LiveTVView: View {
 
     /// Categories that still have channels once filters apply, with their channel counts.
     private var groups: [ChipOption<ChannelGroup>] {
-        let counts = Dictionary(store.liveItems.compactMap { $0.categoryId.map { ($0, 1) } }, uniquingKeysWith: +)
+        let counts = Dictionary(store.liveItems.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
         var options = [ChipOption(id: ChannelGroup.all, title: "All Channels", systemImage: "tv",
                                   count: store.liveItems.count)]
         let favorites = store.favorites(.live).count

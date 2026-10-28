@@ -289,14 +289,12 @@ final class AppStore: ObservableObject {
 
         let provider = catalogProviderID
         let hiddenLists = hiddenCategories
-        func isHiddenList(_ kind: MediaKind, _ categoryId: String?) -> Bool {
-            categoryId.map {
-                hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: $0))
-            } ?? false
+        func isHiddenList(_ kind: MediaKind, _ categoryId: String) -> Bool {
+            hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: categoryId))
         }
         func listOptions(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
             -> [CategoryListOption] {
-            let counts = Dictionary(items.compactMap { $0.categoryId.map { ($0, 1) } }, uniquingKeysWith: +)
+            let counts = Dictionary(items.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
             return categories.map {
                 CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
                                    name: $0.name, count: counts[$0.id] ?? 0)
@@ -311,7 +309,8 @@ final class AppStore: ObservableObject {
         let hiddenLanguages = hiddenLanguages
         let hiddenQualities = hiddenQualities
         func isVisible(_ item: MediaItem) -> Bool {
-            if isHiddenList(item.kind, item.categoryId) { return false }
+            // Hidden as soon as one of its lists is.
+            if item.categoryIds.contains(where: { isHiddenList(item.kind, $0) }) { return false }
             if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
             if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
                 return false
