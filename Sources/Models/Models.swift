@@ -104,6 +104,30 @@ struct SeriesDetail {
     let seasons: [Int: [Episode]]
 }
 
+/// Which media engine renders a stream.
+enum PlaybackEngine {
+    /// AVFoundation: HLS and MP4-family containers, native AirPlay / PiP.
+    case system
+    /// VLCKit: everything else (MKV, AVI, raw MPEG-TS, …).
+    case vlc
+
+    /// Extensions AVFoundation handles well; anything else goes to VLC.
+    private static let systemExtensions: Set<String> = ["m3u8", "mp4", "m4v", "mov"]
+
+    /// Picks the engine from the URL: the path extension, or a container hint in
+    /// query values (Stalker uses `stream=123.mkv`).
+    static func preferred(for url: URL) -> PlaybackEngine {
+        var candidates = [url.pathExtension.lowercased()]
+        if let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems {
+            candidates += items.compactMap { item in
+                guard let value = item.value, value.contains(".") else { return nil }
+                return value.components(separatedBy: ".").last?.lowercased()
+            }
+        }
+        return candidates.contains { systemExtensions.contains($0) } ? .system : .vlc
+    }
+}
+
 /// Everything the player needs to start a stream.
 struct PlaybackRequest: Identifiable {
     let id = UUID()
@@ -111,6 +135,15 @@ struct PlaybackRequest: Identifiable {
     let title: String
     /// Extra HTTP headers for the media requests (currently only `User-Agent` is honoured).
     var headers: [String: String] = [:]
+    /// Engine to start with; the player falls back to VLC if the system player fails.
+    var engine: PlaybackEngine
+
+    init(url: URL, title: String, headers: [String: String] = [:], engine: PlaybackEngine? = nil) {
+        self.url = url
+        self.title = title
+        self.headers = headers
+        self.engine = engine ?? PlaybackEngine.preferred(for: url)
+    }
 }
 
 struct EPGEntry: Identifiable, Hashable {

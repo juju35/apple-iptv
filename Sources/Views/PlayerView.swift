@@ -117,12 +117,39 @@ final class PlayerController {
     }
 }
 
-/// Full-screen player shared by iOS, macOS and tvOS.
+/// Full-screen player shared by iOS, macOS and tvOS. Starts with the engine chosen for the
+/// request and falls back to VLC when the system player can't open the stream.
+struct PlayerView: View {
+    let request: PlaybackRequest
+
+    @State private var engine: PlaybackEngine
+
+    init(request: PlaybackRequest) {
+        self.request = request
+        _engine = State(initialValue: request.engine)
+    }
+
+    var body: some View {
+        switch engine {
+        case .system:
+            SystemPlayerView(request: request) {
+                // AVFoundation gave up (unsupported container, HLS refused…): retry with VLC.
+                print("[Player] system engine failed, falling back to VLC")
+                engine = .vlc
+            }
+        case .vlc:
+            VLCPlayerView(request: request)
+        }
+    }
+}
+
+/// AVFoundation-backed player (HLS, MP4). Reports failures through `onFailure`.
 /// On iPhone Duo (iOS 27.1+), half-folding the device switches to a
 /// Netflix-style laptop layout: video above the fold, controls below.
-struct PlayerView: View {
+struct SystemPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     let request: PlaybackRequest
+    let onFailure: () -> Void
 
     @State private var controller = PlayerController()
 
@@ -161,6 +188,9 @@ struct PlayerView: View {
         .background(Color.black.ignoresSafeArea())
         .onAppear { controller.start(request) }
         .onDisappear { controller.stop() }
+        .onChange(of: controller.errorMessage) { _, message in
+            if message != nil { onFailure() }
+        }
     }
 
     /// The failing URL; selectable where the platform allows copying it (not on tvOS).

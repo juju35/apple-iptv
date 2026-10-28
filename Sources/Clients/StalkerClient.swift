@@ -252,28 +252,15 @@ final class StalkerClient: IPTVClient {
     private static let stbUserAgent =
         "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 250 Safari/533.3"
 
-    /// AVFoundation cannot play raw MPEG-TS over HTTP; most portals also expose the same
-    /// tokenized stream as HLS, so rewrite `.ts` / `extension=ts` links to their `.m3u8` form.
-    /// Also replaces `localhost` hosts (used by some portals) with the portal host.
+    /// Some portals return `localhost` in create_link results; replace it with the portal host.
+    /// Raw MPEG-TS links are left as-is: the VLC engine plays them directly.
     static func playableURL(from url: URL, portalBase: URL?) -> URL {
-        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return url }
-
-        if let host = components.host?.lowercased(),
-           host == "localhost" || host == "127.0.0.1",
-           let portalHost = portalBase?.host {
-            components.host = portalHost
-            if components.port == nil { components.port = portalBase?.port }
-        }
-
-        if components.path.lowercased().hasSuffix(".ts") {
-            components.path = String(components.path.dropLast(3)) + ".m3u8"
-        }
-        if let items = components.queryItems {
-            components.queryItems = items.map { item in
-                guard item.name == "extension", item.value?.lowercased() == "ts" else { return item }
-                return URLQueryItem(name: item.name, value: "m3u8")
-            }
-        }
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let host = components.host?.lowercased(),
+              host == "localhost" || host == "127.0.0.1",
+              let portalHost = portalBase?.host else { return url }
+        components.host = portalHost
+        if components.port == nil { components.port = portalBase?.port }
         return components.url ?? url
     }
 
