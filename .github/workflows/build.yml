@@ -1,0 +1,69 @@
+name: Build
+
+# Generates the Xcode project and builds the three apps for the simulator / macOS (no signing),
+# with the iOS 27.1 SDK (iPhone Duo laptop mode). SwiftLint's analyzer looks for unused code in the
+# iOS build's compiler log.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Xcode 27 runner image: 27.0 (default), 27.1, 27.2 beta; 27.1 carries the iOS 27.1 SDK.
+  DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build iOS, macOS and tvOS
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Generate the project
+        run: |
+          xcodebuild -version
+          brew install xcodegen xcbeautify swiftlint
+          xcodegen
+
+      - name: Pick a simulator
+        id: sim
+        run: |
+          id=$(xcrun simctl list devices available -j \
+            | jq -r '[.devices | to_entries[] | select(.key | test("iOS")) | .value[] | select(.name | startswith("iPhone"))][0].udid')
+          test -n "$id" && test "$id" != null
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+
+      - name: Build iOS
+        run: |
+          set -o pipefail
+          xcodebuild build -project AppleIPTV.xcodeproj -scheme IPTV \
+            -destination "id=${{ steps.sim.outputs.id }}" \
+            CODE_SIGNING_ALLOWED=NO | tee "$RUNNER_TEMP/build.log" | xcbeautify --renderer github-actions
+
+      - name: Dead code
+        env:
+          REPORTER: github-actions-logging
+        run: scripts/dead-code.sh "$RUNNER_TEMP/build.log"
+
+      - name: Build macOS
+        run: |
+          set -o pipefail
+          xcodebuild build -project AppleIPTV.xcodeproj -scheme IPTV-macOS \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO | xcbeautify --renderer github-actions
+
+      - name: Build tvOS
+        run: |
+          set -o pipefail
+          xcodebuild build -project AppleIPTV.xcodeproj -scheme IPTV-tvOS \
+            -destination 'generic/platform=tvOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO | xcbeautify --renderer github-actions

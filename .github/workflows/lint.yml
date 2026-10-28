@@ -1,0 +1,45 @@
+name: Lint
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pre-commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install pre-commit
+      # Without pre-commit/action (still on Node 20): failures go to an annotation on the pull request.
+      - name: pre-commit
+        env:
+          # Swift tools need macOS: SwiftLint runs in its own job below, dead code in the Build workflow.
+          SKIP: swiftlint,dead-code
+        run: |
+          log="$RUNNER_TEMP/pre-commit.log"
+          if pre-commit run --all-files --show-diff-on-failure --color never > "$log" 2>&1; then
+            cat "$log"
+          else
+            cat "$log"
+            failed=$(grep -A25 -E '\.Failed$' "$log" | head -100)
+            echo "::error title=pre-commit::${failed//$'\n'/%0A}"
+            exit 1
+          fi
+
+  swiftlint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Findings as annotations on the pull request; warnings fail the job too.
+      - run: >
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/realm/swiftlint:0.65.1
+          swiftlint lint --strict --reporter github-actions-logging
