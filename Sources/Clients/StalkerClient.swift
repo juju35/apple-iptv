@@ -159,7 +159,8 @@ final class StalkerClient: IPTVClient {
                     kind: kind,
                     name: name,
                     posterURL: (vod["screenshot_uri"] as? String).flatMap { self.absoluteURL($0) },
-                    categoryId: categoryId,
+                    // Loading everything at once passes no category: take the item's own.
+                    categoryId: vod["category_id"].map { "\($0)" } ?? categoryId,
                     playbackRef: cmd,
                     rating: Double("\(vod["rating_imdb"] ?? "")"),
                     plot: vod["description"] as? String,
