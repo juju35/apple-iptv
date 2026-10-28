@@ -13,11 +13,23 @@ enum Theme {
     #if os(tvOS)
     static let posterWidth: CGFloat = 260
     static let heroHeight: CGFloat = 640
+    static let sidebarWidth: CGFloat = 380
+    static let channelListMinWidth: CGFloat = 520
+    static let channelListMaxWidth: CGFloat = 700
+    static let channelLogoWidth: CGFloat = 110
     #elseif os(macOS)
     static let posterWidth: CGFloat = 170
     static let heroHeight: CGFloat = 460
+    static let sidebarWidth: CGFloat = 230
+    static let channelListMinWidth: CGFloat = 300
+    static let channelListMaxWidth: CGFloat = 440
+    static let channelLogoWidth: CGFloat = 64
     #else
     static let posterWidth: CGFloat = 120
     static let heroHeight: CGFloat = 420
+    static let sidebarWidth: CGFloat = 240
+    static let channelListMinWidth: CGFloat = 300
+    static let channelListMaxWidth: CGFloat = 420
+    static let channelLogoWidth: CGFloat = 64
     #endif
 }

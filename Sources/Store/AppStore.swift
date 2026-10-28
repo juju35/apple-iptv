@@ -292,6 +292,23 @@ final class AppStore: ObservableObject {
                                       uniquingKeysWith: { first, _ in first })
     }
 
+    /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
+    func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
+                         progress: PlaybackProgressContext? = nil, from start: Double = 0) async throws
+        -> PlaybackRequest {
+        guard let provider = selectedProvider else { throw IPTVError.invalidURL }
+        let client = client(for: provider)
+        let url = try await client.streamURL(
+            kind: item.kind,
+            playbackRef: ref ?? item.playbackRef,
+            containerExtension: ref == nil ? item.containerExtension : containerExtension
+        )
+        var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
+        request.progress = progress
+        request.startPosition = start
+        return request
+    }
+
     func items(for kind: MediaKind) -> [MediaItem] {
         switch kind {
         case .live: return liveItems

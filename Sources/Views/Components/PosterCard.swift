@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PosterCard: View {
+    @EnvironmentObject private var store: AppStore
     let item: MediaItem
     /// Watched fraction, shown as a bar over the bottom of the poster.
     var progress: Double?
@@ -10,6 +11,16 @@ struct PosterCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             poster
+                .overlay(alignment: .topTrailing) {
+                    if store.isFavorite(item) {
+                        Image(systemName: "heart.fill")
+                            .font(.caption)
+                            .foregroundStyle(Theme.accent)
+                            .padding(5)
+                            .background(.black.opacity(0.55), in: Circle())
+                            .padding(6)
+                    }
+                }
                 .overlay(alignment: .bottom) {
                     if let progress {
                         WatchProgressBar(fraction: progress)
@@ -71,6 +82,7 @@ struct MediaRow: View {
                             PosterCard(item: item)
                         }
                         .buttonStyle(.plain)
+                        .favoriteContextMenu(item)
                     }
                 }
                 .padding(.horizontal)
@@ -101,6 +113,7 @@ struct ContinueWatchingRow: View {
                                            subtitle: entry.progress.episodeLabel)
                             }
                             .buttonStyle(.plain)
+                            .favoriteContextMenu(entry.item)
                         }
                     }
                     .padding(.horizontal)

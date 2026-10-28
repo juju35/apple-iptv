@@ -21,6 +21,14 @@ struct BrowseView: View {
         return items
     }
 
+    /// "All" then the categories that still have items once filters apply.
+    private var categoryOptions: [ChipOption<String?>] {
+        let used = Set(store.items(for: kind).compactMap(\.categoryId))
+        return [ChipOption(id: nil, title: "All")]
+            + store.categories(for: kind).filter { used.contains($0.id) }
+                .map { ChipOption(id: Optional($0.id), title: $0.name) }
+    }
+
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: Theme.posterWidth, maximum: Theme.posterWidth * 1.4), spacing: 16)]
     }
@@ -30,6 +38,7 @@ struct BrowseView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     // Started movies / series and favorites first, unless the user is narrowing the list down.
+                    CategoryChips(options: categoryOptions, selection: $selectedCategory)
                     if search.isEmpty && selectedCategory == nil {
                         ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
                         let favorites = store.favorites(kind)
@@ -43,6 +52,7 @@ struct BrowseView: View {
                                 PosterCard(item: item)
                             }
                             .buttonStyle(.plain)
+                            .favoriteContextMenu(item)
                         }
                     }
                     .padding(.horizontal)
@@ -52,19 +62,6 @@ struct BrowseView: View {
             .background(Theme.background.ignoresSafeArea())
             .navigationTitle(title)
             .modifier(BrowseSearch(text: $search))
-            .toolbar {
-                Menu {
-                    Button("All categories") { selectedCategory = nil }
-                    ForEach(store.categories(for: kind)) { category in
-                        Button(category.name) { selectedCategory = category.id }
-                    }
-                } label: {
-                    Label(
-                        selectedCategory.map { store.categoryName($0, kind: kind) } ?? "Categories",
-                        systemImage: "line.3.horizontal.decrease.circle"
-                    )
-                }
-            }
             .sheet(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
@@ -82,7 +79,7 @@ struct BrowseView: View {
 /// where activating `UISearchController` inside the tab view crashes in UIKit
 /// ("Accessing the focus system through UIScreen is no longer supported").
 /// That case gets a plain text field pinned above the content instead.
-private struct BrowseSearch: ViewModifier {
+struct BrowseSearch: ViewModifier {
     @Binding var text: String
 
     func body(content: Content) -> some View {

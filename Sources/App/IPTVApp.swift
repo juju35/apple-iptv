@@ -49,7 +49,7 @@ struct MainTabView: View {
             HomeView()
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag(MainTab.home)
-            BrowseView(kind: .live, title: "Live TV")
+            LiveTVView()
                 .tabItem { Label("Live TV", systemImage: "tv") }
                 .tag(MainTab.live)
             BrowseView(kind: .movie, title: "Movies")

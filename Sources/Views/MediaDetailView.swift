@@ -50,7 +50,7 @@ struct MediaDetailView: View {
                 }
                 .padding()
             }
-            .background(Theme.background.ignoresSafeArea())
+            .background { backdrop }
             .toolbar {
                 Button { dismiss() } label: { Image(systemName: "xmark.circle.fill") }
             }
@@ -63,6 +63,24 @@ struct MediaDetailView: View {
     }
 
     // MARK: - Sections
+
+    /// The artwork, blurred and faded into the background, behind the whole sheet.
+    private var backdrop: some View {
+        ZStack {
+            Theme.background
+            AsyncImage(url: item.posterURL) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill()
+                        .blur(radius: 50)
+                        .opacity(0.45)
+                }
+            }
+            LinearGradient(colors: [.clear, Theme.background.opacity(0.7), Theme.background],
+                           startPoint: .top, endPoint: .bottom)
+        }
+        .ignoresSafeArea()
+        .clipped()
+    }
 
     private var header: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -252,22 +270,15 @@ struct MediaDetailView: View {
     }
 
     private func play(ref: String, ext: String?, progress: PlaybackProgressContext? = nil, from start: Double = 0) {
-        guard let provider = store.selectedProvider, !isResolving else { return }
-        let client = store.client(for: provider)
+        guard !isResolving else { return }
         isResolving = true
         loadError = nil
         // Stay on the main actor: `playback` and `loadError` drive the UI.
         Task { @MainActor in
             defer { isResolving = false }
             do {
-                let url = try await client.streamURL(
-                    kind: item.kind,
-                    playbackRef: ref,
-                    containerExtension: ext
-                )
-                var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
-                request.progress = progress
-                request.startPosition = start
+                let request = try await store.playbackRequest(for: item, ref: ref, containerExtension: ext,
+                                                              progress: progress, from: start)
                 if let presentPlayer {
                     // macOS: close this sheet so the window-sized player isn't hidden behind it.
                     dismiss()
