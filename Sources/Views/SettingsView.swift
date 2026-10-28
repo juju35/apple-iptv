@@ -42,6 +42,25 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        TagFilterView(title: "Languages", options: store.languageOptions,
+                                      hidden: $store.hiddenLanguages)
+                    } label: {
+                        filterRow("Languages", options: store.languageOptions, hidden: store.hiddenLanguages)
+                    }
+                    NavigationLink {
+                        TagFilterView(title: "Live TV quality", options: store.qualityOptions,
+                                      hidden: $store.hiddenQualities)
+                    } label: {
+                        filterRow("Live TV quality", options: store.qualityOptions, hidden: store.hiddenQualities)
+                    }
+                } header: {
+                    Text("Filters")
+                } footer: {
+                    Text("Tags are read from category and channel names. Untagged content is always shown.")
+                }
+
+                Section {
                     Button("Refresh content") { Task { await store.reload() } }
                 }
             }
@@ -53,6 +72,58 @@ struct SettingsView: View {
                 ProviderFormView(provider: provider)
             }
         }
+    }
+
+    private func filterRow(_ title: String, options: [ContentTags.Option], hidden: Set<String>) -> some View {
+        let shown = options.filter { !hidden.contains($0.tag) }.count
+        return HStack {
+            Text(title)
+            Spacer()
+            Text(shown == options.count ? "All" : "\(shown) of \(options.count)")
+                .foregroundStyle(Theme.textSecondary)
+        }
+    }
+}
+
+/// Toggles for the tags found in the catalog; switched-off tags are hidden everywhere.
+struct TagFilterView: View {
+    let title: String
+    let options: [ContentTags.Option]
+    @Binding var hidden: Set<String>
+
+    var body: some View {
+        List {
+            if options.isEmpty {
+                Text("No tags found in this provider's names.")
+                    .foregroundStyle(Theme.textSecondary)
+            } else {
+                Section {
+                    Button("Show all") { hidden.subtract(options.map(\.tag)) }
+                    Button("Hide all") { hidden.formUnion(options.map(\.tag)) }
+                }
+                Section {
+                    ForEach(options) { option in
+                        Toggle(isOn: isShown(option.tag)) {
+                            HStack {
+                                Text(option.tag)
+                                Spacer()
+                                Text("\(option.count)").foregroundStyle(Theme.textSecondary)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle(title)
+    }
+
+    private func isShown(_ tag: String) -> Binding<Bool> {
+        Binding(
+            get: { !hidden.contains(tag) },
+            set: { shown in
+                if shown { hidden.remove(tag) } else { hidden.insert(tag) }
+            }
+        )
     }
 }
 
