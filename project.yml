@@ -58,6 +58,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: me.jstephan.iptv
+        # Same app name on every platform (the target names would show as IPTV-macOS / IPTV-tvOS).
+        PRODUCT_NAME: IPTV
         TARGETED_DEVICE_FAMILY: "1,2"
 
   IPTV-macOS:
@@ -82,6 +84,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: me.jstephan.iptv
+        # Same app name on every platform (the target names would show as IPTV-macOS / IPTV-tvOS).
+        PRODUCT_NAME: IPTV
 
   IPTV-tvOS:
     type: application
@@ -103,3 +107,5 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: me.jstephan.iptv
+        # Same app name on every platform (the target names would show as IPTV-macOS / IPTV-tvOS).
+        PRODUCT_NAME: IPTV
