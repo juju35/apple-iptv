@@ -26,6 +26,18 @@ final class ProviderSyncStore {
             self.onExternalChange?(self.load())
         }
         kvs.synchronize()
+        seedCloudIfNeeded()
+    }
+
+    /// Providers saved before iCloud sync existed only live in UserDefaults, and `save` only runs on
+    /// changes: push them to iCloud when it has none, so other devices (e.g. a new Apple TV) get them.
+    private func seedCloudIfNeeded() {
+        guard kvs.data(forKey: Self.providersKey) == nil,
+              let local = defaults.data(forKey: Self.providersKey),
+              let providers = try? JSONDecoder().decode([Provider].self, from: local), !providers.isEmpty
+        else { return }
+        kvs.set(local, forKey: Self.providersKey)
+        kvs.synchronize()
     }
 
     deinit {

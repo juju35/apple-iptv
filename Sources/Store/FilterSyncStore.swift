@@ -2,7 +2,7 @@ import Foundation
 
 /// Persists the hidden language / quality tags and Live TV lists in iCloud Key-Value Store so the filters follow
 /// the user across iPhone, Mac and Apple TV. UserDefaults keeps a local copy, which also seeds
-/// iCloud with the filters saved before they were synced.
+/// iCloud with the filters saved before they were synced (see `seedCloudIfNeeded`).
 final class FilterSyncStore {
     struct Filters: Equatable {
         var hiddenLanguages: Set<String> = []
@@ -34,6 +34,18 @@ final class FilterSyncStore {
             let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
             guard changedKeys.map({ !Set($0).isDisjoint(with: Self.keys) }) ?? true else { return }
             self.onExternalChange?(self.load())
+        }
+        kvs.synchronize()
+        seedCloudIfNeeded()
+    }
+
+    /// Filters chosen before they were synced only live in UserDefaults: push them to iCloud
+    /// when it has none, so the other devices get them without waiting for a change.
+    private func seedCloudIfNeeded() {
+        for key in Self.keys where kvs.array(forKey: key) == nil {
+            if let local = defaults.stringArray(forKey: key), !local.isEmpty {
+                kvs.set(local, forKey: key)
+            }
         }
         kvs.synchronize()
     }
