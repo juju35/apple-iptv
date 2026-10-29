@@ -54,6 +54,49 @@ struct BrowseView: View {
                   spacing: LockupMetrics.gridSpacing)]
     }
 
+    private func cell(_ item: MediaItem) -> some View {
+        Button { selectedItem = item } label: {
+            PosterCard(item: item)
+        }
+        .lockupButtonStyle()
+        .favoriteContextMenu(item)
+    }
+
+    #if os(tvOS)
+    /// Apple TV: rows of posters in a lazy stack. `LazyVGrid` lays out and tracks focus for the whole
+    /// catalogue (thousands of movies) and made scrolling crawl; a lazy stack of fixed rows doesn't.
+    @State private var gridWidth: CGFloat = 1700
+
+    private struct PosterRow: Identifiable {
+        let id: String
+        let items: [MediaItem]
+    }
+
+    private var posterGrid: some View {
+        let spacing = LockupMetrics.gridSpacing
+        let perRow = max(1, Int((gridWidth + spacing) / (Theme.posterWidth + spacing)))
+        let rows = stride(from: 0, to: filtered.count, by: perRow).map { start in
+            let slice = Array(filtered[start..<min(start + perRow, filtered.count)])
+            return PosterRow(id: slice[0].id, items: slice)
+        }
+        return LazyVStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
+            ForEach(rows) { row in
+                HStack(alignment: .top, spacing: spacing) {
+                    ForEach(row.items) { cell($0) }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .onGeometryChange(for: CGFloat.self, of: \.size.width) { gridWidth = $0 }
+    }
+    #else
+    private var posterGrid: some View {
+        LazyVGrid(columns: columns, spacing: LockupMetrics.gridRowSpacing) {
+            ForEach(filtered) { cell($0) }
+        }
+    }
+    #endif
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -67,16 +110,8 @@ struct BrowseView: View {
                             MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
                         }
                     }
-                    LazyVGrid(columns: columns, spacing: LockupMetrics.gridRowSpacing) {
-                        ForEach(filtered) { item in
-                            Button { selectedItem = item } label: {
-                                PosterCard(item: item)
-                            }
-                            .lockupButtonStyle()
-                            .favoriteContextMenu(item)
-                        }
-                    }
-                    .padding(.horizontal)
+                    posterGrid
+                        .padding(.horizontal)
                 }
                 .padding(.vertical)
             }
