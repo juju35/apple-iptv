@@ -81,7 +81,8 @@ private struct ProviderToolbarModifier: ViewModifier {
             // Under the status column's network icons, measured on screenshots (UIKit reports the column
             // as a 2 pt strip at the top); the cover screen (portrait) sets them lower.
             let isCoverScreen = bounds.height > bounds.width
-            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 35), y: isCoverScreen ? 193 : 98)
+            // Inner screen measured on 2x screenshots, cover screen on 3x ones; y leaves room for the bubble.
+            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 144)
         }
         // At the top of the black band holding the side tab bar, above it and centred on it (measured on
         // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
