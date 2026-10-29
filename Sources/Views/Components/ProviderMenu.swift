@@ -15,15 +15,15 @@ struct ShowSettingsAction: Equatable {
 
 extension View {
     /// Adds the provider switcher at the trailing end of the toolbar; on Apple TV, whose tab bar has no room,
-    /// above the screen's content at the top right, where focus reaches it by swiping up.
+    /// level with the tab bar at the top right (over the content, which keeps its full height).
     func providerToolbar() -> some View {
         #if os(tvOS)
-        safeAreaInset(edge: .top, spacing: 0) {
-            HStack {
-                Spacer()
-                ProviderMenu()
-            }
-            .padding(.horizontal, 80)
+        overlay {
+            ProviderMenu()
+                .padding(.top, 62)
+                .padding(.trailing, 90)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                .ignoresSafeArea()
         }
         #else
         toolbar {
