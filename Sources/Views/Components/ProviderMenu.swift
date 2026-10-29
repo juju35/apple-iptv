@@ -67,16 +67,13 @@ private struct ProviderToolbarModifier: ViewModifier {
             // Under the status column's network icons, measured on screenshots (UIKit reports the column
             // as a 2 pt strip at the top); the cover screen (portrait) sets them lower.
             let isCoverScreen = bounds.height > bounds.width
-            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
+            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 35), y: isCoverScreen ? 193 : 98)
         }
         // At the top of the black band holding the side tab bar, above it and centred on it (measured on
         // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
-        // Positions corrected by eye against screenshots. On the left the front camera sits in the top
-        // corner, so the switcher goes lower, just above the tab bar.
-        if insets.leading > 40 {
-            return CGPoint(x: 38, y: 224)
-        }
-        return CGPoint(x: bounds.maxX - 37, y: 40)
+        // Centred on the tab bar (48 pt from the edge, measured on 3x screenshots). On the left the front
+        // camera sits in the top corner, so the switcher goes lower, just above the tab bar.
+        return CGPoint(x: insets.leading > 40 ? 48 : bounds.maxX - 48, y: insets.leading > 40 ? 160 : 40)
     }
 
     func body(content: Content) -> some View {
