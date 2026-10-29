@@ -45,32 +45,45 @@ extension View {
 /// landscape): it then sits in that column under the network icons, above the side tab bar.
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
-    @State private var insets = EdgeInsets()
+    /// The status bar's frame when it runs down the trailing edge, else nil.
+    @State private var sideStatusBar: CGRect?
 
-    /// Status bar column on the trailing side only (a notched iPhone in landscape has insets on both sides).
-    /// The top inset isn't checked: it includes the navigation bar.
-    private var hasSideStatusBar: Bool {
-        insets.trailing > 40 && insets.leading < 10
+    /// The status bar column at the trailing edge, as UIKit reports it: its position differs between the
+    /// inner screen and the cover screen, so the switcher follows it.
+    private static func trailingStatusBarFrame() -> CGRect? {
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+        guard let scene else { return nil }
+        let screen = scene.screen.bounds
+        if let frame = scene.statusBarManager?.statusBarFrame, frame.height > frame.width, frame.minX > screen.midX {
+            return frame
+        }
+        // Not reported as a column: the inner screen's measured one (icons centred 51 pt from the edge).
+        return CGRect(x: screen.maxX - 102, y: 0, width: 102, height: 113)
     }
 
     func body(content: Content) -> some View {
         content
-            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets = $0 }
+            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets in
+                // Trailing inset only: a notched iPhone in landscape has them on both sides.
+                sideStatusBar = insets.trailing > 40 && insets.leading < 10 ? Self.trailingStatusBarFrame() : nil
+            }
             .toolbar {
-                if !hasSideStatusBar {
+                if sideStatusBar == nil {
                     ToolbarItem(placement: .primaryAction) {
                         ProviderMenu()
                     }
                 }
             }
-            .toolbar(hasSideStatusBar && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
+            .toolbar(sideStatusBar != nil && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
             .overlay {
-                if hasSideStatusBar {
-                    ProviderMenu()
-                        // Centred under the status icons, 51 pt from the edge (not the middle of the inset).
-                        .frame(width: 102)
-                        .padding(.top, 125)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                if let frame = sideStatusBar {
+                    // Just under the network icons, centred on the status bar column.
+                    Color.clear
+                        .overlay(alignment: .topLeading) {
+                            ProviderMenu()
+                                .position(x: frame.midX, y: frame.maxY + 27)
+                        }
                         .ignoresSafeArea()
                 }
             }
