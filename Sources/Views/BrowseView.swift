@@ -61,7 +61,7 @@ struct BrowseView: View {
                 .padding(.vertical)
             }
             .background(Theme.background.ignoresSafeArea())
-            .navigationTitle(title)
+            .tabScreenTitle(title)
             .providerToolbar()
             .modifier(BrowseSearch(text: $search))
             .detailPresentation(item: $selectedItem) { item in

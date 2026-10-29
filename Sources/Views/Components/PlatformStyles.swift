@@ -55,6 +55,16 @@ extension View {
         #endif
     }
 
+    /// A tab's title: shown elsewhere, left out on Apple TV where the tab bar already names the screen.
+    @ViewBuilder
+    func tabScreenTitle(_ title: String) -> some View {
+        #if os(tvOS)
+        self
+        #else
+        navigationTitle(title)
+        #endif
+    }
+
     /// Detail screens: a sheet elsewhere, the full screen on Apple TV (a sheet is a small card there).
     @ViewBuilder
     func detailPresentation<Item: Identifiable, Content: View>(

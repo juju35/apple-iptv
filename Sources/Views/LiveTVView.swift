@@ -82,7 +82,7 @@ struct LiveTVView: View {
                 }
             }
             .background(Theme.background.ignoresSafeArea())
-            .navigationTitle("Live TV")
+            .tabScreenTitle("Live TV")
             .providerToolbar()
             .modifier(BrowseSearch(text: $search))
             .detailPresentation(item: $detailItem) { item in

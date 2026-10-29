@@ -24,7 +24,7 @@ struct CategorySidebar<ID: Hashable>: View {
                     } label: {
                         HStack(spacing: 10) {
                             if let systemImage = option.systemImage {
-                                Image(systemName: systemImage).frame(width: 18)
+                                Image(systemName: systemImage).frame(width: Self.iconWidth)
                             }
                             Text(option.title).lineLimit(1)
                             Spacer(minLength: 4)
@@ -54,9 +54,11 @@ struct CategorySidebar<ID: Hashable>: View {
     // Apple TV: focus already highlights the row, the selection is a quiet fill.
     // (Computed: generic types can't have static stored properties.)
     #if os(tvOS)
+    private static var iconWidth: CGFloat { 40 }
     private static var rowFont: Font { .callout }
     private static var selectionFill: Color { .white.opacity(0.14) }
     #else
+    private static var iconWidth: CGFloat { 18 }
     private static var rowFont: Font { .subheadline }
     private static var selectionFill: Color { Theme.accent.opacity(0.9) }
     #endif
