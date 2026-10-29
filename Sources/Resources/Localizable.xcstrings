@@ -2147,6 +2147,28 @@
         }
       }
     },
+    "S%lld E%lld · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S%lld F%lld · %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T%lld E%lld · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S%lld É%lld · %@"
+          }
+        }
+      }
+    },
     "Save" : {
       "localizations" : {
         "de" : {
@@ -2740,9 +2762,6 @@
           }
         }
       }
-    },
-    "VLC" : {
-      "shouldTranslate" : false
     },
     "VLC could not open this stream." : {
       "localizations" : {

@@ -1,7 +1,8 @@
 #if os(tvOS)
 import SwiftUI
 
-/// Apple TV transport for the VLC engine, modelled on the system player's: title, progress bar with elapsed and
+/// Apple TV transport for the VLC engine, modelled on the system player's: what plays (channel and programme,
+/// series and episode, or movie), progress bar with elapsed and
 /// remaining time at the bottom, driven from the remote rather than on-screen buttons.
 ///
 /// - Select or Play/Pause: pause / resume (and show the bar)
@@ -10,7 +11,7 @@ import SwiftUI
 /// - Menu: hide the bar, or leave the player when it's hidden or paused
 struct TVTransportOverlay: View {
     let controller: VLCPlayerController
-    let title: String
+    let request: PlaybackRequest
     let switcher: ChannelSwitcher?
     let onClose: () -> Void
 
@@ -69,9 +70,7 @@ struct TVTransportOverlay: View {
 
     private var bar: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text(switcher?.channelName ?? title)
-                .font(.title3.weight(.semibold))
-                .lineLimit(1)
+            NowPlayingInfo(request: request)
 
             if controller.isSeekable {
                 ProgressTrack(fraction: Double(controller.position))

@@ -288,7 +288,7 @@ struct VLCPlayerView: View {
             #if os(tvOS)
             // The system player's transport, driven from the remote.
             if controller.errorMessage == nil {
-                TVTransportOverlay(controller: controller, title: request.title, switcher: channelSwitcher,
+                TVTransportOverlay(controller: controller, request: request, switcher: channelSwitcher,
                                    onClose: dismiss)
             }
             #else
@@ -315,22 +315,16 @@ struct VLCPlayerView: View {
                 Spacer()
                 if channelSwitcher != nil {
                     ChannelSwitchBar()
-                } else {
-                    Text(request.title)
-                        .font(.headline)
-                        .lineLimit(1)
                 }
                 Spacer()
-                Text("VLC")
-                    .font(.caption2.weight(.bold))
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(.white.opacity(0.2), in: Capsule())
             }
             .padding()
 
             Spacer()
 
             VStack(spacing: 12) {
+                NowPlayingInfo(request: request)
+
                 HStack(spacing: 28) {
                     if controller.isSeekable {
                         Button { controller.jump(seconds: -10) } label: {

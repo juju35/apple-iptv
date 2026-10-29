@@ -162,6 +162,8 @@ struct PlaybackRequest: Identifiable {
     var startPosition: Double = 0
     /// Poster, episode still or channel logo of what plays (iPhone Duo controls).
     var artworkURL: URL?
+    /// Second line with the controls: the episode ("S1 E3 · Title"). Live channels show their programme.
+    var subtitle: String?
     /// The live channel playing, and the list it was started from, for zapping.
     var channel: MediaItem?
     var channelList: [MediaItem] = []

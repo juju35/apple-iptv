@@ -21,7 +21,8 @@ final class PlayerController {
     private var playerStatusObservation: NSKeyValueObservation?
     private var failureObserver: (any NSObjectProtocol)?
 
-    func start(_ request: PlaybackRequest) {
+    /// `subtitle`: the episode, or the programme on now for a live channel (AVKit's second title line).
+    func start(_ request: PlaybackRequest, subtitle: String? = nil) {
         #if os(iOS)
         // Activating the session synchronously on the main thread is flagged as a hang risk; do it off-main.
         Task.detached(priority: .userInitiated) {
@@ -39,7 +40,11 @@ final class PlayerController {
         let item = AVPlayerItem(asset: asset)
         #if !os(macOS)
         // Shows the title in the system player chrome / Now Playing; unavailable on macOS.
-        item.externalMetadata = [Self.metadataItem(.commonIdentifierTitle, value: request.title)]
+        var metadata = [Self.metadataItem(.commonIdentifierTitle, value: request.title)]
+        if let subtitle {
+            metadata.append(Self.metadataItem(.iTunesMetadataTrackSubTitle, value: subtitle))
+        }
+        item.externalMetadata = metadata
         #endif
 
         // Observe before attaching to the player: attaching is what starts loading.
@@ -249,6 +254,7 @@ struct ClosePlayerAction: Equatable {
 /// Netflix-style laptop layout: video above the fold, controls below.
 struct SystemPlayerView: View {
     @EnvironmentObject private var store: AppStore
+    @EnvironmentObject private var guide: EPGStore
     @Environment(\.dismiss) private var dismissPresentation
     @Environment(\.closePlayer) private var closePlayer
     let request: PlaybackRequest
@@ -291,7 +297,10 @@ struct SystemPlayerView: View {
             }
         }
         .background(Color.black.ignoresSafeArea())
-        .onAppear { controller.start(request) }
+        .onAppear {
+            let programme = request.channel.flatMap { guide.current(for: $0)?.title }
+            controller.start(request, subtitle: programme ?? request.subtitle)
+        }
         .task(id: controller.isReady) {
             guard controller.isReady else { return }
             while !Task.isCancelled {
