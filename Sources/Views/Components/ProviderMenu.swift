@@ -67,7 +67,8 @@ private struct ProviderToolbarModifier: ViewModifier {
             .overlay {
                 if hasSideStatusBar {
                     ProviderMenu()
-                        .frame(width: insets.trailing)
+                        // Centred under the status icons, 51 pt from the edge (not the middle of the inset).
+                        .frame(width: 102)
                         .padding(.top, 125)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                         .ignoresSafeArea()
