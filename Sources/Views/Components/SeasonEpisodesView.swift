@@ -152,7 +152,7 @@ struct SeasonEpisodesView: View {
     }
 
     private func seasonName(_ value: Int) -> String {
-        value == 0 ? "Specials" : "Season \(value)"
+        value == 0 ? String(localized: "Specials") : String(localized: "Season \(value)")
     }
 
     /// The episode's still, else the series artwork, else artwork drawn from the episode's title.

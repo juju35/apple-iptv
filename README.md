@@ -20,6 +20,7 @@ Multiple providers can be configured; switch the active one in Settings.
 - Provider form with connection test and automatic MAC formatting/validation
 - Providers synced across devices via iCloud Key-Value Store (UserDefaults fallback; active provider stays per-device)
 - iPhone Duo fold-aware player (iOS 27.1+), on both the system and VLC engines: half-fold the device during playback and the layout follows the fold's reserved division region — laptop/tabletop (horizontal fold): video above, Netflix-style controls (play/pause, ±10 s, scrubber, LIVE badge) below; book (vertical fold): video and controls side by side
+- Localized in English, French, Spanish and German (String Catalog: `Sources/Resources/Localizable.xcstrings`)
 
 ## Screenshots
 

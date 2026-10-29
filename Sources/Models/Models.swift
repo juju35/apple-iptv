@@ -221,11 +221,11 @@ enum IPTVError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL: return "Invalid portal URL."
-        case .badResponse(let code): return "Server returned HTTP \(code)."
-        case .authenticationFailed(let reason): return "Authentication failed: \(reason)"
-        case .decoding(let context): return "Unexpected server payload (\(context))."
-        case .unsupported(let what): return "\(what) is not supported by this provider."
+        case .invalidURL: return String(localized: "Invalid portal URL.")
+        case .badResponse(let code): return String(localized: "Server returned HTTP \(code).")
+        case .authenticationFailed(let reason): return String(localized: "Authentication failed: \(reason)")
+        case .decoding(let context): return String(localized: "Unexpected server payload (\(context)).")
+        case .unsupported(let what): return String(localized: "\(what) is not supported by this provider.")
         }
     }
 }

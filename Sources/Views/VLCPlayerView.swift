@@ -101,7 +101,7 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
             isBuffering = false
         case .error:
             isBuffering = false
-            errorMessage = "VLC could not open this stream."
+            errorMessage = String(localized: "VLC could not open this stream.")
         case .ended, .stopped:
             isBuffering = false
         @unknown default:
@@ -116,7 +116,7 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
             elapsedText = player.time.stringValue
             remainingText = player.remainingTime?.stringValue ?? "--:--"
         } else {
-            elapsedText = "LIVE"
+            elapsedText = String(localized: "LIVE")
             remainingText = ""
         }
     }

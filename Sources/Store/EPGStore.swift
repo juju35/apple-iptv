@@ -24,12 +24,12 @@ final class EPGStore: ObservableObject {
     }
 
     static let lifetimes: [(label: String, seconds: TimeInterval)] = [
-        ("Off", 0),
-        ("3 hours", 3 * 3600),
-        ("6 hours", 6 * 3600),
-        ("12 hours", 12 * 3600),
-        ("1 day", 24 * 3600),
-        ("3 days", 3 * 24 * 3600),
+        (String(localized: "Off"), 0),
+        (String(localized: "3 hours"), 3 * 3600),
+        (String(localized: "6 hours"), 6 * 3600),
+        (String(localized: "12 hours"), 12 * 3600),
+        (String(localized: "1 day"), 24 * 3600),
+        (String(localized: "3 days"), 3 * 24 * 3600),
     ]
     private static let lifetimeKey = "iptv.epgLifetime"
 

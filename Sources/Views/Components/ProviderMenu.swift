@@ -59,7 +59,7 @@ struct ProviderMenu: View {
             ProviderAvatar(name: selected?.name ?? "")
         }
         .menuIndicator(.hidden)
-        .accessibilityLabel("Provider: \(selected?.name ?? "none")")
+        .accessibilityLabel("Provider: \(selected?.name ?? String(localized: "none"))")
     }
 }
 

@@ -190,7 +190,7 @@ struct MediaDetailView: View {
             : String(format: "%d:%02d", minutes, secs)
     }
 
-    private func playButton(label: String, action: @escaping () -> Void) -> some View {
+    private func playButton(label: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 if isResolving {
@@ -248,8 +248,8 @@ struct MediaDetailView: View {
     private var seriesPlayAction: some View {
         if let detail, let season = shownSeason(in: detail) {
             if let resumed = resumedEpisode(in: detail) {
-                playButton(label: "Resume S\(resumed.episode.season) E\(resumed.episode.episode)"
-                           + " · \(Self.timeText(resumed.progress.position))") {
+                let position = Self.timeText(resumed.progress.position)
+                playButton(label: "Resume S\(resumed.episode.season) E\(resumed.episode.episode) · \(position)") {
                     playEpisode(resumed.episode)
                 }
             } else if let first = detail.seasons[season]?.first {

@@ -72,9 +72,11 @@ struct ListNameCleanupView: View {
                         .disabled(newText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             } footer: {
-                Text("Removed from every list name shown, ignoring case. Separators left at the start or end "
-                     + "(|, -, :) go too. Language detection still reads the original names. "
-                     + "Pick a list below to start from its name.")
+                Text("""
+                    Removed from every list name shown, ignoring case. Separators left at the start or end \
+                    (|, -, :) go too. Language detection still reads the original names. \
+                    Pick a list below to start from its name.
+                    """)
             }
 
             if !store.listNameRemovals.isEmpty {

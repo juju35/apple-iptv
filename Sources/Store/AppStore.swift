@@ -304,8 +304,8 @@ final class AppStore: ObservableObject {
     }
 
     func categoryName(_ id: String?, kind: MediaKind) -> String {
-        guard let id else { return "Other" }
-        return categories(for: kind).first { $0.id == id }?.name ?? "Other"
+        guard let id else { return String(localized: "Other") }
+        return categories(for: kind).first { $0.id == id }?.name ?? String(localized: "Other")
     }
 }
 
