@@ -48,20 +48,17 @@ private struct ProviderToolbarModifier: ViewModifier {
     /// The status bar's frame when it runs down the trailing edge, else nil.
     @State private var sideStatusBar: CGRect?
 
-    /// The status bar column at the trailing edge, as UIKit reports it, in the window's coordinates: its
-    /// position differs between the inner screen and the cover screen, so the switcher follows it.
-    /// Measured against the window, not `UIScreen`, which can describe the other screen.
+    /// Where the network icons end in the trailing status column, measured on screenshots: UIKit reports
+    /// the column as a 2 pt strip at the top. The cover screen (portrait, 466 × 678) sets it lower than the
+    /// inner screen in landscape. A 102 pt wide frame centres the switcher under the icons.
     private static func trailingStatusBarFrame() -> CGRect {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
         let window = (scene?.keyWindow ?? scene?.windows.first)?.bounds ?? .zero
-        let reported = scene?.statusBarManager?.statusBarFrame ?? .zero
-        print("[ProviderMenu] window \(window), status bar \(reported)")
-        if reported.height > reported.width, reported.minX > window.midX, reported.maxX <= window.maxX + 1 {
-            return reported
-        }
-        // Not reported as a column: the inner screen's measured one (icons centred 51 pt from the edge).
-        return CGRect(x: window.maxX - 102, y: 0, width: 102, height: 113)
+        let isCoverScreen = window.height > window.width
+        let centreFromEdge: CGFloat = isCoverScreen ? 48 : 51
+        return CGRect(x: window.maxX - 2 * centreFromEdge, y: 0, width: 2 * centreFromEdge,
+                      height: isCoverScreen ? 166 : 113)
     }
 
     func body(content: Content) -> some View {
