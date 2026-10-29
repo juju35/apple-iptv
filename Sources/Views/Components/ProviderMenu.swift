@@ -71,8 +71,12 @@ private struct ProviderToolbarModifier: ViewModifier {
         }
         // At the top of the black band holding the side tab bar, above it and centred on it (measured on
         // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
-        // On the right the window reports a narrower width than the screenshot shows: corrected by eye.
-        return CGPoint(x: insets.leading > 40 ? 71 : bounds.maxX - 37, y: 40)
+        // Positions corrected by eye against screenshots. On the left the front camera sits in the top
+        // corner, so the switcher goes lower, just above the tab bar.
+        if insets.leading > 40 {
+            return CGPoint(x: 38, y: 224)
+        }
+        return CGPoint(x: bounds.maxX - 37, y: 40)
     }
 
     func body(content: Content) -> some View {
