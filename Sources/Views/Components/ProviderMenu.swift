@@ -83,7 +83,12 @@ private struct ProviderToolbarModifier: ViewModifier {
         if let bar = sideTabBarFrame(in: window) {
             return CGPoint(x: bar.midX, y: min(bar.maxY + 19, bounds.maxY - 18))
         }
-        return CGPoint(x: insets.leading > 40 ? 71 : bounds.maxX - 71, y: bounds.maxY - 18)
+        // UIKit doesn't expose it: measured on screenshots. On the left it runs down to the bottom; on the
+        // right it ends higher, with the switcher centred under it.
+        if insets.leading > 40 {
+            return CGPoint(x: 71, y: bounds.maxY - 18)
+        }
+        return CGPoint(x: bounds.maxX - 91, y: bounds.maxY - 95)
     }
 
     func body(content: Content) -> some View {
