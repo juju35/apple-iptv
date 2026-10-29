@@ -62,60 +62,7 @@ struct BrowseView: View {
         .favoriteContextMenu(item)
     }
 
-    #if os(tvOS)
-    /// Apple TV: rows of posters in a lazy stack (`LazyVGrid` laid out and tracked focus for the whole
-    /// catalogue, thousands of movies, and made scrolling crawl). The stack's elements are blocks of
-    /// rows, so the rows below the screen are built before the focus reaches them, and their artwork
-    /// is loaded further ahead still.
-    @State private var gridWidth: CGFloat = 1700
-    /// Rows built together: about two screens of posters.
-    private static let rowsPerBlock = 4
-    /// Rows whose artwork is loaded ahead of the screen.
-    private static let prefetchRows = 20
-
-    private struct PosterRow: Identifiable {
-        let id: String
-        let items: [MediaItem]
-    }
-
-    private struct RowBlock: Identifiable {
-        let id: String
-        let index: Int
-        let rows: ArraySlice<PosterRow>
-    }
-
-    private var posterGrid: some View {
-        let spacing = LockupMetrics.gridSpacing
-        let perRow = max(1, Int((gridWidth + spacing) / (Theme.posterWidth + spacing)))
-        let rows = stride(from: 0, to: filtered.count, by: perRow).map { start in
-            let slice = Array(filtered[start..<min(start + perRow, filtered.count)])
-            return PosterRow(id: slice[0].id, items: slice)
-        }
-        let blocks = stride(from: 0, to: rows.count, by: Self.rowsPerBlock).map { start in
-            RowBlock(id: rows[start].id, index: start,
-                     rows: rows[start..<min(start + Self.rowsPerBlock, rows.count)])
-        }
-        return LazyVStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
-            ForEach(blocks) { block in
-                VStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
-                    ForEach(block.rows) { row in
-                        HStack(alignment: .top, spacing: spacing) {
-                            ForEach(row.items) { cell($0) }
-                        }
-                    }
-                }
-                .onAppear {
-                    // The artwork of the next 20 rows, so it's there when the focus gets to them.
-                    let start = min(block.index + Self.rowsPerBlock, rows.count)
-                    let ahead = rows[start..<min(start + Self.prefetchRows, rows.count)]
-                    ImageLoader.shared.prefetch(ahead.flatMap(\.items).compactMap(\.posterURL))
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .onGeometryChange(for: CGFloat.self, of: \.size.width) { gridWidth = $0 }
-    }
-    #else
+    #if !os(tvOS)
     private var posterGrid: some View {
         LazyVGrid(columns: columns, spacing: LockupMetrics.gridRowSpacing) {
             ForEach(filtered) { cell($0) }
@@ -123,24 +70,44 @@ struct BrowseView: View {
     }
     #endif
 
+    /// Started movies / series and favorites first, unless the user is narrowing the list down.
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            CategoryChips(options: categoryOptions, selection: $selectedCategory)
+            if search.isEmpty && selectedCategory == nil {
+                ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
+                let favorites = store.favorites(kind)
+                if !favorites.isEmpty {
+                    MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        #if os(tvOS)
+        // A UIKit collection view: SwiftUI grids crawled through thousands of posters on Apple TV.
+        TVPosterGrid(items: filtered, favoriteIDs: Set(store.favoriteIDs), onSelect: { selectedItem = $0 },
+                     onToggleFavorite: { store.toggleFavorite($0) }) {
+            header.padding(.vertical)
+        }
+        .ignoresSafeArea(edges: .bottom)
+        #else
+        ScrollView {
+            VStack(alignment: .leading, spacing: 22) {
+                header
+                posterGrid
+                    .padding(.horizontal)
+            }
+            .padding(.vertical)
+        }
+        #endif
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    // Started movies / series and favorites first, unless the user is narrowing the list down.
-                    CategoryChips(options: categoryOptions, selection: $selectedCategory)
-                    if search.isEmpty && selectedCategory == nil {
-                        ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
-                        let favorites = store.favorites(kind)
-                        if !favorites.isEmpty {
-                            MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
-                        }
-                    }
-                    posterGrid
-                        .padding(.horizontal)
-                }
-                .padding(.vertical)
-            }
+            content
             .background(Theme.background.ignoresSafeArea())
             .tabScreenTitle(title)
             .providerToolbar()
