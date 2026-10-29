@@ -2015,6 +2015,28 @@
         }
       }
     },
+    "Remove from Continue Watching" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus „Weiterschauen“ entfernen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar de Seguir viendo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer de « Reprendre »"
+          }
+        }
+      }
+    },
     "Remove from Favorites" : {
       "localizations" : {
         "de" : {

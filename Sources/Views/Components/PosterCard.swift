@@ -129,7 +129,7 @@ struct ContinueWatchingRow: View {
                                            subtitle: entry.progress.episodeLabel)
                             }
                             .lockupButtonStyle()
-                            .favoriteContextMenu(entry.item)
+                            .favoriteContextMenu(entry.item, inContinueWatching: true)
                         }
                     }
                     .padding(.horizontal)

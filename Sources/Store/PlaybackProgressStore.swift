@@ -15,6 +15,12 @@ struct PlaybackProgress: Codable, Hashable {
     var updatedAt: Date
     /// Watched to the end: kept for a while so other devices drop it too, never resumed.
     var isFinished: Bool
+    /// Removed from Continue Watching by the user: kept (and synced) so other devices drop it too, never resumed.
+    /// Optional for entries saved before it existed.
+    var isDismissed: Bool?
+
+    /// Offered to resume and listed under Continue Watching.
+    var isResumable: Bool { !isFinished && isDismissed != true }
 
     var fraction: Double { duration > 0 ? min(max(position / duration, 0), 1) : 0 }
 

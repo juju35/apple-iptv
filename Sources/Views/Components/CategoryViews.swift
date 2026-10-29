@@ -138,6 +138,8 @@ struct CategoryChips<ID: Hashable>: View {
 private struct FavoriteContextMenu: ViewModifier {
     @EnvironmentObject private var store: AppStore
     let item: MediaItem
+    /// Offers to drop the item from Continue Watching (in that row).
+    let inContinueWatching: Bool
 
     func body(content: Content) -> some View {
         content.contextMenu {
@@ -150,12 +152,21 @@ private struct FavoriteContextMenu: ViewModifier {
                     Label("Add to Favorites", systemImage: "heart")
                 }
             }
+            if inContinueWatching {
+                Button(role: .destructive) {
+                    store.removeFromContinueWatching(item)
+                } label: {
+                    Label("Remove from Continue Watching", systemImage: "xmark.circle")
+                }
+            }
         }
     }
 }
 
 extension View {
-    func favoriteContextMenu(_ item: MediaItem) -> some View {
-        modifier(FavoriteContextMenu(item: item))
+    /// Long press (right click on the Mac): add to / remove from the favorites, and in the Continue Watching row,
+    /// drop the movie or series from it.
+    func favoriteContextMenu(_ item: MediaItem, inContinueWatching: Bool = false) -> some View {
+        modifier(FavoriteContextMenu(item: item, inContinueWatching: inContinueWatching))
     }
 }
