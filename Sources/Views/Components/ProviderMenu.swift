@@ -22,7 +22,7 @@ extension View {
         #if os(tvOS)
         overlay {
             ProviderMenu()
-                .padding(.top, 62)
+                .padding(.top, 53)
                 .padding(.trailing, 90)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .ignoresSafeArea()
@@ -129,7 +129,7 @@ struct ProviderAvatar: View {
     }
 
     #if os(tvOS)
-    private static let size: CGFloat = 44
+    private static let size: CGFloat = 40
     #else
     private static let size: CGFloat = 30
     #endif
