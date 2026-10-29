@@ -45,8 +45,6 @@ struct MainTabView: View {
     #if os(macOS)
     /// Player shown over the whole window: macOS sheets can't fill it.
     @State private var windowPlayback: PlaybackRequest?
-    /// Title bar and tabs over the player: hidden during playback, shown with the player controls.
-    @State private var playerChromeVisible = true
     #endif
 
     var body: some View {
@@ -82,16 +80,12 @@ struct MainTabView: View {
             if let request = windowPlayback {
                 PlayerView(request: request)
                     .id(request.id)
-                    .environment(\.closePlayer, ClosePlayerAction {
-                        windowPlayback = nil
-                        playerChromeVisible = true
-                    })
-                    .environment(\.playerChromeVisible, $playerChromeVisible)
+                    .environment(\.closePlayer, ClosePlayerAction { windowPlayback = nil })
                     .ignoresSafeArea()
             }
         }
-        .toolbar(windowPlayback != nil && !playerChromeVisible ? .hidden : .automatic,
-                 for: .windowToolbar)
+        // The title bar and tabs stay hidden for the whole playback: only the player's own controls show.
+        .toolbar(windowPlayback != nil ? .hidden : .automatic, for: .windowToolbar)
         #endif
         #if os(iOS)
         // Screenshot mode: `-demoScreen player` shows the player's fold layout over the tabs.

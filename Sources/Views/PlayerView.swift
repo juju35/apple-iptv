@@ -224,9 +224,6 @@ extension EnvironmentValues {
     @Entry var presentPlayer: PresentPlayerAction?
     /// Closes the window-overlay player; nil when the player is a sheet or full-screen cover.
     @Entry var closePlayer: ClosePlayerAction?
-    /// Whether the window chrome (title bar, tabs) shows over the window-overlay player (macOS).
-    /// Players keep it in step with their own controls, so it appears on click and hides while playing.
-    @Entry var playerChromeVisible: Binding<Bool>?
 }
 
 /// Equatable wrapper so re-setting the environment value doesn't invalidate readers on every update.
@@ -362,14 +359,14 @@ struct SystemPlayerView: View {
 }
 
 /// System video player. On macOS with our close button; on iOS AVKit shows its own (the player inherits the
-/// full-screen presentation), so ours would be a second one. The close button / channel bar, the window chrome
-/// (macOS) and the status bar / home indicator (iOS) stay hidden during playback; a click or tap brings them back.
+/// full-screen presentation), so ours would be a second one. The close button / channel bar and the status bar /
+/// home indicator (iOS) stay hidden during playback; a click or tap brings them back. On macOS the window's title
+/// bar and tabs stay hidden for the whole playback.
 struct StandardPlayerView: View {
     let player: AVPlayer
     let onClose: () -> Void
 
     #if !os(tvOS)
-    @Environment(\.playerChromeVisible) private var chromeVisible
     @State private var controlsVisible = true
     @State private var hideControlsTask: Task<Void, Never>?
     #endif
@@ -393,9 +390,6 @@ struct StandardPlayerView: View {
         }
         .onAppear { scheduleHide() }
         .onDisappear { hideControlsTask?.cancel() }
-        .onChange(of: controlsVisible) { _, visible in
-            chromeVisible?.wrappedValue = visible
-        }
         #if os(iOS)
         .statusBarHidden(!controlsVisible)
         .persistentSystemOverlays(controlsVisible ? .automatic : .hidden)
@@ -441,6 +435,8 @@ struct StandardPlayerView: View {
                 .font(.title)
                 .foregroundStyle(.white.opacity(0.8))
                 .padding()
+                // Clear of the window's close / minimize / zoom buttons.
+                .padding(.leading, Theme.windowControlsInset)
         }
         .buttonStyle(.plain)
     }

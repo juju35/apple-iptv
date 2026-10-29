@@ -187,7 +187,6 @@ struct VLCPlayerView: View {
 
     @State private var controller = VLCPlayerController()
     @State private var controlsVisible = true
-    @Environment(\.playerChromeVisible) private var chromeVisible
     @Environment(\.channelSwitcher) private var channelSwitcher
     @State private var hideControlsTask: Task<Void, Never>?
 
@@ -219,9 +218,6 @@ struct VLCPlayerView: View {
         }
         .onChange(of: controller.isPlaying) { _, playing in
             if playing { scheduleHide() } else { controlsVisible = true }
-        }
-        .onChange(of: controlsVisible) { _, visible in
-            chromeVisible?.wrappedValue = visible
         }
     }
 
@@ -319,6 +315,10 @@ struct VLCPlayerView: View {
                 Spacer()
             }
             .padding()
+            #if os(macOS)
+            // Clear of the window's close / minimize / zoom buttons.
+            .padding(.leading, Theme.windowControlsInset)
+            #endif
 
             Spacer()
 
