@@ -41,6 +41,9 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
     private var itemIDs: [String] = []
     private var favoriteIDs: Set<String> = []
     private var header = AnyView(EmptyView())
+    /// Measured: a self-sizing hosted cell kept its estimate and the posters overlapped the header's rows.
+    private var headerHeight: CGFloat = 400
+    private let sizer = UIHostingController(rootView: AnyView(EmptyView()))
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, Row>!
 
@@ -48,7 +51,7 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: Self.layout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
@@ -75,6 +78,13 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
     func update(items: [MediaItem], favoriteIDs: Set<String>, header: AnyView) {
         loadViewIfNeeded()
         self.header = header
+        sizer.rootView = header
+        let width = view.bounds.width > 0 ? view.bounds.width : 1920
+        let height = ceil(sizer.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude)).height)
+        if abs(height - headerHeight) > 0.5 {
+            headerHeight = height
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
         let ids = items.map(\.id)
         let favoritesChanged = favoriteIDs != self.favoriteIDs
         self.favoriteIDs = favoriteIDs
@@ -96,10 +106,12 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
         dataSource.apply(snapshot, animatingDifferences: false)
     }
 
-    private static func layout() -> UICollectionViewCompositionalLayout {
-        UICollectionViewCompositionalLayout { section, environment in
+    private func layout() -> UICollectionViewCompositionalLayout {
+        let posterSize = Self.posterSize
+        return UICollectionViewCompositionalLayout { [weak self] section, environment in
             if section == 0 {
-                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(400))
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(self?.headerHeight ?? 400))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitems: [.init(layoutSize: size)])
                 return NSCollectionLayoutSection(group: group)
             }
