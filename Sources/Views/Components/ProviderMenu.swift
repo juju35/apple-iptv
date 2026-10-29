@@ -21,9 +21,10 @@ extension View {
     func providerToolbar(barHasTitle: Bool = true) -> some View {
         #if os(tvOS)
         overlay {
+            // Same inset from the top and the right edge as the tab bar from the top.
             ProviderMenu()
                 .padding(.top, 53)
-                .padding(.trailing, 90)
+                .padding(.trailing, 53)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .ignoresSafeArea()
         }
