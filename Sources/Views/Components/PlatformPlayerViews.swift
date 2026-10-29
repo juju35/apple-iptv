@@ -48,9 +48,9 @@ struct UIKitPlayerView: UIViewControllerRepresentable {
         context.coordinator.onTap = onTap
     }
 
-    /// Embeds `AVPlayerViewController` (not meant to be subclassed) to re-attach the player when
-    /// the view appears again: after an iPhone Duo layout switch or a move to the other screen the
-    /// picture can otherwise stay black while the sound goes on.
+    /// Embeds `AVPlayerViewController` (not meant to be subclassed) to re-attach the player after an
+    /// iPhone Duo layout switch or a move to the other screen, where the picture can otherwise stay
+    /// black while the sound goes on.
     final class PlayerHostController: UIViewController {
         let playerController = AVPlayerViewController()
 
@@ -63,14 +63,36 @@ struct UIKitPlayerView: UIViewControllerRepresentable {
             playerController.didMove(toParent: self)
         }
 
+        /// Screen the player was last attached on.
+        private weak var attachedScreen: UIScreen?
+        private var hasAppeared = false
+
         override func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
-            reattachPlayer()
+            // First appearance: a fresh surface after a layout switch. Later ones (back from AVKit's own
+            // full screen, rotations) must not touch the player: detaching it mid-presentation leaves
+            // AVKit's full-screen view without controls nor a way out.
+            if !hasAppeared {
+                hasAppeared = true
+                attachedScreen = view.window?.windowScene?.screen
+                reattachPlayer()
+            } else {
+                reattachIfScreenChanged()
+            }
         }
 
-        override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-            super.viewWillTransition(to: size, with: coordinator)
-            coordinator.animate(alongsideTransition: nil) { [weak self] _ in self?.reattachPlayer() }
+        override func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+            reattachIfScreenChanged()
+        }
+
+        /// Moving to the other iPhone Duo screen can leave the picture black: attach the player again.
+        private func reattachIfScreenChanged() {
+            // Never while AVKit presents its own full screen.
+            guard hasAppeared, presentedViewController == nil, playerController.presentedViewController == nil,
+                  let screen = view.window?.windowScene?.screen, screen !== attachedScreen else { return }
+            attachedScreen = screen
+            reattachPlayer()
         }
 
         private func reattachPlayer() {
