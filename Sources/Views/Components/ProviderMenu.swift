@@ -16,7 +16,9 @@ struct ShowSettingsAction: Equatable {
 extension View {
     /// Adds the provider switcher at the trailing end of the toolbar; on Apple TV, whose tab bar has no room,
     /// level with the tab bar at the top right (over the content, which keeps its full height).
-    func providerToolbar() -> some View {
+    /// `barHasTitle`: false when the navigation bar holds nothing but the switcher (Home), so it can go
+    /// when the switcher moves out of it.
+    func providerToolbar(barHasTitle: Bool = true) -> some View {
         #if os(tvOS)
         overlay {
             ProviderMenu()
@@ -25,6 +27,8 @@ extension View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .ignoresSafeArea()
         }
+        #elseif os(iOS)
+        modifier(ProviderToolbarModifier(barHasTitle: barHasTitle))
         #else
         toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -34,6 +38,43 @@ extension View {
         #endif
     }
 }
+
+#if os(iOS)
+/// The switcher in the toolbar, except when the status bar runs down the trailing edge (iPhone Duo in
+/// landscape): it then sits in that column under the network icons, above the side tab bar.
+private struct ProviderToolbarModifier: ViewModifier {
+    let barHasTitle: Bool
+    @State private var insets = EdgeInsets()
+
+    /// Status bar column on the trailing side only (a notched iPhone in landscape has insets on both sides).
+    /// The top inset isn't checked: it includes the navigation bar.
+    private var hasSideStatusBar: Bool {
+        insets.trailing > 40 && insets.leading < 10
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets = $0 }
+            .toolbar {
+                if !hasSideStatusBar {
+                    ToolbarItem(placement: .primaryAction) {
+                        ProviderMenu()
+                    }
+                }
+            }
+            .toolbar(hasSideStatusBar && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
+            .overlay {
+                if hasSideStatusBar {
+                    ProviderMenu()
+                        .frame(width: insets.trailing)
+                        .padding(.top, 125)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .ignoresSafeArea()
+                }
+            }
+    }
+}
+#endif
 
 /// Profile-style button: the selected provider's initials; its menu switches providers.
 struct ProviderMenu: View {
