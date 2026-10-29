@@ -30,7 +30,8 @@ struct BrowseView: View {
     }
 
     private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: Theme.posterWidth, maximum: Theme.posterWidth * 1.4), spacing: 16)]
+        [GridItem(.adaptive(minimum: Theme.posterWidth, maximum: Theme.posterWidth * 1.4),
+                  spacing: LockupMetrics.gridSpacing)]
     }
 
     var body: some View {
@@ -46,12 +47,12 @@ struct BrowseView: View {
                             MediaRow(title: "Favorites", items: favorites) { selectedItem = $0 }
                         }
                     }
-                    LazyVGrid(columns: columns, spacing: 22) {
+                    LazyVGrid(columns: columns, spacing: LockupMetrics.gridRowSpacing) {
                         ForEach(filtered) { item in
                             Button { selectedItem = item } label: {
                                 PosterCard(item: item)
                             }
-                            .buttonStyle(.plain)
+                            .lockupButtonStyle()
                             .favoriteContextMenu(item)
                         }
                     }
@@ -63,7 +64,7 @@ struct BrowseView: View {
             .navigationTitle(title)
             .providerToolbar()
             .modifier(BrowseSearch(text: $search))
-            .sheet(item: $selectedItem) { item in
+            .detailPresentation(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
             .task(id: filtered.count) {
@@ -90,6 +91,9 @@ struct BrowseSearch: ViewModifier {
         } else {
             systemSearch(content)
         }
+        #elseif os(tvOS)
+        // Apple TV searches from its own tab (SearchView): no keyboard over every list.
+        content
         #else
         systemSearch(content)
         #endif

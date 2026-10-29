@@ -169,7 +169,7 @@ for part in ${only//,/ }; do
     iphone) shoot "$IPHONE" iphone-6.9 "$(ios_app)" home movies detail live settings ;;
     ipad) shoot "$IPAD" ipad-13 "$(ios_app)" home detail ;;
     duo) shoot_duo ;;
-    tv) shoot "$TV" apple-tv "$(tv_app)" home movies detail ;;
+    tv) shoot "$TV" apple-tv "$(tv_app)" home movies detail live search ;;
     *) echo "Unknown ONLY part: $part" >&2; exit 2 ;;
   esac
 done

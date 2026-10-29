@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// Detail sheet: artwork, metadata, play button, episodes for series, EPG for live.
+/// On Apple TV a full screen instead: artwork behind, title and actions low on the left, episodes below.
 struct MediaDetailView: View {
     @EnvironmentObject private var store: AppStore
     @EnvironmentObject private var guide: EPGStore
@@ -16,21 +17,19 @@ struct MediaDetailView: View {
     @State private var isResolving = false
 
     var body: some View {
+        #if os(tvOS)
+        tvBody
+            .task { await loadDetails() }
+            .fullScreenCover(item: $playback) { request in
+                PlayerView(request: request)
+            }
+        #else
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     header
 
-                    switch item.kind {
-                    case .live:
-                        playButton(label: "Watch Live") {
-                            play(ref: item.playbackRef, ext: item.containerExtension)
-                        }
-                    case .movie:
-                        movieButtons
-                    case .series:
-                        EmptyView()
-                    }
+                    primaryActions
 
                     if let plot = item.plot, !plot.isEmpty {
                         Text(plot).foregroundStyle(Theme.textSecondary)
@@ -61,7 +60,105 @@ struct MediaDetailView: View {
             }
         }
         .preferredColorScheme(.dark)
+        #endif
     }
+
+    /// Watch Live, Play / Resume + Start Over; a series' play button comes with its episodes.
+    @ViewBuilder
+    private var primaryActions: some View {
+        switch item.kind {
+        case .live:
+            playButton(label: "Watch Live") {
+                play(ref: item.playbackRef, ext: item.containerExtension)
+            }
+        case .movie:
+            movieButtons
+        case .series:
+            EmptyView()
+        }
+    }
+
+    #if os(tvOS)
+    // MARK: - Apple TV
+
+    private var tvBody: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 56) {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(item.name)
+                        .font(.title.weight(.bold))
+                        .lineLimit(2)
+                    if !tvMetadata.isEmpty {
+                        Text(tvMetadata)
+                            .font(.callout.weight(.medium))
+                            .foregroundStyle(.white.opacity(0.75))
+                    }
+                    if let plot = item.plot, !plot.isEmpty {
+                        Text(plot)
+                            .font(.callout)
+                            .foregroundStyle(.white.opacity(0.8))
+                            .lineLimit(4)
+                    }
+                    if let loadError {
+                        Label(loadError, systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.orange)
+                    }
+                    HStack(spacing: 30) {
+                        primaryActions
+                        if item.kind == .series {
+                            seriesPlayAction
+                        }
+                        favoriteButton
+                    }
+                    .padding(.top, 10)
+                }
+                .frame(maxWidth: 1100, alignment: .leading)
+                // The first screen shows the artwork, with the title and actions low on the left.
+                .frame(maxWidth: .infinity, minHeight: 640, alignment: .bottomLeading)
+
+                if item.kind == .live, !epg.isEmpty {
+                    epgSection
+                }
+                if item.kind == .series {
+                    seasonEpisodes
+                }
+            }
+            .padding(.horizontal, 80)
+            .padding(.vertical, 60)
+        }
+        .scrollClipDisabled()
+        .background { tvBackdrop }
+    }
+
+    /// The artwork across the whole screen, softened and shaded from the left and the bottom for the text.
+    private var tvBackdrop: some View {
+        ZStack {
+            Theme.background
+            AsyncImage(url: item.posterURL) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill().blur(radius: 20)
+                } else {
+                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
+                }
+            }
+            .opacity(0.7)
+            LinearGradient(colors: [Theme.background.opacity(0.95), Theme.background.opacity(0.4), .clear],
+                           startPoint: .leading, endPoint: .trailing)
+            LinearGradient(colors: [.clear, Theme.background.opacity(0.85), Theme.background],
+                           startPoint: .top, endPoint: .bottom)
+        }
+        .ignoresSafeArea()
+    }
+
+    /// "2025 · ★ 4.3 · Drama".
+    private var tvMetadata: String {
+        var parts: [String] = []
+        if let year = item.year, !year.isEmpty { parts.append(year) }
+        if let rating = item.rating, rating > 0 { parts.append("★ " + String(format: "%.1f", rating)) }
+        parts.append(store.categoryName(item.categoryId, kind: item.kind))
+        return parts.joined(separator: " · ")
+    }
+    #endif
 
     // MARK: - Sections
 
@@ -152,12 +249,19 @@ struct MediaDetailView: View {
         Button(action: action) {
             Label("Start Over", systemImage: "arrow.counterclockwise")
                 .font(.subheadline.weight(.semibold))
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: Self.actionMaxWidth)
                 .padding(.vertical, 6)
         }
         .buttonStyle(.bordered)
         .disabled(isResolving)
     }
+
+    /// Full-width actions in the sheet; side by side, at their own size, on Apple TV.
+    #if os(tvOS)
+    private static let actionMaxWidth: CGFloat? = nil
+    #else
+    private static let actionMaxWidth: CGFloat? = .infinity
+    #endif
 
     /// "1:02:03" or "12:34".
     private static func timeText(_ seconds: Double) -> String {
@@ -179,11 +283,10 @@ struct MediaDetailView: View {
                 Text(isResolving ? "Loading…" : label)
             }
             .font(.headline)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: Self.actionMaxWidth)
             .padding(.vertical, 10)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(Theme.accent)
+        .primaryActionStyle()
         .disabled(isResolving)
     }
 
@@ -212,10 +315,21 @@ struct MediaDetailView: View {
 
     @ViewBuilder
     private var episodesSection: some View {
-        if let detail, let firstSeason = detail.seasons.keys.min() {
-            let resumed = resumedEpisode(in: detail)
-            let season = selectedSeason ?? resumed?.episode.season ?? firstSeason
-            if let resumed {
+        seriesPlayAction
+        seasonEpisodes
+    }
+
+    /// The season shown: picked by the user, else the one being watched, else the first.
+    private func shownSeason(in detail: SeriesDetail) -> Int? {
+        guard let first = detail.seasons.keys.min() else { return nil }
+        return selectedSeason ?? resumedEpisode(in: detail)?.episode.season ?? first
+    }
+
+    /// Resume the episode being watched, else play the first one of the season shown.
+    @ViewBuilder
+    private var seriesPlayAction: some View {
+        if let detail, let season = shownSeason(in: detail) {
+            if let resumed = resumedEpisode(in: detail) {
                 playButton(label: "Resume S\(resumed.episode.season) E\(resumed.episode.episode)"
                            + " · \(Self.timeText(resumed.progress.position))") {
                     playEpisode(resumed.episode)
@@ -225,6 +339,16 @@ struct MediaDetailView: View {
                     playEpisode(first)
                 }
             }
+        } else if detail != nil {
+            playButton(label: "Play") {
+                play(ref: item.playbackRef, ext: item.containerExtension)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var seasonEpisodes: some View {
+        if let detail, let season = shownSeason(in: detail) {
             SeasonEpisodesView(
                 detail: detail,
                 season: Binding(get: { season }, set: { selectedSeason = $0 }),
@@ -235,10 +359,6 @@ struct MediaDetailView: View {
             )
         } else if detail == nil {
             ProgressView().frame(maxWidth: .infinity)
-        } else {
-            playButton(label: "Play") {
-                play(ref: item.playbackRef, ext: item.containerExtension)
-            }
         }
     }
 

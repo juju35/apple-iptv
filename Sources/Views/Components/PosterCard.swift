@@ -35,10 +35,11 @@ struct PosterCard: View {
                             ))
                     }
                 }
+                .lockupArtwork()
             Text(item.name)
-                .font(.caption)
+                .font(Self.titleFont)
                 .lineLimit(1)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(Self.titleColor)
                 .frame(width: Theme.posterWidth, alignment: .leading)
             if let subtitle {
                 Text(subtitle)
@@ -68,6 +69,15 @@ struct PosterCard: View {
     private var placeholder: some View {
         GeneratedArtwork(title: item.name, kind: item.kind)
     }
+
+    // Read from the couch on Apple TV: larger and brighter than the phone's caption.
+    #if os(tvOS)
+    private static let titleFont = Font.callout.weight(.medium)
+    private static let titleColor = Color.white.opacity(0.85)
+    #else
+    private static let titleFont = Font.caption
+    private static let titleColor = Theme.textSecondary
+    #endif
 }
 
 struct MediaRow: View {
@@ -81,20 +91,21 @@ struct MediaRow: View {
                 .font(.title3.weight(.semibold))
                 .padding(.horizontal)
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 14) {
+                LazyHStack(spacing: LockupMetrics.rowSpacing) {
                     ForEach(items) { item in
                         Button { onSelect(item) } label: {
                             PosterCard(item: item)
                         }
-                        .buttonStyle(.plain)
+                        .lockupButtonStyle()
                         .favoriteContextMenu(item)
                     }
                 }
                 .padding(.horizontal)
                 #if os(tvOS)
-                .padding(.vertical, 24)
+                .padding(.vertical, 40)
                 #endif
             }
+            .scrollClipDisabled()
         }
     }
 }
@@ -111,21 +122,22 @@ struct ContinueWatchingRow: View {
                     .font(.title3.weight(.semibold))
                     .padding(.horizontal)
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(alignment: .top, spacing: 14) {
+                    LazyHStack(alignment: .top, spacing: LockupMetrics.rowSpacing) {
                         ForEach(entries) { entry in
                             Button { onSelect(entry.item) } label: {
                                 PosterCard(item: entry.item, progress: entry.progress.fraction,
                                            subtitle: entry.progress.episodeLabel)
                             }
-                            .buttonStyle(.plain)
+                            .lockupButtonStyle()
                             .favoriteContextMenu(entry.item)
                         }
                     }
                     .padding(.horizontal)
                     #if os(tvOS)
-                    .padding(.vertical, 24)
+                    .padding(.vertical, 40)
                     #endif
                 }
+                .scrollClipDisabled()
             }
         }
     }

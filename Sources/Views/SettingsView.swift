@@ -314,8 +314,7 @@ struct OnboardingView: View {
                     .font(.headline)
                     .padding(.horizontal, 20).padding(.vertical, 8)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Theme.accent)
+            .primaryActionStyle()
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

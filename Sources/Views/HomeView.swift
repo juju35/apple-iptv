@@ -67,7 +67,7 @@ struct HomeView: View {
             .background(Theme.background.ignoresSafeArea())
             .refreshableIfSupported { await store.reload(force: true) }
             .providerToolbar()
-            .sheet(item: $selectedItem) { item in
+            .detailPresentation(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
         }
@@ -78,18 +78,25 @@ struct HeroBanner: View {
     let item: MediaItem
     let onPlay: () -> Void
 
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: item.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill()
-                } else {
-                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
-                }
+    private var artwork: some View {
+        AsyncImage(url: item.posterURL) { phase in
+            if case .success(let image) = phase {
+                image.resizable().scaledToFill()
+            } else {
+                GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
             }
-            .frame(height: Theme.heroHeight)
-            .frame(maxWidth: .infinity)
-            .clipped()
+        }
+        .frame(height: Theme.heroHeight)
+        .frame(maxWidth: .infinity)
+        .clipped()
+    }
+
+    var body: some View {
+        #if os(tvOS)
+        tvBody
+        #else
+        ZStack(alignment: .bottomLeading) {
+            artwork
 
             LinearGradient(
                 colors: [.clear, Theme.background.opacity(0.85), Theme.background],
@@ -112,12 +119,65 @@ struct HeroBanner: View {
                         .padding(.horizontal, 22)
                         .padding(.vertical, 8)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.accent)
+                .primaryActionStyle()
             }
             .padding(24)
         }
+        #endif
     }
+
+    #if os(tvOS)
+    /// Apple TV top shelf style: edge-to-edge artwork, shaded from the left and the bottom, the title and a
+    /// single system button over it.
+    private var tvBody: some View {
+        ZStack(alignment: .bottomLeading) {
+            artwork
+            LinearGradient(colors: [Theme.background.opacity(0.9), .clear],
+                           startPoint: .leading, endPoint: .center)
+            LinearGradient(colors: [.clear, Theme.background],
+                           startPoint: .center, endPoint: .bottom)
+
+            VStack(alignment: .leading, spacing: 18) {
+                Text(item.name)
+                    .font(.title.weight(.bold))
+                    .lineLimit(2)
+                if !metadata.isEmpty {
+                    Text(metadata)
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.75))
+                }
+                if let plot = item.plot, !plot.isEmpty {
+                    Text(plot)
+                        .font(.callout)
+                        .foregroundStyle(.white.opacity(0.75))
+                        .lineLimit(2)
+                }
+                Button(action: onPlay) {
+                    Label("Play", systemImage: "play.fill")
+                }
+                .primaryActionStyle()
+                .padding(.top, 8)
+            }
+            .frame(maxWidth: 1000, alignment: .leading)
+            .padding(.horizontal, 80)
+            .padding(.bottom, 50)
+        }
+        .ignoresSafeArea(edges: [.top, .horizontal])
+    }
+
+    /// "2025 · ★ 4.3 · Movie".
+    private var metadata: String {
+        var parts: [String] = []
+        if let year = item.year, !year.isEmpty { parts.append(year) }
+        if let rating = item.rating, rating > 0 { parts.append("★ " + String(format: "%.1f", rating)) }
+        switch item.kind {
+        case .movie: parts.append("Movie")
+        case .series: parts.append("Series")
+        case .live: parts.append("Live")
+        }
+        return parts.joined(separator: " · ")
+    }
+    #endif
 }
 
 struct ErrorBanner: View {

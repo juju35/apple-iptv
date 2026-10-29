@@ -35,6 +35,9 @@ struct RootView: View {
 
 enum MainTab: Hashable {
     case home, live, movies, series, settings
+    #if os(tvOS)
+    case search
+    #endif
 }
 
 struct MainTabView: View {
@@ -48,6 +51,12 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $tab) {
+            #if os(tvOS)
+            // First, as in Apple's own apps: the only place to search on Apple TV.
+            SearchView()
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(MainTab.search)
+            #endif
             HomeView()
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag(MainTab.home)
@@ -64,7 +73,7 @@ struct MainTabView: View {
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(MainTab.settings)
         }
-        .tint(Theme.accent)
+        .brandTint()
         .background(Theme.background)
         .environment(\.showSettings) { tab = .settings }
         #if os(macOS)
@@ -104,6 +113,12 @@ extension Demo.Screen {
         case .movies: return .movies
         case .series, .detail: return .series
         case .settings: return .settings
+        case .search:
+            #if os(tvOS)
+            return .search
+            #else
+            return .home
+            #endif
         }
     }
 }

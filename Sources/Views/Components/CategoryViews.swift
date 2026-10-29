@@ -34,22 +34,32 @@ struct CategorySidebar<ID: Hashable>: View {
                                     .foregroundStyle(Theme.textSecondary)
                             }
                         }
-                        .font(.subheadline.weight(option.id == selection ? .semibold : .regular))
+                        .font(Self.rowFont.weight(option.id == selection ? .semibold : .regular))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(option.id == selection ? Theme.accent.opacity(0.9) : .clear)
+                                .fill(option.id == selection ? Self.selectionFill : .clear)
                         )
                         .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .rowButtonStyle()
                 }
             }
             .padding(8)
         }
         .background(Theme.surface.opacity(0.35))
     }
+
+    // Apple TV: focus already highlights the row, the selection is a quiet fill.
+    // (Computed: generic types can't have static stored properties.)
+    #if os(tvOS)
+    private static var rowFont: Font { .callout }
+    private static var selectionFill: Color { .white.opacity(0.14) }
+    #else
+    private static var rowFont: Font { .subheadline }
+    private static var selectionFill: Color { Theme.accent.opacity(0.9) }
+    #endif
 }
 
 /// Horizontal, scrolling category chips.
@@ -61,26 +71,62 @@ struct CategoryChips<ID: Hashable>: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 8) {
                 ForEach(options) { option in
-                    Button {
-                        selection = option.id
-                    } label: {
-                        HStack(spacing: 6) {
-                            if let systemImage = option.systemImage {
-                                Image(systemName: systemImage)
-                            }
-                            Text(option.title).lineLimit(1)
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 7)
-                        .background(Capsule().fill(option.id == selection ? Theme.accent : Theme.surface))
-                        .foregroundStyle(option.id == selection ? .white : Theme.textSecondary)
-                    }
-                    .buttonStyle(.plain)
+                    chip(option)
                 }
             }
             .padding(.horizontal)
+            #if os(tvOS)
+            .padding(.vertical, 20)
+            #endif
         }
+        #if os(tvOS)
+        .scrollClipDisabled()
+        #endif
+    }
+
+    @ViewBuilder
+    private func chip(_ option: ChipOption<ID>) -> some View {
+        let isSelected = option.id == selection
+        #if os(tvOS)
+        // System capsules: translucent, white when focused; the selected one stays filled.
+        Button {
+            selection = option.id
+        } label: {
+            label(option)
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .overlay {
+            if isSelected {
+                Capsule().strokeBorder(.white.opacity(0.9), lineWidth: 3)
+            }
+        }
+        #else
+        Button {
+            selection = option.id
+        } label: {
+            label(option)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
+                .background(Capsule().fill(isSelected ? Theme.accent : Theme.surface))
+                .foregroundStyle(isSelected ? .white : Theme.textSecondary)
+        }
+        .buttonStyle(.plain)
+        #endif
+    }
+
+    private func label(_ option: ChipOption<ID>) -> some View {
+        HStack(spacing: 6) {
+            if let systemImage = option.systemImage {
+                Image(systemName: systemImage)
+            }
+            Text(option.title).lineLimit(1)
+        }
+        #if os(tvOS)
+        .font(.callout.weight(.semibold))
+        #else
+        .font(.subheadline.weight(.semibold))
+        #endif
     }
 }
 

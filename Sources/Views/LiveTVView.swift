@@ -24,6 +24,10 @@ struct LiveTVView: View {
     @State private var playback: PlaybackRequest?
     @State private var resolvingID: String?
     @State private var playError: String?
+    #if os(tvOS)
+    /// The focused channel: on Apple TV focus picks the channel shown in the info panel, a click plays it.
+    @FocusState private var focusedChannelID: String?
+    #endif
 
     private var isWide: Bool {
         #if os(iOS)
@@ -81,7 +85,7 @@ struct LiveTVView: View {
             .navigationTitle("Live TV")
             .providerToolbar()
             .modifier(BrowseSearch(text: $search))
-            .sheet(item: $detailItem) { item in
+            .detailPresentation(item: $detailItem) { item in
                 MediaDetailView(item: item)
             }
             .fullScreenCoverCompat(item: $playback) { request in
@@ -129,13 +133,24 @@ struct LiveTVView: View {
                     } label: {
                         ChannelRow(channel: channel, isHighlighted: isWide && channel.id == highlightedID)
                     }
-                    .buttonStyle(.plain)
+                    .rowButtonStyle()
+                    #if os(tvOS)
+                    .focused($focusedChannelID, equals: channel.id)
+                    #endif
                     .favoriteContextMenu(channel)
                 }
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
         }
+        #if os(tvOS)
+        .scrollClipDisabled()
+        .onChange(of: focusedChannelID) { _, id in
+            guard let id, let channel = channels.first(where: { $0.id == id }) else { return }
+            highlighted = channel
+            playError = nil
+        }
+        #endif
         .onChange(of: group) { _, _ in highlighted = nil }
     }
 
@@ -144,8 +159,12 @@ struct LiveTVView: View {
     // MARK: Actions
 
     /// Large screens: the first click shows the channel's programme, the second one plays it.
-    /// iPhone: opens the channel's detail sheet.
+    /// iPhone: opens the channel's detail sheet. Apple TV: plays it (focus shows the programme).
     private func select(_ channel: MediaItem) {
+        #if os(tvOS)
+        // Focus already shows the channel's programme.
+        watch(channel)
+        #else
         guard isWide else {
             detailItem = channel
             return
@@ -156,6 +175,7 @@ struct LiveTVView: View {
             highlighted = channel
             playError = nil
         }
+        #endif
     }
 
     private func watch(_ channel: MediaItem) {
@@ -220,6 +240,13 @@ struct ChannelRow: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
+        #if os(tvOS)
+        // The card button style draws the platter and the focus; the channel on show keeps a quiet fill.
+        .background(
+            RoundedRectangle(cornerRadius: Theme.cardCornerRadius)
+                .fill(isHighlighted ? Color.white.opacity(0.1) : .clear)
+        )
+        #else
         .background(
             RoundedRectangle(cornerRadius: Theme.cardCornerRadius)
                 .fill(isHighlighted ? Theme.accent.opacity(0.22) : Theme.surface.opacity(0.6))
@@ -228,6 +255,7 @@ struct ChannelRow: View {
             RoundedRectangle(cornerRadius: Theme.cardCornerRadius)
                 .strokeBorder(isHighlighted ? Theme.accent.opacity(0.7) : .clear)
         )
+        #endif
         .contentShape(Rectangle())
     }
 }
@@ -307,8 +335,7 @@ struct ChannelInfoPanel: View {
                         .padding(.horizontal, 20)
                         .padding(.vertical, 6)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Theme.accent)
+                    .primaryActionStyle()
                     .disabled(isResolving)
 
                     Button {

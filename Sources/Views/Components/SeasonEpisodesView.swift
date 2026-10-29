@@ -17,6 +17,9 @@ struct SeasonEpisodesView: View {
     private var thumbnailWidth: CGFloat { Theme.posterWidth * 1.1 }
 
     var body: some View {
+        #if os(tvOS)
+        tvBody
+        #else
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 seasonPicker
@@ -38,7 +41,79 @@ struct SeasonEpisodesView: View {
                 }
             }
         }
+        #endif
     }
+
+    #if os(tvOS)
+    // MARK: Apple TV
+
+    /// Seasons as a segmented control (moving the focus over it switches season), episodes as a shelf of
+    /// 16:9 lockups.
+    private var tvBody: some View {
+        VStack(alignment: .leading, spacing: 30) {
+            HStack(spacing: 30) {
+                if seasons.count > 1 {
+                    Picker("Season", selection: $season) {
+                        ForEach(seasons, id: \.self) { value in
+                            Text(seasonName(value)).tag(value)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .fixedSize()
+                } else {
+                    Text(seasonName(season)).font(.headline)
+                }
+                Text(episodes.count == 1 ? "1 episode" : "\(episodes.count) episodes")
+                    .font(.callout)
+                    .foregroundStyle(.white.opacity(0.6))
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: LockupMetrics.rowSpacing) {
+                    ForEach(episodes) { episode in
+                        Button { onPlay(episode) } label: {
+                            tvLockup(episode)
+                        }
+                        .lockupButtonStyle()
+                    }
+                }
+                .padding(.vertical, 40)
+            }
+            .scrollClipDisabled()
+        }
+    }
+
+    private static let tvStillWidth: CGFloat = 420
+
+    private func tvLockup(_ episode: Episode) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            still(episode)
+                .frame(width: Self.tvStillWidth, height: Self.tvStillWidth * 9 / 16)
+                .overlay(alignment: .bottom) {
+                    if let fraction = progress(episode) {
+                        WatchProgressBar(fraction: fraction)
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .lockupArtwork()
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text("\(episode.episode). \(episode.title)")
+                    .font(.callout.weight(.semibold))
+                    .lineLimit(1)
+                if isWatched(episode) {
+                    WatchedBadge()
+                }
+            }
+            if let plot = episode.plot, !plot.isEmpty {
+                Text(plot)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.65))
+                    .lineLimit(2)
+            }
+        }
+        .frame(width: Self.tvStillWidth, alignment: .leading)
+    }
+    #endif
 
     // MARK: Season picker
 
@@ -80,18 +155,23 @@ struct SeasonEpisodesView: View {
         value == 0 ? "Specials" : "Season \(value)"
     }
 
+    /// The episode's still, else the series artwork.
+    private func still(_ episode: Episode) -> some View {
+        AsyncImage(url: episode.posterURL ?? fallbackArtwork) { phase in
+            if case .success(let image) = phase {
+                image.resizable().scaledToFill()
+            } else {
+                Theme.surface
+            }
+        }
+    }
+
     // MARK: Episode row
 
     private func row(_ episode: Episode) -> some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {
-                AsyncImage(url: episode.posterURL ?? fallbackArtwork) { phase in
-                    if case .success(let image) = phase {
-                        image.resizable().scaledToFill()
-                    } else {
-                        Theme.surface
-                    }
-                }
+                still(episode)
                 Image(systemName: "play.circle.fill")
                     .font(.title)
                     .foregroundStyle(.white.opacity(0.9))

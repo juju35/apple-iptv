@@ -33,9 +33,11 @@ Multiple providers can be configured; switch the active one in Settings.
 | --- | --- | --- | --- |
 | ![Cover screen](screenshots/duo-01-cover.png) | ![Open flat](screenshots/duo-02-open.png) | ![Book](screenshots/duo-03-player-book.png) | ![Laptop](screenshots/duo-04-player-tabletop.png) |
 
-**Apple TV**
+**Apple TV**: native tvOS design (focus lift on posters, full-screen details, a Search tab)
 
-![Apple TV](screenshots/tv-01-home.png)
+| Home | Series | Live TV | Search |
+| --- | --- | --- | --- |
+| ![Home](screenshots/tv-01-home.png) | ![Series](screenshots/tv-03-detail.png) | ![Live TV](screenshots/tv-04-live.png) | ![Search](screenshots/tv-05-search.png) |
 
 **iPad**
 
