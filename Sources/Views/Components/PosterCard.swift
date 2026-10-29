@@ -50,13 +50,10 @@ struct PosterCard: View {
     }
 
     private var poster: some View {
-        AsyncImage(url: item.posterURL) { phase in
-            switch phase {
-            case .success(let image):
-                image.resizable().scaledToFill()
-            default:
-                placeholder
-            }
+        RemoteImage(url: item.posterURL) { image in
+            image.resizable().scaledToFill()
+        } placeholder: {
+            placeholder
         }
         .frame(width: Theme.posterWidth, height: Theme.posterWidth / Theme.posterAspect)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius))

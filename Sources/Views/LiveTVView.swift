@@ -37,7 +37,31 @@ struct LiveTVView: View {
         #endif
     }
 
-    private var channels: [MediaItem] {
+    /// The listed channels and the sidebar's groups, recomputed only when their inputs change: on Apple
+    /// TV every focus move re-renders this view, and filtering hundreds of channels on each one made
+    /// scrolling crawl.
+    @State private var channels: [MediaItem] = []
+    @State private var groups: [ChipOption<ChannelGroup>] = []
+
+    private struct ListInputs: Hashable {
+        let group: ChannelGroup
+        let search: String
+        let liveCount: Int
+        let firstID: String?
+        let lastID: String?
+        let categoryCount: Int
+        let favoriteIDs: [String]
+        let recentIDs: [String]
+    }
+
+    private var listInputs: ListInputs {
+        ListInputs(group: group, search: search, liveCount: store.liveItems.count,
+                   firstID: store.liveItems.first?.id, lastID: store.liveItems.last?.id,
+                   categoryCount: store.liveCategories.count, favoriteIDs: store.favoriteIDs,
+                   recentIDs: store.recentChannelIDs)
+    }
+
+    private func computeChannels() -> [MediaItem] {
         var items: [MediaItem]
         switch group {
         case .all: items = store.liveItems
@@ -52,7 +76,7 @@ struct LiveTVView: View {
     }
 
     /// Categories that still have channels once filters apply, with their channel counts.
-    private var groups: [ChipOption<ChannelGroup>] {
+    private func computeGroups() -> [ChipOption<ChannelGroup>] {
         let counts = Dictionary(store.liveItems.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
         var options = [ChipOption(id: ChannelGroup.all, title: String(localized: "All Channels"), systemImage: "tv",
                                   count: store.liveItems.count)]
@@ -91,6 +115,10 @@ struct LiveTVView: View {
             .fullScreenCoverCompat(item: $playback) { request in
                 PlayerView(request: request)
             }
+        }
+        .onChange(of: listInputs, initial: true) {
+            channels = computeChannels()
+            groups = computeGroups()
         }
     }
 
@@ -267,12 +295,10 @@ struct ChannelLogo: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.06))
-            AsyncImage(url: channel.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFit().padding(6)
-                } else {
-                    GeneratedArtwork(title: channel.name, kind: .live)
-                }
+            RemoteImage(url: channel.posterURL, maxPixelSize: 300) { image in
+                image.resizable().scaledToFit().padding(6)
+            } placeholder: {
+                GeneratedArtwork(title: channel.name, kind: .live)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))

@@ -157,12 +157,10 @@ struct SeasonEpisodesView: View {
 
     /// The episode's still, else the series artwork, else artwork drawn from the episode's title.
     private func still(_ episode: Episode) -> some View {
-        AsyncImage(url: episode.posterURL ?? fallbackArtwork) { phase in
-            if case .success(let image) = phase {
-                image.resizable().scaledToFill()
-            } else {
-                GeneratedArtwork(title: episode.title, kind: .series, showsTitle: false)
-            }
+        RemoteImage(url: episode.posterURL ?? fallbackArtwork) { image in
+            image.resizable().scaledToFill()
+        } placeholder: {
+            GeneratedArtwork(title: episode.title, kind: .series, showsTitle: false)
         }
     }
 
