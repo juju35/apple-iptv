@@ -9,10 +9,6 @@ enum Theme {
 
     static let posterAspect: CGFloat = 2.0 / 3.0
     static let cardCornerRadius: CGFloat = 10
-    #if os(macOS)
-    /// Room for the window's traffic lights over full-window content.
-    static let windowControlsInset: CGFloat = 70
-    #endif
 
     #if os(tvOS)
     static let posterWidth: CGFloat = 260

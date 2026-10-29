@@ -435,8 +435,6 @@ struct StandardPlayerView: View {
                 .font(.title)
                 .foregroundStyle(.white.opacity(0.8))
                 .padding()
-                // Clear of the window's close / minimize / zoom buttons.
-                .padding(.leading, Theme.windowControlsInset)
         }
         .buttonStyle(.plain)
     }

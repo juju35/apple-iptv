@@ -315,10 +315,6 @@ struct VLCPlayerView: View {
                 Spacer()
             }
             .padding()
-            #if os(macOS)
-            // Clear of the window's close / minimize / zoom buttons.
-            .padding(.leading, Theme.windowControlsInset)
-            #endif
 
             Spacer()
 
