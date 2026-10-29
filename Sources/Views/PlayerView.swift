@@ -330,8 +330,9 @@ struct SystemPlayerView: View {
     }
 }
 
-/// System video player with a close button (non-tvOS). The close button, the window chrome (macOS)
-/// and the status bar / home indicator (iOS) stay hidden during playback; a click or tap brings them back.
+/// System video player. On macOS with our close button; on iOS AVKit shows its own (the player inherits the
+/// full-screen presentation), so ours would be a second one. The close button / channel bar, the window chrome
+/// (macOS) and the status bar / home indicator (iOS) stay hidden during playback; a click or tap brings them back.
 struct StandardPlayerView: View {
     let player: AVPlayer
     let onClose: () -> Void
@@ -351,7 +352,9 @@ struct StandardPlayerView: View {
             video
 
             if controlsVisible {
+                #if os(macOS)
                 closeButton
+                #endif
                 ChannelSwitchBar()
                     .padding(.top, 12)
                     .frame(maxWidth: .infinity)
@@ -389,18 +392,18 @@ struct StandardPlayerView: View {
     #elseif os(iOS)
     /// The system controls toggle on tap; ours follow the same tap without stealing it.
     private var video: some View {
-        UIKitPlayerView(player: player) {
+        UIKitPlayerView(player: player, onTap: {
             if controlsVisible {
                 withAnimation { controlsVisible = false }
             } else {
                 showControls()
             }
-        }
+        }, onDismiss: onClose)
         .ignoresSafeArea()
     }
     #endif
 
-    #if !os(tvOS)
+    #if os(macOS)
     private var closeButton: some View {
         Button(action: onClose) {
             Image(systemName: "xmark.circle.fill")
@@ -411,6 +414,9 @@ struct StandardPlayerView: View {
         .buttonStyle(.plain)
     }
 
+    #endif
+
+    #if !os(tvOS)
     private func showControls() {
         withAnimation { controlsVisible = true }
         scheduleHide()

@@ -30,11 +30,14 @@ struct AppKitPlayerView: NSViewRepresentable {
 struct UIKitPlayerView: UIViewControllerRepresentable {
     let player: AVPlayer
     let onTap: () -> Void
+    /// AVKit's own close button dismisses the presentation from UIKit; SwiftUI is told too.
+    let onDismiss: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(onTap: onTap) }
 
     func makeUIViewController(context: Context) -> PlayerHostController {
         let host = PlayerHostController()
+        host.onDismiss = onDismiss
         host.playerController.player = player
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.tapped))
         tap.cancelsTouchesInView = false
@@ -45,6 +48,7 @@ struct UIKitPlayerView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ host: PlayerHostController, context: Context) {
         if host.playerController.player !== player { host.playerController.player = player }
+        host.onDismiss = onDismiss
         context.coordinator.onTap = onTap
     }
 
@@ -53,6 +57,20 @@ struct UIKitPlayerView: UIViewControllerRepresentable {
     /// black while the sound goes on.
     final class PlayerHostController: UIViewController {
         let playerController = AVPlayerViewController()
+        var onDismiss: (() -> Void)?
+
+        /// Closed with AVKit's button: the presentation (an ancestor) is being dismissed by UIKit.
+        override func viewDidDisappear(_ animated: Bool) {
+            super.viewDidDisappear(animated)
+            var controller: UIViewController? = self
+            while let current = controller {
+                if current.isBeingDismissed {
+                    onDismiss?()
+                    return
+                }
+                controller = current.parent
+            }
+        }
 
         override func viewDidLoad() {
             super.viewDidLoad()
