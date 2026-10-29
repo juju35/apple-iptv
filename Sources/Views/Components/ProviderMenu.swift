@@ -61,9 +61,16 @@ private struct ProviderToolbarModifier: ViewModifier {
     /// leaves the toolbar.
     @State private var sideCentre: CGPoint?
 
+    @State private var viewInsets = EdgeInsets()
+    @Environment(\.scenePhase) private var scenePhase
+
+    /// At launch the scene isn't active yet when the first layout reads it: take it anyway (it used to
+    /// return nil, leaving the switcher in the toolbar until the next layout).
     private static func activeScene() -> UIWindowScene? {
-        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-            .first { $0.activationState == .foregroundActive }
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        return scenes.first { $0.activationState == .foregroundActive }
+            ?? scenes.first { $0.activationState == .foregroundInactive }
+            ?? scenes.first
     }
 
     /// Only one side inset: a notched iPhone in landscape has them on both. The window's insets count too:
@@ -93,7 +100,12 @@ private struct ProviderToolbarModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { sideCentre = Self.sideCentre(for: $0) }
+            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) {
+                viewInsets = $0
+                sideCentre = Self.sideCentre(for: $0)
+            }
+            // The window's insets can settle after the first layout (launch, switching screens).
+            .onChange(of: scenePhase) { sideCentre = Self.sideCentre(for: viewInsets) }
             .toolbar {
                 if sideCentre == nil {
                     ToolbarItem(placement: .primaryAction) {
