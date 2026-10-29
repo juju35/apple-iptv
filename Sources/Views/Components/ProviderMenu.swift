@@ -66,12 +66,15 @@ private struct ProviderToolbarModifier: ViewModifier {
             .first { $0.activationState == .foregroundActive }
     }
 
-    /// Only one side inset: a notched iPhone in landscape has them on both.
-    private static func sideCentre(for insets: EdgeInsets) -> CGPoint? {
-        let isSide = (insets.trailing > 40) != (insets.leading > 40)
-        guard isSide, let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else {
-            return nil
-        }
+    /// Only one side inset: a notched iPhone in landscape has them on both. The window's insets count too:
+    /// the view's own drop to zero once Home hides its navigation bar and runs under the status bar,
+    /// which sent the switcher back to the (hidden) toolbar.
+    private static func sideCentre(for viewInsets: EdgeInsets) -> CGPoint? {
+        guard let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else { return nil }
+        let leading = max(viewInsets.leading, window.safeAreaInsets.left)
+        let trailing = max(viewInsets.trailing, window.safeAreaInsets.right)
+        guard (trailing > 40) != (leading > 40) else { return nil }
+        let insets = EdgeInsets(top: 0, leading: leading, bottom: 0, trailing: trailing)
         let bounds = window.bounds
         let statusBarShown = scene.statusBarManager?.isStatusBarHidden == false
         if insets.trailing > 40 && statusBarShown {
