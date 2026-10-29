@@ -86,7 +86,7 @@ private struct ProviderToolbarModifier: ViewModifier {
         // UIKit doesn't expose it: measured on screenshots. On the left it runs down to the bottom; on the
         // right it ends higher, with the switcher centred under it.
         if insets.leading > 40 {
-            return CGPoint(x: 71, y: bounds.maxY - 18)
+            return CGPoint(x: 45, y: bounds.maxY - 10)
         }
         return CGPoint(x: bounds.maxX - 91, y: bounds.maxY - 95)
     }
