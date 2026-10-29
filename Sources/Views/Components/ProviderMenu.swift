@@ -41,47 +41,52 @@ extension View {
 }
 
 #if os(iOS)
-/// The switcher in the toolbar, except when the status bar runs down the trailing edge (iPhone Duo in
-/// landscape): it then sits in that column under the network icons, above the side tab bar.
+/// The switcher in the toolbar, except on iPhone Duo in landscape, where the status bar and the tab bar
+/// run down the sides: under the network icons when they're on the trailing edge, under the tab bar
+/// when it's on the leading edge.
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
-    /// The status bar's frame when it runs down the trailing edge, else nil.
-    @State private var sideStatusBar: CGRect?
+    /// Where the switcher's centre goes, in window coordinates, when it leaves the toolbar.
+    @State private var sideCentre: CGPoint?
 
-    /// Where the network icons end in the trailing status column, measured on screenshots: UIKit reports
-    /// the column as a 2 pt strip at the top. The cover screen (portrait, 466 × 678) sets it lower than the
-    /// inner screen in landscape. A 102 pt wide frame centres the switcher under the icons.
-    private static func trailingStatusBarFrame() -> CGRect {
+    private static func windowBounds() -> CGRect {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
-        let window = (scene?.keyWindow ?? scene?.windows.first)?.bounds ?? .zero
-        let isCoverScreen = window.height > window.width
-        let centreFromEdge: CGFloat = isCoverScreen ? 48 : 51
-        return CGRect(x: window.maxX - 2 * centreFromEdge, y: 0, width: 2 * centreFromEdge,
-                      height: isCoverScreen ? 166 : 113)
+        return (scene?.keyWindow ?? scene?.windows.first)?.bounds ?? .zero
+    }
+
+    /// Measured on screenshots (UIKit reports the side status column as a 2 pt strip at the top). Only
+    /// one side inset: a notched iPhone in landscape has them on both.
+    private static func sideCentre(for insets: EdgeInsets) -> CGPoint? {
+        let window = windowBounds()
+        if insets.trailing > 40 && insets.leading < 10 {
+            // Under the status column's network icons; the cover screen (portrait) sets them lower.
+            let isCoverScreen = window.height > window.width
+            return CGPoint(x: window.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
+        }
+        if insets.leading > 40 && insets.trailing < 10 {
+            // Under the side tab bar, in the bottom-left corner.
+            return CGPoint(x: 71, y: window.maxY - 18)
+        }
+        return nil
     }
 
     func body(content: Content) -> some View {
         content
-            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets in
-                // Trailing inset only: a notched iPhone in landscape has them on both sides.
-                sideStatusBar = insets.trailing > 40 && insets.leading < 10 ? Self.trailingStatusBarFrame() : nil
-            }
+            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { sideCentre = Self.sideCentre(for: $0) }
             .toolbar {
-                if sideStatusBar == nil {
+                if sideCentre == nil {
                     ToolbarItem(placement: .primaryAction) {
                         ProviderMenu()
                     }
                 }
             }
-            .toolbar(sideStatusBar != nil && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
+            .toolbar(sideCentre != nil && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
             .overlay {
-                if let frame = sideStatusBar {
-                    // Just under the network icons, centred on the status bar column.
+                if let sideCentre {
                     Color.clear
                         .overlay(alignment: .topLeading) {
-                            ProviderMenu()
-                                .position(x: frame.midX, y: frame.maxY + 27)
+                            ProviderMenu().position(sideCentre)
                         }
                         .ignoresSafeArea()
                 }
