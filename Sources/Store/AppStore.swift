@@ -407,6 +407,9 @@ extension AppStore {
         ]
     }
 
+    /// Live qualities streamed in HEVC, which only the VLC engine plays on macOS.
+    private static let vlcOnlyLiveQualities: Set<String> = ["8K", "4K", "HEVC"]
+
     /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
     func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
                          progress: PlaybackProgressContext? = nil, from start: Double = 0) async throws
@@ -429,6 +432,12 @@ extension AppStore {
             // Live channels play in VLC on iPhone and iPad, like movies and series often do: same controls
             // for everything (channel bar, tap to show), whatever the stream's format.
             request.engine = .vlc
+            #elseif os(macOS)
+            // 4K channels are HEVC in MPEG-TS HLS segments, which AVFoundation doesn't decode (HLS HEVC needs fMP4):
+            // the system player stays black without failing, so it never falls back. VLC plays them.
+            if let quality = ContentTags.quality(of: item.name), Self.vlcOnlyLiveQualities.contains(quality) {
+                request.engine = .vlc
+            }
             #endif
         }
         return request
