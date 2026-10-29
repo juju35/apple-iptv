@@ -69,13 +69,9 @@ private struct ProviderToolbarModifier: ViewModifier {
             let isCoverScreen = bounds.height > bounds.width
             return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
         }
-        // Tab bar on the left: in the top-left corner, above it and centred on it (measured on screenshots:
-        // UIKit's `UITabBar` isn't where the floating bar is drawn).
-        if insets.leading > 40 {
-            return CGPoint(x: 71, y: 40)
-        }
-        // Tab bar on the right: just under it.
-        return CGPoint(x: bounds.maxX - 71, y: bounds.maxY - 103)
+        // At the top of the black band holding the side tab bar, above it and centred on it (measured on
+        // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
+        return CGPoint(x: insets.leading > 40 ? 71 : bounds.maxX - 71, y: 40)
     }
 
     func body(content: Content) -> some View {
