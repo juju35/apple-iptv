@@ -56,6 +56,8 @@ struct MediaItem: Identifiable, Hashable, Codable {
     let categoryId: String?
     /// Further categories of an item listed in several (Xtream `category_ids`).
     var otherCategoryIds: [String]?
+    /// The channel's id in the provider's XMLTV guide (Xtream `epg_channel_id`).
+    var epgChannelId: String?
     /// Xtream: stream/vod/series id. Stalker: channel `cmd` or VOD id.
     let playbackRef: String
     /// Container extension for Xtream VOD (mp4, mkv…).
@@ -75,7 +77,8 @@ struct MediaItem: Identifiable, Hashable, Codable {
         rating: Double? = nil,
         plot: String? = nil,
         year: String? = nil,
-        otherCategoryIds: [String]? = nil
+        otherCategoryIds: [String]? = nil,
+        epgChannelId: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -83,6 +86,7 @@ struct MediaItem: Identifiable, Hashable, Codable {
         self.posterURL = posterURL
         self.categoryId = categoryId
         self.otherCategoryIds = otherCategoryIds
+        self.epgChannelId = epgChannelId
         self.playbackRef = playbackRef
         self.containerExtension = containerExtension
         self.rating = rating
@@ -196,7 +200,7 @@ struct AccountInfo: Codable, Hashable {
     }
 }
 
-struct EPGEntry: Identifiable, Hashable {
+struct EPGEntry: Identifiable, Hashable, Codable {
     let id: String
     let title: String
     let start: Date

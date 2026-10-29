@@ -350,9 +350,41 @@ final class StalkerClient: IPTVClient {
     }
 }
 
-// MARK: - Account
+// MARK: - Account and programme guide
 
 extension StalkerClient {
+    /// `itv/get_epg_info` returns the guide of every channel for the next `period` hours, by channel id.
+    func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]] {
+        try await ensureToken()
+        let js = try await fetchJS(type: "itv", action: "get_epg_info",
+                                   extra: [URLQueryItem(name: "period", value: "48")])
+        guard let data = (js as? [String: Any])?["data"] as? [String: [[String: Any]]] else { return [:] }
+        let window = EPGWindow.current
+        var guide: [String: [EPGEntry]] = [:]
+        for (channelId, programmes) in data {
+            let entries = programmes.compactMap { programme -> EPGEntry? in
+                guard let start = Self.epgDate(programme["start_timestamp"] ?? programme["time"]),
+                      let end = Self.epgDate(programme["stop_timestamp"] ?? programme["time_to"]),
+                      end > window.lowerBound, start < window.upperBound else { return nil }
+                let title = (programme["name"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "—"
+                return EPGEntry(id: "\(channelId)-\(programme["id"].map { "\($0)" } ?? "\(start.timeIntervalSince1970)")",
+                                title: title, start: start, end: end,
+                                description: (programme["descr"] as? String).flatMap { $0.isEmpty ? nil : $0 })
+            }
+            if !entries.isEmpty {
+                guide["\(provider.id)-live-\(channelId)"] = entries.sorted { $0.start < $1.start }
+            }
+        }
+        return guide
+    }
+
+    /// A Unix timestamp or a "2026-10-29 12:00:00" portal date.
+    private static func epgDate(_ value: Any?) -> Date? {
+        guard let value else { return nil }
+        if let seconds = Double("\(value)") { return Date(timeIntervalSince1970: seconds) }
+        return AccountInfo.date(from: value)
+    }
+
     /// Portals put the end date in `account_info/get_main_info` or in the profile, under various names;
     /// many MAC portals send it in get_main_info's `phone` field ("January 31, 2027, 12:00 am").
     func accountInfo() async throws -> AccountInfo {

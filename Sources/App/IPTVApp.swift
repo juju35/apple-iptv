@@ -3,13 +3,17 @@ import SwiftUI
 @main
 struct IPTVApp: App {
     @StateObject private var store = AppStore()
+    @StateObject private var epg = EPGStore()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(store)
+                .environmentObject(epg)
                 .preferredColorScheme(.dark)
                 .task { await store.reload() }
+                // Once the provider's channels are known (cached or fresh), load its guide.
+                .task(id: store.catalogUpdatedAt) { await epg.refresh(using: store) }
         }
         #if os(macOS)
         .windowStyle(.hiddenTitleBar)

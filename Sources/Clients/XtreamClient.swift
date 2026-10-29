@@ -116,7 +116,8 @@ final class XtreamClient: IPTVClient {
                 rating: Self.double(dict["rating"] ?? dict["rating_5based"]),
                 plot: dict["plot"] as? String,
                 year: Self.string(dict["year"] ?? dict["releaseDate"]),
-                otherCategoryIds: categoryIds.filter { $0 != categoryId }.nilIfEmpty
+                otherCategoryIds: categoryIds.filter { $0 != categoryId }.nilIfEmpty,
+                epgChannelId: (dict["epg_channel_id"] as? String).flatMap { $0.isEmpty ? nil : $0 }
             )
         }
     }
@@ -230,6 +231,33 @@ final class XtreamClient: IPTVClient {
             return decoded
         }
         return string
+    }
+}
+
+// MARK: - Programme guide
+
+extension XtreamClient {
+    /// The panel's XMLTV guide (`xmltv.php`), matched to channels through their `epg_channel_id`.
+    func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]] {
+        guard let base = provider.baseURL,
+              var components = URLComponents(url: base.appending(path: "xmltv.php"), resolvingAgainstBaseURL: false)
+        else { throw IPTVError.invalidURL }
+        components.queryItems = [URLQueryItem(name: "username", value: provider.username),
+                                 URLQueryItem(name: "password", value: provider.password)]
+        guard let url = components.url else { throw IPTVError.invalidURL }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 120
+        let (data, response) = try await URLSession.iptv.data(for: request)
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw IPTVError.badResponse(http.statusCode)
+        }
+        let window = EPGWindow.current
+        let byGuideId = await Task.detached(priority: .utility) { XMLTVParser.parse(data, window: window) }.value
+        var guide: [String: [EPGEntry]] = [:]
+        for channel in channels {
+            if let guideId = channel.epgChannelId, let entries = byGuideId[guideId] { guide[channel.id] = entries }
+        }
+        return guide
     }
 }
 

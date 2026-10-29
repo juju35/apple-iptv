@@ -11,12 +11,24 @@ protocol IPTVClient {
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry]
     /// Expiry date and limits of the account.
     func accountInfo() async throws -> AccountInfo
+    /// The whole programme guide around now, by `MediaItem.id` of `channels`; empty when the
+    /// provider has none (per-channel `shortEPG` is used then).
+    func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]]
     /// HTTP headers the player should send when fetching the stream (e.g. a portal-specific User-Agent).
     var streamHeaders: [String: String] { get }
 }
 
 extension IPTVClient {
     var streamHeaders: [String: String] { [:] }
+
+    func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]] { [:] }
+}
+
+/// The part of the guide worth keeping: from 2 hours ago to 2 days ahead.
+enum EPGWindow {
+    static var current: ClosedRange<Date> {
+        Date().addingTimeInterval(-2 * 3600)...Date().addingTimeInterval(48 * 3600)
+    }
 }
 
 enum IPTVClientFactory {

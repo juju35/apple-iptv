@@ -49,7 +49,7 @@ enum CatalogCache {
                                                      withIntermediateDirectories: true)
             try? data.write(to: url, options: .atomic)
             // Catalogs saved in previous formats.
-            for old in ["Catalogs", "Catalogs-v2"] {
+            for old in ["Catalogs", "Catalogs-v2", "Catalogs-v3"] {
                 try? FileManager.default.removeItem(at: URL.cachesDirectory.appending(path: old))
             }
         }
@@ -64,9 +64,9 @@ enum CatalogCache {
     }
 
     /// Bumped when cached catalogs become unusable (v2: Stalker movies and series got their categories,
-    /// v3: Xtream items their `category_ids`).
+    /// v3: Xtream items their `category_ids`, v4: Xtream channels their `epg_channel_id`).
     private static var directory: URL {
-        URL.cachesDirectory.appending(path: "Catalogs-v3", directoryHint: .isDirectory)
+        URL.cachesDirectory.appending(path: "Catalogs-v4", directoryHint: .isDirectory)
     }
 
     private static func fileURL(_ providerID: UUID) -> URL {

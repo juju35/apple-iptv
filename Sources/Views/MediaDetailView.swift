@@ -3,6 +3,7 @@ import SwiftUI
 /// Detail sheet: artwork, metadata, play button, episodes for series, EPG for live.
 struct MediaDetailView: View {
     @EnvironmentObject private var store: AppStore
+    @EnvironmentObject private var guide: EPGStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentPlayer) private var presentPlayer
     let item: MediaItem
@@ -250,7 +251,8 @@ struct MediaDetailView: View {
             detail = try? await client.seriesDetail(for: item)
         }
         if item.kind == .live {
-            epg = (try? await client.shortEPG(forChannelRef: item.playbackRef)) ?? []
+            let cached = guide.entries(for: item).filter { $0.end > Date() }
+            epg = cached.isEmpty ? ((try? await client.shortEPG(forChannelRef: item.playbackRef)) ?? []) : cached
         }
     }
 

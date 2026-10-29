@@ -93,6 +93,8 @@ struct SettingsView: View {
                         Text("Lists are kept on this device so the app opens without waiting for the provider.")
                     }
                 }
+
+                ProgrammeGuideSection()
             }
             .navigationTitle("Settings")
             .task { await store.refreshAccountInfo() }
@@ -345,5 +347,47 @@ extension View {
         #else
         self.autocorrectionDisabled()
         #endif
+    }
+}
+
+/// How long the provider's programme guide is kept, with its state and a refresh button.
+private struct ProgrammeGuideSection: View {
+    @EnvironmentObject private var store: AppStore
+    @EnvironmentObject private var guide: EPGStore
+
+    var body: some View {
+        Section {
+            Picker("Keep the guide for", selection: $guide.lifetime) {
+                ForEach(EPGStore.lifetimes, id: \.seconds) { option in
+                    Text(option.label).tag(option.seconds)
+                }
+            }
+            Button {
+                Task { await guide.refresh(using: store, force: true) }
+            } label: {
+                HStack {
+                    Text("Refresh the guide")
+                    if guide.isLoading {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(guide.isLoading || guide.lifetime == 0)
+        } header: {
+            Text("Programme guide")
+        } footer: {
+            if let error = guide.lastError {
+                Text("The guide couldn't be downloaded: \(error)")
+            } else if let updatedAt = guide.updatedAt {
+                Text("Guide for \(guide.guide.count) channels, updated "
+                     + "\(updatedAt.formatted(.relative(presentation: .named))).")
+            } else if guide.lifetime == 0 {
+                Text("Off: channels only show the short guide the provider sends for each one.")
+            } else {
+                Text("The provider's whole guide is downloaded and kept on this device; "
+                     + "without one, channels show their short guide.")
+            }
+        }
     }
 }
