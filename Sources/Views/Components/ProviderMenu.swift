@@ -94,11 +94,26 @@ private struct ProviderToolbarModifier: ViewModifier {
                     GeometryReader { proxy in
                         let origin = proxy.frame(in: .global).origin
                         ProviderMenu()
+                            .sideBubble()
                             .position(x: sideCentre.x - origin.x, y: sideCentre.y - origin.y)
                     }
                     .ignoresSafeArea()
                 }
             }
+    }
+}
+#endif
+
+#if os(iOS)
+private extension View {
+    /// The side tab bar's Liquid Glass bubble around the switcher (a toolbar item gets one already).
+    @ViewBuilder
+    func sideBubble() -> some View {
+        if #available(iOS 26, *) {
+            padding(8).glassEffect(.regular.interactive(), in: .circle)
+        } else {
+            padding(8).background(.ultraThinMaterial, in: Circle())
+        }
     }
 }
 #endif
