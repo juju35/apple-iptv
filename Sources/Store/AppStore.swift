@@ -351,19 +351,7 @@ extension AppStore {
         func isHiddenList(_ kind: MediaKind, _ categoryId: String) -> Bool {
             hiddenLists.contains(CategoryListOption.key(provider: provider, kind: kind, category: categoryId))
         }
-        func listOptions(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
-            -> [CategoryListOption] {
-            let counts = Dictionary(items.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
-            return categories.map {
-                CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
-                                   name: displayName($0.name), originalName: $0.name, count: counts[$0.id] ?? 0)
-            }
-        }
-        self.listOptions = [
-            .live: listOptions(.live, catalog.liveCategories, catalog.liveItems),
-            .movie: listOptions(.movie, catalog.movieCategories, catalog.movieItems),
-            .series: listOptions(.series, catalog.seriesCategories, catalog.seriesItems),
-        ]
+        updateListOptions(provider: provider, displayName: displayName)
 
         let hiddenLanguages = hiddenLanguages
         let hiddenQualities = hiddenQualities
@@ -400,6 +388,23 @@ extension AppStore {
         seriesItems = catalog.seriesItems.filter(isVisible)
         visibleItemsById = Dictionary((liveItems + movieItems + seriesItems).map { ($0.id, $0) },
                                       uniquingKeysWith: { first, _ in first })
+    }
+
+    /// The lists offered in Settings, with their item counts.
+    private func updateListOptions(provider: Provider.ID?, displayName: (String) -> String) {
+        func options(_ kind: MediaKind, _ categories: [ContentCategory], _ items: [MediaItem])
+            -> [CategoryListOption] {
+            let counts = Dictionary(items.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
+            return categories.map {
+                CategoryListOption(key: CategoryListOption.key(provider: provider, kind: kind, category: $0.id),
+                                   name: displayName($0.name), originalName: $0.name, count: counts[$0.id] ?? 0)
+            }
+        }
+        listOptions = [
+            .live: options(.live, catalog.liveCategories, catalog.liveItems),
+            .movie: options(.movie, catalog.movieCategories, catalog.movieItems),
+            .series: options(.series, catalog.seriesCategories, catalog.seriesItems),
+        ]
     }
 
     /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
