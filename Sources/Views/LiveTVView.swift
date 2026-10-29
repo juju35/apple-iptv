@@ -24,10 +24,6 @@ struct LiveTVView: View {
     @State private var playback: PlaybackRequest?
     @State private var resolvingID: String?
     @State private var playError: String?
-    #if os(tvOS)
-    /// The focused channel: on Apple TV focus picks the channel shown in the info panel, a click plays it.
-    @FocusState private var focusedChannelID: String?
-    #endif
 
     private var isWide: Bool {
         #if os(iOS)
@@ -153,36 +149,10 @@ struct LiveTVView: View {
     }
 
     private var channelList: some View {
-        ScrollView {
-            LazyVStack(spacing: 4) {
-                ForEach(channels) { channel in
-                    Button {
-                        select(channel)
-                    } label: {
-                        ChannelRow(channel: channel, isHighlighted: isWide && channel.id == highlightedID)
-                    }
-                    .rowButtonStyle()
-                    #if os(tvOS)
-                    .focused($focusedChannelID, equals: channel.id)
-                    #endif
-                    .favoriteContextMenu(channel)
-                }
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 8)
-        }
-        #if os(tvOS)
-        .scrollClipDisabled()
-        // Once the focus rests: updating the info panel on every step of a fast scroll re-rendered the
-        // whole screen and reloaded the programme each time.
-        .task(id: focusedChannelID) {
-            guard let id = focusedChannelID, id != highlighted?.id else { return }
-            try? await Task.sleep(for: .milliseconds(250))
-            guard !Task.isCancelled, let channel = channels.first(where: { $0.id == id }) else { return }
+        ChannelList(channels: channels, highlightedID: isWide ? highlightedID : nil, onSelect: select) { channel in
             highlighted = channel
             playError = nil
         }
-        #endif
         .onChange(of: group) { _, _ in highlighted = nil }
     }
 
