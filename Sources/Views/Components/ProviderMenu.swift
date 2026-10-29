@@ -42,34 +42,48 @@ extension View {
 
 #if os(iOS)
 /// The switcher in the toolbar, except on iPhone Duo in landscape, where the status bar and the tab bar
-/// run down the sides: under the network icons when they're on the trailing edge, under the tab bar
-/// when it's on the leading edge.
+/// run down the sides: under the network icons when the status bar shows on the trailing edge, else
+/// under the side tab bar.
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
     /// Where the switcher's centre goes, in window coordinates (as measured on screenshots), when it
     /// leaves the toolbar.
     @State private var sideCentre: CGPoint?
 
-    private static func windowBounds() -> CGRect {
-        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+    private static func activeScene() -> UIWindowScene? {
+        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
-        return (scene?.keyWindow ?? scene?.windows.first)?.bounds ?? .zero
     }
 
-    /// Measured on screenshots (UIKit reports the side status column as a 2 pt strip at the top). Only
-    /// one side inset: a notched iPhone in landscape has them on both.
+    /// The side tab bar's frame in the window (a vertical `UITabBar`), if UIKit has one.
+    private static func sideTabBarFrame(in window: UIWindow) -> CGRect? {
+        func find(_ view: UIView) -> UITabBar? {
+            if let bar = view as? UITabBar, !bar.isHidden, bar.bounds.height > bar.bounds.width { return bar }
+            return view.subviews.lazy.compactMap(find).first
+        }
+        guard let bar = find(window) else { return nil }
+        return bar.convert(bar.bounds, to: window)
+    }
+
+    /// Only one side inset: a notched iPhone in landscape has them on both.
     private static func sideCentre(for insets: EdgeInsets) -> CGPoint? {
-        let window = windowBounds()
-        if insets.trailing > 40 && insets.leading < 10 {
-            // Under the status column's network icons; the cover screen (portrait) sets them lower.
-            let isCoverScreen = window.height > window.width
-            return CGPoint(x: window.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
+        let isSide = (insets.trailing > 40) != (insets.leading > 40)
+        guard isSide, let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else {
+            return nil
         }
-        if insets.leading > 40 && insets.trailing < 10 {
-            // Under the side tab bar, in the bottom-left corner.
-            return CGPoint(x: 71, y: window.maxY - 18)
+        let bounds = window.bounds
+        let statusBarShown = scene.statusBarManager?.isStatusBarHidden == false
+        if insets.trailing > 40 && statusBarShown {
+            // Under the status column's network icons, measured on screenshots (UIKit reports the column
+            // as a 2 pt strip at the top); the cover screen (portrait) sets them lower.
+            let isCoverScreen = bounds.height > bounds.width
+            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
         }
-        return nil
+        // Under the side tab bar.
+        if let bar = sideTabBarFrame(in: window) {
+            return CGPoint(x: bar.midX, y: min(bar.maxY + 19, bounds.maxY - 18))
+        }
+        return CGPoint(x: insets.leading > 40 ? 71 : bounds.maxX - 71, y: bounds.maxY - 18)
     }
 
     func body(content: Content) -> some View {
