@@ -46,6 +46,13 @@ struct TagFilterView: View {
 struct ListNameCleanupView: View {
     @EnvironmentObject private var store: AppStore
     @State private var newText = ""
+    @FocusState private var isEditing: Bool
+
+    /// Every list name of the provider, as sent, to pick from.
+    private var allListNames: [String] {
+        let names = [MediaKind.live, .movie, .series].flatMap { store.listOptions[$0] ?? [] }.map(\.originalName)
+        return Array(Set(names)).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
 
     /// Lists whose shown name differs from the provider's, all kinds together.
     private var changedLists: [CategoryListOption] {
@@ -59,13 +66,15 @@ struct ListNameCleanupView: View {
                 HStack {
                     TextField("Text to remove, e.g. FR |", text: $newText)
                         .autocorrectionDisabledIfSupported()
+                        .focused($isEditing)
                         .onSubmit(add)
                     Button("Add", action: add)
                         .disabled(newText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             } footer: {
                 Text("Removed from every list name shown, ignoring case. Separators left at the start or end "
-                     + "(|, -, :) go too. Language detection still reads the original names.")
+                     + "(|, -, :) go too. Language detection still reads the original names. "
+                     + "Pick a list below to start from its name.")
             }
 
             if !store.listNameRemovals.isEmpty {
@@ -96,6 +105,25 @@ struct ListNameCleanupView: View {
                                 .foregroundStyle(Theme.textSecondary)
                                 .strikethrough()
                         }
+                    }
+                }
+            }
+
+            if !allListNames.isEmpty {
+                Section("Lists") {
+                    ForEach(allListNames, id: \.self) { name in
+                        Button {
+                            // Start from the whole name; the user trims it down to the part to remove.
+                            newText = name
+                            isEditing = true
+                        } label: {
+                            HStack {
+                                Text(name).foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "text.cursor").foregroundStyle(Theme.textSecondary)
+                            }
+                        }
+                        .accessibilityHint("Copies the name into the text field")
                     }
                 }
             }
