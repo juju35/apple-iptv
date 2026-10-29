@@ -17,7 +17,8 @@ actor ImageLoader {
     }()
 
     init() {
-        cache.countLimit = 600
+        // Decoded bitmaps: about 1 MB per poster at 600 px.
+        cache.totalCostLimit = 256 << 20
     }
 
     nonisolated func cached(_ url: URL, maxPixelSize: Int) -> CGImage? {
@@ -36,7 +37,9 @@ actor ImageLoader {
         inFlight[key] = task
         let image = await task.value
         inFlight[key] = nil
-        if let image { cache.setObject(CGImageBox(image), forKey: key as NSString) }
+        if let image {
+            cache.setObject(CGImageBox(image), forKey: key as NSString, cost: image.bytesPerRow * image.height)
+        }
         return image
     }
 

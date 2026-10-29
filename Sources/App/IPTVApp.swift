@@ -42,6 +42,9 @@ enum MainTab: Hashable {
 
 struct MainTabView: View {
     @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
+    /// Bumped when a tab is left, so it comes back reset (scroll, filters, selection). Artwork stays
+    /// in `ImageLoader`'s memory cache and shows again at once.
+    @State private var resets: [MainTab: Int] = [:]
     #if os(macOS)
     /// Player shown over the whole window: macOS sheets can't fill it.
     @State private var windowPlayback: PlaybackRequest?
@@ -52,26 +55,33 @@ struct MainTabView: View {
             #if os(tvOS)
             // First, as in Apple's own apps: the only place to search on Apple TV.
             SearchView()
+                .id(resets[.search, default: 0])
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(MainTab.search)
             #endif
             HomeView()
+                .id(resets[.home, default: 0])
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag(MainTab.home)
             LiveTVView()
+                .id(resets[.live, default: 0])
                 .tabItem { Label("Live TV", systemImage: "tv") }
                 .tag(MainTab.live)
             BrowseView(kind: .movie, title: String(localized: "Movies"))
+                .id(resets[.movies, default: 0])
                 .tabItem { Label("Movies", systemImage: "film") }
                 .tag(MainTab.movies)
             BrowseView(kind: .series, title: String(localized: "Series"))
+                .id(resets[.series, default: 0])
                 .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
                 .tag(MainTab.series)
             SettingsView()
+                .id(resets[.settings, default: 0])
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(MainTab.settings)
         }
         .brandTint()
+        .onChange(of: tab) { left, _ in resets[left, default: 0] += 1 }
         #if os(tvOS)
         .tvProviderSwitcher(isShown: [.home, .live, .movies, .series].contains(tab))
         #endif
