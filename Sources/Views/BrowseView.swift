@@ -63,15 +63,25 @@ struct BrowseView: View {
     }
 
     #if os(tvOS)
-    /// Apple TV: rows of posters in a lazy stack, their artwork loaded 20 rows ahead. `LazyVGrid` lays out and tracks focus for the whole
-    /// catalogue (thousands of movies) and made scrolling crawl; a lazy stack of fixed rows doesn't.
+    /// Apple TV: rows of posters in a lazy stack (`LazyVGrid` laid out and tracked focus for the whole
+    /// catalogue, thousands of movies, and made scrolling crawl). The stack's elements are blocks of
+    /// rows, so the rows below the screen are built before the focus reaches them, and their artwork
+    /// is loaded further ahead still.
     @State private var gridWidth: CGFloat = 1700
-    /// Rows whose artwork is loaded ahead of the focus.
+    /// Rows built together: about two screens of posters.
+    private static let rowsPerBlock = 4
+    /// Rows whose artwork is loaded ahead of the screen.
     private static let prefetchRows = 20
 
     private struct PosterRow: Identifiable {
         let id: String
         let items: [MediaItem]
+    }
+
+    private struct RowBlock: Identifiable {
+        let id: String
+        let index: Int
+        let rows: ArraySlice<PosterRow>
     }
 
     private var posterGrid: some View {
@@ -81,14 +91,23 @@ struct BrowseView: View {
             let slice = Array(filtered[start..<min(start + perRow, filtered.count)])
             return PosterRow(id: slice[0].id, items: slice)
         }
+        let blocks = stride(from: 0, to: rows.count, by: Self.rowsPerBlock).map { start in
+            RowBlock(id: rows[start].id, index: start,
+                     rows: rows[start..<min(start + Self.rowsPerBlock, rows.count)])
+        }
         return LazyVStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
-            ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
-                HStack(alignment: .top, spacing: spacing) {
-                    ForEach(row.items) { cell($0) }
+            ForEach(blocks) { block in
+                VStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
+                    ForEach(block.rows) { row in
+                        HStack(alignment: .top, spacing: spacing) {
+                            ForEach(row.items) { cell($0) }
+                        }
+                    }
                 }
                 .onAppear {
                     // The artwork of the next 20 rows, so it's there when the focus gets to them.
-                    let ahead = rows[min(index + 1, rows.count)..<min(index + 1 + Self.prefetchRows, rows.count)]
+                    let start = min(block.index + Self.rowsPerBlock, rows.count)
+                    let ahead = rows[start..<min(start + Self.prefetchRows, rows.count)]
                     ImageLoader.shared.prefetch(ahead.flatMap(\.items).compactMap(\.posterURL))
                 }
             }
