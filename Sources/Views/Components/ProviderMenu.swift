@@ -48,18 +48,20 @@ private struct ProviderToolbarModifier: ViewModifier {
     /// The status bar's frame when it runs down the trailing edge, else nil.
     @State private var sideStatusBar: CGRect?
 
-    /// The status bar column at the trailing edge, as UIKit reports it: its position differs between the
-    /// inner screen and the cover screen, so the switcher follows it.
-    private static func trailingStatusBarFrame() -> CGRect? {
+    /// The status bar column at the trailing edge, as UIKit reports it, in the window's coordinates: its
+    /// position differs between the inner screen and the cover screen, so the switcher follows it.
+    /// Measured against the window, not `UIScreen`, which can describe the other screen.
+    private static func trailingStatusBarFrame() -> CGRect {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
-        guard let scene else { return nil }
-        let screen = scene.screen.bounds
-        if let frame = scene.statusBarManager?.statusBarFrame, frame.height > frame.width, frame.minX > screen.midX {
-            return frame
+        let window = scene?.effectiveGeometry.coordinateSpace.bounds ?? .zero
+        let reported = scene?.statusBarManager?.statusBarFrame ?? .zero
+        print("[ProviderMenu] window \(window), status bar \(reported)")
+        if reported.height > reported.width, reported.minX > window.midX, reported.maxX <= window.maxX + 1 {
+            return reported
         }
         // Not reported as a column: the inner screen's measured one (icons centred 51 pt from the edge).
-        return CGRect(x: screen.maxX - 102, y: 0, width: 102, height: 113)
+        return CGRect(x: window.maxX - 102, y: 0, width: 102, height: 113)
     }
 
     func body(content: Content) -> some View {
