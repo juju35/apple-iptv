@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="Sources/Resources/InfoPlist.xcstrings" source-language="en" target-language="en" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="27.1" build-num="27A9275"/>
+    </header>
+    <body>
+      <trans-unit id="CFBundleName" xml:space="preserve">
+        <source>IPTV</source>
+        <target state="new">IPTV</target>
+        <note>Bundle name</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="Sources/Resources/Localizable.xcstrings" source-language="en" target-language="en" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="27.1" build-num="27A9275"/>
+    </header>
+    <body>
+      <trans-unit id="&quot;%@&quot;" xml:space="preserve">
+        <source>"%@"</source>
+        <target state="new">"%@"</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@ is not supported by this provider." xml:space="preserve">
+        <source>%@ is not supported by this provider.</source>
+        <target state="new">%@ is not supported by this provider.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld" xml:space="preserve">
+        <source>%lld</source>
+        <target state="new">%lld</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld episodes" xml:space="preserve">
+        <source>%lld episodes</source>
+        <target state="new">%lld episodes</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld of %lld" xml:space="preserve">
+        <source>%1$lld of %2$lld</source>
+        <target state="new">%1$lld of %2$lld</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld. %@" xml:space="preserve">
+        <source>%1$lld. %2$@</source>
+        <target state="new">%1$lld. %2$@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="1 day" xml:space="preserve">
+        <source>1 day</source>
+        <target state="new">1 day</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="1 episode" xml:space="preserve">
+        <source>1 episode</source>
+        <target state="new">1 episode</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="1 hour" xml:space="preserve">
+        <source>1 hour</source>
+        <target state="new">1 hour</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="1 week" xml:space="preserve">
+        <source>1 week</source>
+        <target state="new">1 week</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="3 days" xml:space="preserve">
+        <source>3 days</source>
+        <target state="new">3 days</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="3 hours" xml:space="preserve">
+        <source>3 hours</source>
+        <target state="new">3 hours</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="6 hours" xml:space="preserve">
+        <source>6 hours</source>
+        <target state="new">6 hours</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="12 hours" xml:space="preserve">
+        <source>12 hours</source>
+        <target state="new">12 hours</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add" xml:space="preserve">
+        <source>Add</source>
+        <target state="new">Add</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add an Xtream Codes or Stalker (MAC) provider to start watching." xml:space="preserve">
+        <source>Add an Xtream Codes or Stalker (MAC) provider to start watching.</source>
+        <target state="new">Add an Xtream Codes or Stalker (MAC) provider to start watching.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add provider" xml:space="preserve">
+        <source>Add provider</source>
+        <target state="new">Add provider</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add to Favorites" xml:space="preserve">
+        <source>Add to Favorites</source>
+        <target state="new">Add to Favorites</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All" xml:space="preserve">
+        <source>All</source>
+        <target state="new">All</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All Channels" xml:space="preserve">
+        <source>All Channels</source>
+        <target state="new">All Channels</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="AppleIPTV" xml:space="preserve">
+        <source>AppleIPTV</source>
+        <target state="new">AppleIPTV</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Authentication failed: %@" xml:space="preserve">
+        <source>Authentication failed: %@</source>
+        <target state="new">Authentication failed: %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Cache" xml:space="preserve">
+        <source>Cache</source>
+        <target state="new">Cache</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Cancel" xml:space="preserve">
+        <source>Cancel</source>
+        <target state="new">Cancel</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Channel list" xml:space="preserve">
+        <source>Channel list</source>
+        <target state="new">Channel list</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Channels" xml:space="preserve">
+        <source>Channels</source>
+        <target state="new">Channels</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clean up list names" xml:space="preserve">
+        <source>Clean up list names</source>
+        <target state="new">Clean up list names</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Close" xml:space="preserve">
+        <source>Close</source>
+        <target state="new">Close</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Close channel list" xml:space="preserve">
+        <source>Close channel list</source>
+        <target state="new">Close channel list</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Continue Watching" xml:space="preserve">
+        <source>Continue Watching</source>
+        <target state="new">Continue Watching</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Copies the name into the text field" xml:space="preserve">
+        <source>Copies the name into the text field</source>
+        <target state="new">Copies the name into the text field</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete" xml:space="preserve">
+        <source>Delete</source>
+        <target state="new">Delete</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit" xml:space="preserve">
+        <source>Edit</source>
+        <target state="new">Edit</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit provider" xml:space="preserve">
+        <source>Edit provider</source>
+        <target state="new">Edit provider</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Episode %lld" xml:space="preserve">
+        <source>Episode %lld</source>
+        <target state="new">Episode %lld</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expired %@" xml:space="preserve">
+        <source>Expired %@</source>
+        <target state="new">Expired %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expires %@" xml:space="preserve">
+        <source>Expires %@</source>
+        <target state="new">Expires %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Favorites" xml:space="preserve">
+        <source>Favorites</source>
+        <target state="new">Favorites</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Filters" xml:space="preserve">
+        <source>Filters</source>
+        <target state="new">Filters</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Guide for %lld channels, updated %@." xml:space="preserve">
+        <source>Guide for %1$lld channels, updated %2$@.</source>
+        <target state="new">Guide for %1$lld channels, updated %2$@.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Hide all" xml:space="preserve">
+        <source>Hide all</source>
+        <target state="new">Hide all</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Hide these" xml:space="preserve">
+        <source>Hide these</source>
+        <target state="new">Hide these</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Home" xml:space="preserve">
+        <source>Home</source>
+        <target state="new">Home</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="In Favorites" xml:space="preserve">
+        <source>In Favorites</source>
+        <target state="new">In Favorites</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Invalid portal URL." xml:space="preserve">
+        <source>Invalid portal URL.</source>
+        <target state="new">Invalid portal URL.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Keep lists for" xml:space="preserve">
+        <source>Keep lists for</source>
+        <target state="new">Keep lists for</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Keep the guide for" xml:space="preserve">
+        <source>Keep the guide for</source>
+        <target state="new">Keep the guide for</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="LIVE" xml:space="preserve">
+        <source>LIVE</source>
+        <target state="new">LIVE</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Languages" xml:space="preserve">
+        <source>Languages</source>
+        <target state="new">Languages</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lists" xml:space="preserve">
+        <source>Lists</source>
+        <target state="new">Lists</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lists are kept on this device so the app opens without waiting for the provider." xml:space="preserve">
+        <source>Lists are kept on this device so the app opens without waiting for the provider.</source>
+        <target state="new">Lists are kept on this device so the app opens without waiting for the provider.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lists updated %@." xml:space="preserve">
+        <source>Lists updated %@.</source>
+        <target state="new">Lists updated %@.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Live TV" xml:space="preserve">
+        <source>Live TV</source>
+        <target state="new">Live TV</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Live TV lists" xml:space="preserve">
+        <source>Live TV lists</source>
+        <target state="new">Live TV lists</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Live TV quality" xml:space="preserve">
+        <source>Live TV quality</source>
+        <target state="new">Live TV quality</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Loading the programme…" xml:space="preserve">
+        <source>Loading the programme…</source>
+        <target state="new">Loading the programme…</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Loading…" xml:space="preserve">
+        <source>Loading…</source>
+        <target state="new">Loading…</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="MAC address (00:1A:79:XX:XX:XX)" xml:space="preserve">
+        <source>MAC address (00:1A:79:XX:XX:XX)</source>
+        <target state="new">MAC address (00:1A:79:XX:XX:XX)</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage Providers" xml:space="preserve">
+        <source>Manage Providers</source>
+        <target state="new">Manage Providers</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Movie lists" xml:space="preserve">
+        <source>Movie lists</source>
+        <target state="new">Movie lists</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Movies" xml:space="preserve">
+        <source>Movies</source>
+        <target state="new">Movies</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="NEXT" xml:space="preserve">
+        <source>NEXT</source>
+        <target state="new">NEXT</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="NOW" xml:space="preserve">
+        <source>NOW</source>
+        <target state="new">NOW</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Name" xml:space="preserve">
+        <source>Name</source>
+        <target state="new">Name</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Next channel" xml:space="preserve">
+        <source>Next channel</source>
+        <target state="new">Next channel</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No channels" xml:space="preserve">
+        <source>No channels</source>
+        <target state="new">No channels</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No expiry" xml:space="preserve">
+        <source>No expiry</source>
+        <target state="new">No expiry</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No lists for this provider." xml:space="preserve">
+        <source>No lists for this provider.</source>
+        <target state="new">No lists for this provider.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No programme information for this channel." xml:space="preserve">
+        <source>No programme information for this channel.</source>
+        <target state="new">No programme information for this channel.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No tags found in this provider's names." xml:space="preserve">
+        <source>No tags found in this provider's names.</source>
+        <target state="new">No tags found in this provider's names.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="OK — authenticated successfully" xml:space="preserve">
+        <source>OK — authenticated successfully</source>
+        <target state="new">OK — authenticated successfully</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Off" xml:space="preserve">
+        <source>Off</source>
+        <target state="new">Off</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Off: channels only show the short guide the provider sends for each one." xml:space="preserve">
+        <source>Off: channels only show the short guide the provider sends for each one.</source>
+        <target state="new">Off: channels only show the short guide the provider sends for each one.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Other" xml:space="preserve">
+        <source>Other</source>
+        <target state="new">Other</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Password" xml:space="preserve">
+        <source>Password</source>
+        <target state="new">Password</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Play" xml:space="preserve">
+        <source>Play</source>
+        <target state="new">Play</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Play S%lld E%lld" xml:space="preserve">
+        <source>Play S%1$lld E%2$lld</source>
+        <target state="new">Play S%1$lld E%2$lld</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Playback failed" xml:space="preserve">
+        <source>Playback failed</source>
+        <target state="new">Playback failed</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Portal URL usually ends with /stalker_portal or /c" xml:space="preserve">
+        <source>Portal URL usually ends with /stalker_portal or /c</source>
+        <target state="new">Portal URL usually ends with /stalker_portal or /c</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Preview" xml:space="preserve">
+        <source>Preview</source>
+        <target state="new">Preview</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous channel" xml:space="preserve">
+        <source>Previous channel</source>
+        <target state="new">Previous channel</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Program Guide" xml:space="preserve">
+        <source>Program Guide</source>
+        <target state="new">Program Guide</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Programme guide" xml:space="preserve">
+        <source>Programme guide</source>
+        <target state="new">Programme guide</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Provider" xml:space="preserve">
+        <source>Provider</source>
+        <target state="new">Provider</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Provider: %@" xml:space="preserve">
+        <source>Provider: %@</source>
+        <target state="new">Provider: %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Providers" xml:space="preserve">
+        <source>Providers</source>
+        <target state="new">Providers</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recently Watched" xml:space="preserve">
+        <source>Recently Watched</source>
+        <target state="new">Recently Watched</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recently Watched Channels" xml:space="preserve">
+        <source>Recently Watched Channels</source>
+        <target state="new">Recently Watched Channels</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Refresh content" xml:space="preserve">
+        <source>Refresh content</source>
+        <target state="new">Refresh content</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Refresh the guide" xml:space="preserve">
+        <source>Refresh the guide</source>
+        <target state="new">Refresh the guide</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Remove from Favorites" xml:space="preserve">
+        <source>Remove from Favorites</source>
+        <target state="new">Remove from Favorites</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Removed from every list name shown, ignoring case. Separators left at the start or end (|, -, :) go too. Language detection still reads the original names. Pick a list below to start from its name." xml:space="preserve">
+        <source>Removed from every list name shown, ignoring case. Separators left at the start or end (|, -, :) go too. Language detection still reads the original names. Pick a list below to start from its name.</source>
+        <target state="new">Removed from every list name shown, ignoring case. Separators left at the start or end (|, -, :) go too. Language detection still reads the original names. Pick a list below to start from its name.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Removed text" xml:space="preserve">
+        <source>Removed text</source>
+        <target state="new">Removed text</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Resume S%lld E%lld · %@" xml:space="preserve">
+        <source>Resume S%1$lld E%2$lld · %3$@</source>
+        <target state="new">Resume S%1$lld E%2$lld · %3$@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Resume from %@" xml:space="preserve">
+        <source>Resume from %@</source>
+        <target state="new">Resume from %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Retry" xml:space="preserve">
+        <source>Retry</source>
+        <target state="new">Retry</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save" xml:space="preserve">
+        <source>Save</source>
+        <target state="new">Save</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Season %lld" xml:space="preserve">
+        <source>Season %lld</source>
+        <target state="new">Season %lld</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Series" xml:space="preserve">
+        <source>Series</source>
+        <target state="new">Series</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Series lists" xml:space="preserve">
+        <source>Series lists</source>
+        <target state="new">Series lists</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Server URL (http://host:port)" xml:space="preserve">
+        <source>Server URL (http://host:port)</source>
+        <target state="new">Server URL (http://host:port)</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Server returned HTTP %lld." xml:space="preserve">
+        <source>Server returned HTTP %lld.</source>
+        <target state="new">Server returned HTTP %lld.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Settings" xml:space="preserve">
+        <source>Settings</source>
+        <target state="new">Settings</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Show all" xml:space="preserve">
+        <source>Show all</source>
+        <target state="new">Show all</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Show these" xml:space="preserve">
+        <source>Show these</source>
+        <target state="new">Show these</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Specials" xml:space="preserve">
+        <source>Specials</source>
+        <target state="new">Specials</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Stalker portal" xml:space="preserve">
+        <source>Stalker portal</source>
+        <target state="new">Stalker portal</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Start Over" xml:space="preserve">
+        <source>Start Over</source>
+        <target state="new">Start Over</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Stop removing %@" xml:space="preserve">
+        <source>Stop removing %@</source>
+        <target state="new">Stop removing %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Tags are read from category and channel names; untagged content is always shown. Lists are those of the selected provider." xml:space="preserve">
+        <source>Tags are read from category and channel names; untagged content is always shown. Lists are those of the selected provider.</source>
+        <target state="new">Tags are read from category and channel names; untagged content is always shown. Lists are those of the selected provider.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Test connection" xml:space="preserve">
+        <source>Test connection</source>
+        <target state="new">Test connection</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Testing…" xml:space="preserve">
+        <source>Testing…</source>
+        <target state="new">Testing…</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Text to remove, e.g. FR |" xml:space="preserve">
+        <source>Text to remove, e.g. FR |</source>
+        <target state="new">Text to remove, e.g. FR |</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="The guide couldn't be downloaded: %@" xml:space="preserve">
+        <source>The guide couldn't be downloaded: %@</source>
+        <target state="new">The guide couldn't be downloaded: %@</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="The provider's whole guide is downloaded and kept on this device; without one, channels show their short guide." xml:space="preserve">
+        <source>The provider's whole guide is downloaded and kept on this device; without one, channels show their short guide.</source>
+        <target state="new">The provider's whole guide is downloaded and kept on this device; without one, channels show their short guide.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="The system player can't play .%@ files; only MP4/MOV and HLS streams are supported." xml:space="preserve">
+        <source>The system player can't play .%@ files; only MP4/MOV and HLS streams are supported.</source>
+        <target state="new">The system player can't play .%@ files; only MP4/MOV and HLS streams are supported.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This container isn't supported by the system player." xml:space="preserve">
+        <source>This container isn't supported by the system player.</source>
+        <target state="new">This container isn't supported by the system player.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Type" xml:space="preserve">
+        <source>Type</source>
+        <target state="new">Type</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Unexpected server payload (%@)." xml:space="preserve">
+        <source>Unexpected server payload (%@).</source>
+        <target state="new">Unexpected server payload (%@).</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Unknown playback error." xml:space="preserve">
+        <source>Unknown playback error.</source>
+        <target state="new">Unknown playback error.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Username" xml:space="preserve">
+        <source>Username</source>
+        <target state="new">Username</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="VLC" xml:space="preserve">
+        <source>VLC</source>
+        <target state="new">VLC</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="VLC could not open this stream." xml:space="preserve">
+        <source>VLC could not open this stream.</source>
+        <target state="new">VLC could not open this stream.</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Watch" xml:space="preserve">
+        <source>Watch</source>
+        <target state="new">Watch</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Watch Live" xml:space="preserve">
+        <source>Watch Live</source>
+        <target state="new">Watch Live</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Watched" xml:space="preserve">
+        <source>Watched</source>
+        <target state="new">Watched</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Xtream credentials" xml:space="preserve">
+        <source>Xtream credentials</source>
+        <target state="new">Xtream credentials</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="none" xml:space="preserve">
+        <source>none</source>
+        <target state="new">none</target>
+        <note/>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

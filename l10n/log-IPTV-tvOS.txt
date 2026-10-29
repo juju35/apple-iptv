@@ -1,60 +1,735 @@
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV'): ExtractAppIntentsMetadata
-error: Multiple commands produce '<MkDir /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app>'
-    note: Target 'IPTV' (project 'AppleIPTV') has create directory command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has create directory command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has create directory command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app'
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-    note: Target 'IPTV' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/PkgInfo'
-    note: Target 'IPTV' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has process command with output '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist'
-error: Multiple commands produce '<Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app>'
-    note: Target 'IPTV' (project 'AppleIPTV'): Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app
-    note: Target 'IPTV-macOS' (project 'AppleIPTV'): Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV'): Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo'
-    note: Target 'IPTV' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV.build/Objects-normal/arm64/IPTV.swiftsourceinfo' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo'
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json'
-    note: Target 'IPTV' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV.build/Objects-normal/arm64/IPTV.abi.json' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.abi.json' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.abi.json' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json'
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc'
-    note: Target 'IPTV' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV.build/Objects-normal/arm64/IPTV.swiftdoc' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftdoc' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftdoc' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc'
-error: Multiple commands produce '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule'
-    note: Target 'IPTV' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV.build/Objects-normal/arm64/IPTV.swiftmodule' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule'
-    note: Target 'IPTV-macOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftmodule' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule'
-    note: Target 'IPTV-tvOS' (project 'AppleIPTV') has copy command from '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule' to '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule'
-warning: duplicate output file '' on task: ExtractAppIntentsMetadata (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app' on task: MkDir /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: MkDir /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist' on task: ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist /Users/runner/work/apple-iptv/apple-iptv/Support/macOS/Info.plist (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/PkgInfo' on task: ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist /Users/runner/work/apple-iptv/apple-iptv/Support/macOS/Info.plist (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.abi.json (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftdoc (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-macOS.build/Objects-normal/arm64/IPTV.swiftmodule (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV' on task: Ld /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV normal (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: Ld /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV normal (in target 'IPTV-macOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: ExtractAppIntentsMetadata (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app' on task: MkDir /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: MkDir /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist' on task: ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist /Users/runner/work/apple-iptv/apple-iptv/Support/tvOS/Info.plist (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/PkgInfo' on task: ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/Info.plist /Users/runner/work/apple-iptv/apple-iptv/Support/tvOS/Info.plist (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: Touch /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.abi.json (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftdoc (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule' on task: Copy /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Intermediates.noindex/AppleIPTV.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '/Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV' on task: Ld /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV normal (in target 'IPTV-tvOS' from project 'AppleIPTV')
-warning: duplicate output file '' on task: Ld /Users/runner/Library/Developer/Xcode/DerivedData/AppleIPTV-dbhwgbrvaaszfqhbzvrwpuskpmyu/Build/Products/Debug-appletvos/IPTV.app/IPTV normal (in target 'IPTV-tvOS' from project 'AppleIPTV')
-2026-10-29 20:22:29.069 xcodebuild[11557:35041] Writing error result bundle to /var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/ResultBundle_2026-29-10_20-22-0029.xcresult
-xcodebuild: error: Unable to build project for localization string extraction
-	Reason: See the build logs for failure description.
+Command line invocation:
+    /Applications/Xcode_27.1.app/Contents/Developer/usr/bin/xcodebuild -exportLocalizations -project Extract.xcodeproj -localizationPath out/IPTV-tvOS -exportLanguage en CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  vlckit-spm: https://github.com/tylerjonesio/vlckit-spm @ 3.6.0
+
+Localization Export started for Extract project
+2026-10-29 20:25:32 Started export
+2026-10-29 20:25:32 Extracting strings from code
+
+Building all targets for string extraction
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (3 targets)
+    Target 'IPTV-tvOS' in project 'Extract'
+        ➜ Explicit dependency on target 'VLCKitSPM-product' in project 'vlckit-spm'
+    Target 'VLCKitSPM-product' in project 'vlckit-spm'
+        ➜ Explicit dependency on target 'VLCKitSPM' in project 'vlckit-spm'
+    Target 'VLCKitSPM' in project 'vlckit-spm' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode_27.1.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/runner/work/apple-iptv/apple-iptv/Sources/Resources/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode_27.1.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 5825ee0059ae7cf62e35fdec7f07d1ec
+Build description path: /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/XCBuildData/5825ee0059ae7cf62e35fdec7f07d1ec.xcbuilddata
+CreateBuildDirectory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-create-build-directory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/Extract-b2ba83b0e708e632fd1fe474c06b3eb0-VFS-appletvos/all-product-headers.yaml
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/Extract-b2ba83b0e708e632fd1fe474c06b3eb0-VFS-appletvos/all-product-headers.yaml
+
+CreateBuildDirectory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-appletvos
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-create-build-directory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-appletvos
+
+CreateBuildDirectory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-create-build-directory /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks
+
+ProcessXCFramework /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/artifacts/vlckit-spm/VLCKit-all/VLCKit-all.xcframework /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/TVVLCKit.framework tvos
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-process-xcframework --xcframework /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/artifacts/vlckit-spm/VLCKit-all/VLCKit-all.xcframework --platform tvos --target-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyMetadataFileList (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.modulemap (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.modulemap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyStaticMetadataFileList (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_const_extract_protocols.json (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftConstValuesFileList (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.LinkFileList (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-OutputFileMap.json (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-OutputFileMap.json
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/GeneratedModuleMaps-appletvos/VLCKitSPM.modulemap /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.modulemap (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.modulemap /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/GeneratedModuleMaps-appletvos
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftConstValuesFileList (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.LinkFileList (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS_const_extract_protocols.json (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS-OutputFileMap.json (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.hmap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyStaticMetadataFileList (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyMetadataFileList (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-project-headers.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-project-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-own-target-headers.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-generated-files.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-generated-files.hmap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-target-headers.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-non-framework-target-headers.hmap (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    write-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-non-framework-target-headers.hmap
+
+MkDir /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    /bin/mkdir -p /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app
+
+SwiftDriver VLCKitSPM normal arm64 com.apple.xcode.tools.swift.compiler (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name VLCKitSPM -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos15.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -Isystem /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/usr/lib -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/Library/Frameworks -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk/Developer/Library/Frameworks -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_const_extract_protocols.json -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/SwiftShims-5TPF29X5T4D9X1BFUD2PJ96EY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ptrauth-2733CS66MRG6TAT7C3JLSTBET.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_float-1R6V2QQQGIZXBNLT3F17M73GS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-26SR0KI7DFBC31LL712Q9S5X.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-CRA1PPZRA823YC1HXHX6XW5E2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-EE9XQ4VTE30R2BN31TVIJ5CQ1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ptrcheck-882OBWM4NSQVZSXHGXEFQHSPB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-VFLLRWZ4L7ILTKMG46MC04G6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-C8EVOUJI2WL1W0H0218J8W5CA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-7U9IAZ0Z1WK6WEI06VJV3H0JN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-ER7IWUCH6XU02ZBSO5PFODX6L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-9GH1478YT1FBYM7JV5L4PSPXZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-2W65AL4NMR13Q3QNMX8P0MP5Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/sys_types-3YPQF642R1Q8G5DPXGM3WU868.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/string_h-EPPOMX38NEUO1M55SBN0W7LLS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-2MKNS26K0SFWSMWVD8MAIUOE2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-4BOSXA4772KN3ZU3KGJLJKJYU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-3WWI20JY8Y2KQRCMVOV7D0CJ8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-79ET6P0MQ0DV0PV83YWD30M64.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-80PE3WGUJ0Y2O6W8TEAODEFAO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-565IQ8J75G0VUN53R94KRCO8K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Darwin-3Y9H72N55J2IGEO6KY5MBVCZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/simd-9S87829RCYRYXX1774ZAFM1B3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/MachO-9RCFQ8SVG26A4TMO9XIZCT6W3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ObjectiveC-9NXB225JCMQNO5HI808X7C4QA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os_object-EGU2C9P1AQY3E06K2LNNT2VNG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os_workgroup-6KB4PBV9EXDV9G297QDXDAHN3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Dispatch-80Y08HCR2TC08MRUIBA6ZO68A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Spatial-2B7ZCQMK1EQD81WFY2GUYXQ92.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/XPC-6830TNK49NFF7XCEXT57YDVUJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreFoundation-OBX25I9ZUF4VOER9DBHEFTUG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os-CTP0M1PJDQ5FDYLICSI74USMF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreGraphics-AIKP804P7IU7I9KJK7JP152V9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Security-EZ4JJXGZWJKT8JM46FE3ZF70O.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CFNetwork-8BYR0KPIZVCZZPXD8OY8GQ3ZU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Foundation-8TCV0P80VNQZA610YGQIEQCEX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreText-BRYXS746DTB5JR8BGBBU3B094.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ImageIO-C8PPTB15OHAQXINXE7Q7S0XCH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/IOSurface-9WFNLDCN5VCV5YQ9NMHAEQ86M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UIUtilities-671HR0MC3VEYIKLHTNFQ4ZYLF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_LocationEssentials-7ASM4G5Q0FT0QNQSYKATM54AN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Accessibility-AL4DHA9XZ1KFFSUOFX78E3DBQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/DataDetection-6AK87HLD3Q2T9KXMDSSSGVITN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreLocation-2BFT7AZ9DFKSM8X12LL0TSSIK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Metal-5EX6ST88SM18YL0FM15IHVDMS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/OpenGLES-5X80749W89C1LVAJGNFHNQYZQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Symbols-1DYKSZCKYWOV5DZKA4M0RBPDB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UserNotifications-C97GO10RG70ZB0KVO1Q425HGT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/OSLog-A9ZW7TMRTOS8TGBXEHNV8N7UT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-84GLLEQJF5Y8W91JD9NWGV88B.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreTransferable-47PMZLSN7Z4R0IEGUIRHP40HH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreVideo-8UW7B0JMOXVY5EQ807JERRH8J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreImage-CAW2KJRS7YQXZW6CPM6AQ73WY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/QuartzCore-5NB4Q10GN2Z45675PZ0EM1LJV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/SwiftUICore-38ULGI0ZX6MXBYMEV9VKO797E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UIKit-MZAQDSWJ2MUZ04U7Q06FYM3M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/TVVLCKit-AWVVR8X11Z8YGQIHOUJX9OLHW.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ VLCKitSPM (in target 'VLCKitSPM' from project 'vlckit-spm')
+
+SwiftCompile normal arm64 (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ VLCKit.swift /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm/Sources/VLCKitSPM/VLCKit.swift (in target 'VLCKitSPM' from project 'vlckit-spm')
+
+SwiftCompile normal arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm/Sources/VLCKitSPM/VLCKit.swift (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-SwiftPerFileCompile VLCKit.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for VLCKitSPM (in target 'VLCKitSPM' from project 'vlckit-spm')
+
+SwiftDriver\ Compilation\ Requirements VLCKitSPM normal arm64 com.apple.xcode.tools.swift.compiler (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name VLCKitSPM -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos15.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -Isystem /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/usr/lib -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/Library/Frameworks -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk/Developer/Library/Frameworks -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_const_extract_protocols.json -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/GeneratedModuleMaps-appletvos/VLCKitSPM-Swift.h /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-Swift.h (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-Swift.h -o /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/GeneratedModuleMaps-appletvos/VLCKitSPM-Swift.h
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.swiftmodule
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftdoc (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.swiftdoc
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.abi.json (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/arm64-apple-tvos.abi.json
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftsourceinfo (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo
+
+GenerateAssetSymbols /Users/runner/work/apple-iptv/apple-iptv/Sources/Resources/Assets.xcassets (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    /Applications/Xcode_27.1.app/Contents/Developer/usr/bin/actool /Users/runner/work/apple-iptv/apple-iptv/Sources/Resources/Assets.xcassets --compile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app --output-format human-readable-text --notices --warnings --export-dependency-info /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/assetcatalog_dependencies --output-partial-info-plist /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/assetcatalog_generated_info.plist --app-icon App\ Icon\ \&\ Top\ Shelf\ Image --launch-image LaunchImage --compress-pngs --enable-on-demand-resources YES --development-region en --leaderboard-identifier-prefix IPTV.game-center.leaderboard. --leaderboard-set-identifier-prefix IPTV.game-center.leaderboard-set. --target-device tv --minimum-deployment-target 17.0 --platform appletvos --bundle-identifier me.jstephan.iptv --generate-swift-asset-symbol-extensions NO --generate-swift-asset-symbols /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+SwiftDriver IPTV-tvOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftDriver -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IPTV -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos17.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -emit-localized-strings -emit-localized-strings-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/Extract-b2ba83b0e708e632fd1fe474c06b3eb0-VFS-appletvos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling VLCKit.swift (in target 'VLCKitSPM' from project 'vlckit-spm')
+
+SwiftDriver\ Compilation VLCKitSPM normal arm64 com.apple.xcode.tools.swift.compiler (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name VLCKitSPM -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos15.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -Isystem /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/usr/lib -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/Library/Frameworks -F /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk/Developer/Library/Frameworks -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_const_extract_protocols.json -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv/Extract.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.o normal (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-tvos15.0 -r -isysroot /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-appletvos -F/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -iframework /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk/Developer/Library/Frameworks -filelist /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/appletvos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.swiftmodule -o /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.o
+
+ExtractAppIntentsMetadata (in target 'VLCKitSPM' from project 'vlckit-spm')
+    cd /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/SourcePackages/checkouts/vlckit-spm
+    /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.8OJcbl/Metal.xctoolchain --module-name VLCKitSPM --sdk-root /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk --xcode-version 27A9275 --platform-family tvOS --deployment-target 15.0 --bundle-identifier vlckit-spm.VLCKitSPM --output /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.appintents --target-triple arm64-apple-tvos15.0 --binary-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/VLCKitSPM.o --dependency-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM_dependency_info.dat --stringsdata-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftFileList --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyMetadataFileList --static-metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/VLCKitSPM.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/vlckit-spm.build/Debug-appletvos/VLCKitSPM-t.build/Objects-normal/arm64/VLCKitSPM.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 20:25:41.699 appintentsmetadataprocessor[10003:31579] Starting appintentsmetadataprocessor export
+2026-10-29 20:25:41.802 appintentsmetadataprocessor[10003:31579] Extracted no relevant App Intents symbols, skipping writing output
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ptrauth-7CFKMYEKE8U7UPHVZWDO2R8PA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-ALONX8RXW1E5P8S235NU8S136.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-73B65H1C6EZKGFCQN44PNRVQS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ptrcheck-D7YBZTTHJSXHNJGY6CW27BALM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/SwiftShims-974IMNZV24NXAQ3R2HE1RS5X8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_float-KK5BBEN334N8NXMMQTDSN3UT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-8BPGMG30QG368B7ZZ9DATZKN8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-9E6VVCXSA4BSJ76LTCTAHLCVW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-C0G1OI35M6XKFFBZYOA4TXBM2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-4WH0DFI2LZDN0VT6WT9AISGY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-E8JAMUW1PACK8U5N33LAA8BMX.pcm
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/Info.plist /Users/runner/work/apple-iptv/apple-iptv/Support/tvOS/Info.plist (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-infoPlistUtility /Users/runner/work/apple-iptv/apple-iptv/Support/tvOS/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/PkgInfo -expandbuildsettings -format binary -platform appletvos -requiredArchitecture arm64 -o /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/Info.plist
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-8WBOJALLXBL37UPNRG9K1STJX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-BWY7RJ41KC1YFGLQOJG6TEA8Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-5F1IZD9WCQ3B424FNPY91XX5P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-7D85APPTWERJUT8929JHUXSSN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/string_h-C8CCPSRL0N4VSQRAJJAT3198R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/sys_types-A5RLUU7509AFJ6DJTEPWQFGBY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-A0SEHT7GB9ZFKQYCWUE5TKL8I.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-8LV97TCVZJLUN110V5VU7XMJV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-4U2TUBUMYDHMOR62AWT5LLR3E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-EVWY2ZS86HTALLUKDU697XUGJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Darwin-D7QBPH1PSO8CDCOB3OUHM34X.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/simd-AG98FCQDUPPHKQAR4H4QH3RHO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/MachO-9J7NWAMP7K2VYG1P9GVMQECPK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ObjectiveC-5KOPAK6VFSFLFF2ZQE4JR9CEB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Spatial-AY567KPFMVYS8P8OWHKGUZCOX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os_object-2YBQR932NXNL52R9AZDJ079N9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os_workgroup-4IZV6E61P9NXYZFBTVJVVU8D9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Dispatch-5EVNN4AGJSTLH9G1WXEFD8Q0B.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreFoundation-68G8MOAADL2YJ0UYLBJAWV2EO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/XPC-CFILZN1V0L60YU3KAN5NTV6L7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/os-BL876CL0NAR826OST8E4OA5C8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-8OOHGG2I6N8S11CDUNBPNT22E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreGraphics-BKM30PPGP1IJJ1GGE6P1FU7VI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CFNetwork-CFFV3EKZ1YS765V8GOIPAJIJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreAudio-19GQJBKQF955DLYK6NZ7NS2B9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Security-CVV68OEROFKAAZYJCYTT0O1DR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreText-71MUSFMUIXACEI02UFRDOZ50C.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/ImageIO-8VNXZJ74UU6TCHW2UVKAEJY76.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Foundation-666QUKMUWMTL1L8RKIOZSXH2H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/OSLog-9XQZWYJTNB1XIPQ150DXTLHA5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UIUtilities-6V0UQKMBTCPF8DDWY8HUNZR1K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreTransferable-ZYMJE72Y8NNHF6IAMSJIHXWM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_LocationEssentials-EL2EHSTKMB6F18A11LFCCAF9T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVRouting-CO3BRPILOL2DSQEZ3NAHTOHRG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/DataDetection-A769ACTIT39L7F5V8Q0RAGA6A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Symbols-APRMCJIUVW6CR8RE39IXHO8PP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreData-337DB75FQSQZR6OPUHQA25LCW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/IOSurface-3QAWDK9NEVFKJ2EXBRW8WTEK9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Accessibility-3LK9R0SZ8WJKALCZK0Q6LCCNA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-J4T9VGCF9VA6YICVRN1YZLYD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/Metal-83MJG8U1G4XPQSH7ZPNKX40HK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/OpenGLES-EQW5U6VTB1D9QHNQNXT5IVADI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UserNotifications-BE5M2XKN972QWTGTVL409KIF7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreMIDI-8DL5VMZQSJKCQTKY9DV1PATKV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreLocation-8LPXHINIGDW1EQBRCHBQINZVI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AudioToolbox-6NX5JU9O64KRDE5NQW0CWVJGP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreVideo-AWT8NZKS3UL6JL6FCYH74HXG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreMedia-2DZTNLG6V4WNO1W5XS8OQCPU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/QuartzCore-DIQMU28DUFKOLJDMQYA4MOPNC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/CoreImage-705J1GDJOWXTZR3A0G5MYCC4D.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AudioToolbox-27PKE6K4WIOX.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/SwiftUICore-B90BJXBMCJWN6PITW8B2I0YZ1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/VideoToolbox-6BBIX60DUEN4GFFF7STAMCKYA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVFAudio-888Q81A4ISB1PSIZYIPDQTAYX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/UIKit-95NYK6GXD0QOP6ECCEDL8WYDI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/MediaToolbox-D9W0RLPNACUHS7UMARL27D74W.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/MediaToolbox-MBQLW4G9S1PN.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVFoundation-7EWY5RHWINSHUAYMF319DKM12.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVFAudio-34YWJDQYTYYD.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVFoundation-37FBQHTGBQMPN.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/SwiftUI-DT8PR9UHYPQ83TK6SXYO986PL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/TVVLCKit-3IIFNBO0CIQEB1Z2X6U7I6SOL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVKit-CSCBTR8JLQY51E7BPNSK8RHQ6.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/AVKit-13UDMPKT6UDI5.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules/_AVKit_SwiftUI-2Y4LZUEQICNQP.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ IPTV (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftCompile normal arm64 (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    
+
+SwiftCompile normal arm64 Compiling\ FilterSettingsViews.swift,\ FilterSyncStore.swift,\ GeneratedArtwork.swift,\ HomeView.swift,\ IPTVApp.swift,\ IPTVClient.swift,\ LiveTVView.swift,\ MediaDetailView.swift,\ Models.swift,\ PlatformPlayerViews.swift,\ PlatformStyles.swift,\ PlaybackProgressStore.swift,\ PlayerView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/FilterSettingsViews.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/FilterSyncStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/GeneratedArtwork.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/HomeView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/App/IPTVApp.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/IPTVClient.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/LiveTVView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/MediaDetailView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Models/Models.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PlatformPlayerViews.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PlatformStyles.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/PlaybackProgressStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/PlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/FilterSettingsViews.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile FilterSettingsViews.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/FilterSyncStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile FilterSyncStore.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/GeneratedArtwork.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile GeneratedArtwork.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/HomeView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile HomeView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/App/IPTVApp.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile IPTVApp.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/IPTVClient.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile IPTVClient.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/LiveTVView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile LiveTVView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/MediaDetailView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile MediaDetailView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Models/Models.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile Models.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PlatformPlayerViews.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile PlatformPlayerViews.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PlatformStyles.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile PlatformStyles.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/PlaybackProgressStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile PlaybackProgressStore.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/PlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile PlayerView.swift
+
+SwiftCompile normal arm64 Compiling\ PosterCard.swift,\ ProviderMenu.swift,\ ProviderSyncStore.swift,\ SearchView.swift,\ SeasonEpisodesView.swift,\ SettingsView.swift,\ StalkerClient.swift,\ TVTransportOverlay.swift,\ Theme.swift,\ VLCPlayerView.swift,\ XMLTVParser.swift,\ XtreamClient.swift,\ GeneratedAssetSymbols.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PosterCard.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/ProviderMenu.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/ProviderSyncStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/SearchView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/SeasonEpisodesView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/SettingsView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/StalkerClient.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/TVTransportOverlay.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/App/Theme.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/VLCPlayerView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/XMLTVParser.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/XtreamClient.swift /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/PosterCard.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile PosterCard.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/ProviderMenu.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile ProviderMenu.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/ProviderSyncStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile ProviderSyncStore.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/SearchView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile SearchView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/SeasonEpisodesView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile SeasonEpisodesView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/SettingsView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile SettingsView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/StalkerClient.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile StalkerClient.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/TVTransportOverlay.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile TVTransportOverlay.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/App/Theme.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile Theme.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/VLCPlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile VLCPlayerView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/XMLTVParser.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile XMLTVParser.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Clients/XtreamClient.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile XtreamClient.swift
+
+SwiftCompile normal arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile GeneratedAssetSymbols.swift
+
+SwiftCompile normal arm64 Compiling\ AppStore+Account.swift,\ AppStore.swift,\ BrowseView.swift,\ CatalogCache.swift,\ CategoryViews.swift,\ ChannelSwitcher.swift,\ CloudStringListStore.swift,\ ContentTags.swift,\ Demo.swift,\ DemoClient.swift,\ DemoPlayerView.swift,\ DuoPlayerView.swift,\ EPGStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/AppStore+Account.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/AppStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/BrowseView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/CatalogCache.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/CategoryViews.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/ChannelSwitcher.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/CloudStringListStore.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/ContentTags.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/Demo.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/DemoClient.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/DemoPlayerView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/DuoPlayerView.swift /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/EPGStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/AppStore+Account.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile AppStore+Account.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/AppStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile AppStore.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/BrowseView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile BrowseView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/CatalogCache.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile CatalogCache.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/CategoryViews.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile CategoryViews.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/Components/ChannelSwitcher.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile ChannelSwitcher.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/CloudStringListStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile CloudStringListStore.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/ContentTags.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile ContentTags.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/Demo.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile Demo.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/DemoClient.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile DemoClient.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Demo/DemoPlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile DemoPlayerView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Views/DuoPlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile DuoPlayerView.swift
+
+SwiftCompile normal arm64 /Users/runner/work/apple-iptv/apple-iptv/Sources/Store/EPGStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-SwiftPerFileCompile EPGStore.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for IPTV (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftDriver\ Compilation\ Requirements IPTV-tvOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IPTV -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos17.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -emit-localized-strings -emit-localized-strings-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/Extract-b2ba83b0e708e632fd1fe474c06b3eb0-VFS-appletvos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling AppStore+Account.swift, AppStore.swift, BrowseView.swift, CatalogCache.swift, CategoryViews.swift, ChannelSwitcher.swift, CloudStringListStore.swift, ContentTags.swift, Demo.swift, DemoClient.swift, DemoPlayerView.swift, DuoPlayerView.swift, EPGStore.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PosterCard.swift, ProviderMenu.swift, ProviderSyncStore.swift, SearchView.swift, SeasonEpisodesView.swift, SettingsView.swift, StalkerClient.swift, TVTransportOverlay.swift, Theme.swift, VLCPlayerView.swift, XMLTVParser.swift, XtreamClient.swift, GeneratedAssetSymbols.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftMergeGeneratedHeaders /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/IPTV-Swift.h /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-Swift.h (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-Swift.h -o /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/IPTV-Swift.h
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftmodule
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftdoc (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.swiftdoc
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.abi.json (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/arm64-apple-tvos.abi.json
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling FilterSettingsViews.swift, FilterSyncStore.swift, GeneratedArtwork.swift, HomeView.swift, IPTVApp.swift, IPTVClient.swift, LiveTVView.swift, MediaDetailView.swift, Models.swift, PlatformPlayerViews.swift, PlatformStyles.swift, PlaybackProgressStore.swift, PlayerView.swift (in target 'IPTV-tvOS' from project 'Extract')
+
+SwiftDriver\ Compilation IPTV-tvOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    builtin-Swift-Compilation -- /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IPTV -Onone @/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -target arm64-apple-tvos17.0 -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks -F /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -emit-localized-strings -emit-localized-strings-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-tvOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/Extract-b2ba83b0e708e632fd1fe474c06b3eb0-VFS-appletvos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV-Swift.h -working-directory /Users/runner/work/apple-iptv/apple-iptv -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/IPTV normal (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-tvos17.0 -isysroot /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-appletvos -L/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -F/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-appletvos -F/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks -F/Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos -filelist /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/appletvos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.swiftmodule -liconv -framework CoreText -framework AVFoundation -framework AudioToolbox -framework OpenGLES -framework VideoToolbox -framework CoreMedia -lc++ -lxml2 -lz -lbz2 -framework TVVLCKit -o /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/IPTV
+
+ExtractAppIntentsMetadata (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    /Applications/Xcode_27.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.8OJcbl/Metal.xctoolchain --module-name IPTV --sdk-root /Applications/Xcode_27.1.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS27.0.sdk --xcode-version 27A9275 --platform-family tvOS --deployment-target 17.0 --bundle-identifier me.jstephan.iptv --output /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app --target-triple arm64-apple-tvos17.0 --binary-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app/IPTV --dependency-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV_dependency_info.dat --stringsdata-file /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftFileList --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyMetadataFileList --static-metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/IPTV.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/Extract.build/Debug-appletvos/IPTV-tvOS.build/Objects-normal/arm64/IPTV.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 20:25:55.423 appintentsmetadataprocessor[10568:32885] Starting appintentsmetadataprocessor export
+2026-10-29 20:25:55.428 appintentsmetadataprocessor[10568:32885] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+Touch /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app (in target 'IPTV-tvOS' from project 'Extract')
+    cd /Users/runner/work/apple-iptv/apple-iptv
+    /usr/bin/touch -c /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Products/Debug-appletvos/IPTV.app
+
+PruneExplicitPrecompiledModules /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/runner/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/runner/Library/Developer/Xcode/DerivedData/Extract-dprkhnjmpzqrwdcdqhdgvxcziqou/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+2026-10-29 20:25:56 Extracting strings from localizable files
+2026-10-29 20:25:56 Copying source language files
+2026-10-29 20:25:56 Exporting Sources/Resources/InfoPlist.xcstrings to en.xliff...
+2026-10-29 20:25:56 Exporting Sources/Resources/Assets.xcassets to en.xcloc...
+2026-10-29 20:25:56 Exporting Sources/Resources/Localizable.xcstrings to en.xliff...
+2026-10-29 20:25:56 Writing
+2026-10-29 20:25:56 An xcloc was created at /Users/runner/work/apple-iptv/apple-iptv/out/IPTV-tvOS/en.xcloc
