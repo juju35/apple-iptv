@@ -55,16 +55,6 @@ private struct ProviderToolbarModifier: ViewModifier {
             .first { $0.activationState == .foregroundActive }
     }
 
-    /// The side tab bar's frame in the window (a vertical `UITabBar`), if UIKit has one.
-    private static func sideTabBarFrame(in window: UIWindow) -> CGRect? {
-        func find(_ view: UIView) -> UITabBar? {
-            if let bar = view as? UITabBar, !bar.isHidden, bar.bounds.height > bar.bounds.width { return bar }
-            return view.subviews.lazy.compactMap(find).first
-        }
-        guard let bar = find(window) else { return nil }
-        return bar.convert(bar.bounds, to: window)
-    }
-
     /// Only one side inset: a notched iPhone in landscape has them on both.
     private static func sideCentre(for insets: EdgeInsets) -> CGPoint? {
         let isSide = (insets.trailing > 40) != (insets.leading > 40)
@@ -79,16 +69,12 @@ private struct ProviderToolbarModifier: ViewModifier {
             let isCoverScreen = bounds.height > bounds.width
             return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 140)
         }
-        // Under the side tab bar.
-        if let bar = sideTabBarFrame(in: window) {
-            return CGPoint(x: bar.midX, y: min(bar.maxY + 19, bounds.maxY - 18))
-        }
-        // UIKit doesn't expose it: measured on screenshots. On the left it runs down to the bottom; on the
-        // right it ends higher, with the switcher centred under it.
+        // Under the side tab bar, measured on screenshots: UIKit's `UITabBar` isn't where the floating bar
+        // is drawn. On the left the bar runs lower than on the right.
         if insets.leading > 40 {
-            return CGPoint(x: 45, y: bounds.maxY - 10)
+            return CGPoint(x: 71, y: bounds.maxY - 18)
         }
-        return CGPoint(x: bounds.maxX - 91, y: bounds.maxY - 95)
+        return CGPoint(x: bounds.maxX - 71, y: bounds.maxY - 103)
     }
 
     func body(content: Content) -> some View {
