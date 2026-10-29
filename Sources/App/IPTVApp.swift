@@ -75,17 +75,17 @@ struct MainTabView: View {
         }
         .brandTint()
         .background(Theme.background)
-        .environment(\.showSettings) { tab = .settings }
+        .environment(\.showSettings, ShowSettingsAction { tab = .settings })
         #if os(macOS)
         .environment(\.presentPlayer) { windowPlayback = $0 }
         .overlay {
             if let request = windowPlayback {
                 PlayerView(request: request)
                     .id(request.id)
-                    .environment(\.closePlayer) {
+                    .environment(\.closePlayer, ClosePlayerAction {
                         windowPlayback = nil
                         playerChromeVisible = true
-                    }
+                    })
                     .environment(\.playerChromeVisible, $playerChromeVisible)
                     .ignoresSafeArea()
             }

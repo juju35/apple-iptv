@@ -2,7 +2,15 @@ import SwiftUI
 
 extension EnvironmentValues {
     /// Switches to the Settings tab; set by `MainTabView`.
-    @Entry var showSettings: (() -> Void)?
+    @Entry var showSettings: ShowSettingsAction?
+}
+
+/// Equatable wrapper so re-setting the environment value doesn't invalidate readers on every update.
+/// All instances compare equal: `MainTabView` always installs the same behavior (select the Settings tab).
+struct ShowSettingsAction: Equatable {
+    let action: () -> Void
+
+    static func == (lhs: Self, rhs: Self) -> Bool { true }
 }
 
 extension View {
@@ -43,7 +51,7 @@ struct ProviderMenu: View {
                 }
             }
             if let showSettings {
-                Button(action: showSettings) {
+                Button(action: showSettings.action) {
                     Label("Manage Providers", systemImage: "gearshape")
                 }
             }
