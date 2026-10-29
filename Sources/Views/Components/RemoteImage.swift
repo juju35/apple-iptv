@@ -43,6 +43,17 @@ actor ImageLoader {
         return image
     }
 
+    /// Loads artwork about to come on screen, in the background.
+    nonisolated func prefetch(_ urls: [URL], maxPixelSize: Int = 600) {
+        let missing = urls.filter { cached($0, maxPixelSize: maxPixelSize) == nil }
+        guard !missing.isEmpty else { return }
+        Task(priority: .utility) {
+            for url in missing {
+                Task { _ = await self.image(for: url, maxPixelSize: maxPixelSize) }
+            }
+        }
+    }
+
     nonisolated private static func key(_ url: URL, _ size: Int) -> String { "\(size)|\(url.absoluteString)" }
 
     /// Decodes straight to the displayed size, off the main thread.
