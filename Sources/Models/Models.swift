@@ -180,8 +180,13 @@ struct AccountInfo: Codable, Hashable {
     static func date(from value: Any?) -> Date? {
         guard let value else { return nil }
         let text = "\(value)".trimmingCharacters(in: .whitespaces)
-        if let seconds = Double(text), seconds > 0 { return Date(timeIntervalSince1970: seconds) }
-        for format in ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "MMMM d, yyyy, h:mm a", "dd.MM.yyyy", "dd/MM/yyyy"] {
+        if let seconds = Double(text) {
+            // Years 2000…2100 only, so a phone number isn't taken for a timestamp.
+            return (946_684_800...4_102_444_800).contains(seconds) ? Date(timeIntervalSince1970: seconds) : nil
+        }
+        let formats = ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd", "MMMM d, yyyy, h:mm a",
+                       "MMMM d, yyyy", "dd.MM.yyyy", "dd/MM/yyyy"]
+        for format in formats {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
             formatter.dateFormat = format

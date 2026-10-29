@@ -353,15 +353,22 @@ final class StalkerClient: IPTVClient {
 // MARK: - Account
 
 extension StalkerClient {
-    /// Portals put the end date in `account_info/get_main_info` or in the profile, under various names.
+    /// Portals put the end date in `account_info/get_main_info` or in the profile, under various names;
+    /// many MAC portals send it in get_main_info's `phone` field ("January 31, 2027, 12:00 am").
     func accountInfo() async throws -> AccountInfo {
         try await ensureToken()
-        let keys = ["end_date", "expire_billing_date", "tariff_expired_date", "expire_date", "exp_date"]
+        let keys = ["end_date", "expire_billing_date", "tariff_expired_date", "expire_date", "exp_date",
+                    "expiry_date", "phone"]
         for (type, action) in [("account_info", "get_main_info"), ("stb", "get_profile")] {
             guard let dict = try? await fetchJS(type: type, action: action) as? [String: Any] else { continue }
+            #if DEBUG
+            let dated = dict.filter { AccountInfo.date(from: $0.value) != nil || "\($0.value)".contains("unlimited") }
+            print("[Stalker] \(type)/\(action) date fields:", dated)
+            #endif
             for key in keys {
                 guard let value = dict[key] else { continue }
                 if "\(value)".lowercased().contains("unlimited") { return AccountInfo(isUnlimited: true) }
+                // `phone` only counts when it really holds a date.
                 if let date = AccountInfo.date(from: value) { return AccountInfo(expiresAt: date) }
             }
         }
