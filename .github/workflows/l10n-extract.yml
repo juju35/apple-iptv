@@ -17,9 +17,11 @@ jobs:
           for scheme in IPTV IPTV-tvOS IPTV-macOS; do
             case $scheme in IPTV) sdk=iphonesimulator;; IPTV-tvOS) sdk=appletvsimulator;; *) sdk=macosx;; esac
             xcodebuild -exportLocalizations -project AppleIPTV.xcodeproj -scheme "$scheme" -sdk "$sdk" \
-              -localizationPath "out/$scheme" -exportLanguage en CODE_SIGNING_ALLOWED=NO 2>&1 | tail -20 || true
+              -localizationPath "out/$scheme" -exportLanguage en CODE_SIGNING_ALLOWED=NO > "log-$scheme.txt" 2>&1 || true
           done
           mkdir -p l10n
+          for scheme in IPTV IPTV-tvOS IPTV-macOS; do tail -60 "log-$scheme.txt" > "l10n/log-$scheme.txt"; done
+          find out -maxdepth 4 | head -50 > l10n/tree.txt
           for scheme in IPTV IPTV-tvOS IPTV-macOS; do
             find "out/$scheme" -name '*.xliff' -exec cp {} "l10n/$scheme.xliff" \; || true
           done
