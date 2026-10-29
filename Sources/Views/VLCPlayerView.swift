@@ -17,6 +17,8 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
         let view = UIView()
         view.backgroundColor = .black
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        // Touches go to the SwiftUI controls above, not to VLC's views.
+        view.isUserInteractionEnabled = false
         return view
     }()
     #endif
@@ -156,6 +158,7 @@ private struct VLCVideoSurface: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let container = UIView()
         container.backgroundColor = .black
+        container.isUserInteractionEnabled = false
         attach(to: container)
         return container
     }
@@ -274,6 +277,14 @@ struct VLCPlayerView: View {
             VLCVideoSurface(controller: controller)
                 .ignoresSafeArea()
 
+            #if !os(tvOS)
+            // A SwiftUI layer takes the taps: a UIKit / AppKit view under a SwiftUI gesture keeps them.
+            Color.clear
+                .contentShape(Rectangle())
+                .ignoresSafeArea()
+                .onTapGesture { toggleControls() }
+            #endif
+
             #if os(tvOS)
             // The system player's transport, driven from the remote.
             if controller.errorMessage == nil {
@@ -286,10 +297,6 @@ struct VLCPlayerView: View {
             }
             #endif
         }
-        #if !os(tvOS)
-        .contentShape(Rectangle())
-        .onTapGesture { toggleControls() }
-        #endif
         #if os(iOS)
         .statusBarHidden(!controlsVisible)
         .persistentSystemOverlays(controlsVisible ? .automatic : .hidden)
