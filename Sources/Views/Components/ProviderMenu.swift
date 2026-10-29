@@ -14,10 +14,17 @@ struct ShowSettingsAction: Equatable {
 }
 
 extension View {
-    /// Adds the provider switcher at the trailing end of the toolbar (not on tvOS, whose tab bar has no room).
+    /// Adds the provider switcher at the trailing end of the toolbar; on Apple TV, whose tab bar has no room,
+    /// above the screen's content at the top right, where focus reaches it by swiping up.
     func providerToolbar() -> some View {
         #if os(tvOS)
-        self
+        safeAreaInset(edge: .top, spacing: 0) {
+            HStack {
+                Spacer()
+                ProviderMenu()
+            }
+            .padding(.horizontal, 80)
+        }
         #else
         toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -28,7 +35,6 @@ extension View {
     }
 }
 
-#if !os(tvOS)
 /// Profile-style button: the selected provider's initials; its menu switches providers.
 struct ProviderMenu: View {
     @EnvironmentObject private var store: AppStore
@@ -56,7 +62,15 @@ struct ProviderMenu: View {
                 }
             }
         } label: {
+            #if os(tvOS)
+            // A labelled button on Apple TV: initials alone are cryptic from the couch.
+            HStack(spacing: 14) {
+                ProviderAvatar(name: selected?.name ?? "")
+                Text(selected?.name ?? String(localized: "Providers"))
+            }
+            #else
             ProviderAvatar(name: selected?.name ?? "")
+            #endif
         }
         .menuIndicator(.hidden)
         .accessibilityLabel("Provider: \(selected?.name ?? String(localized: "none"))")
@@ -73,13 +87,18 @@ struct ProviderAvatar: View {
         return letters.isEmpty ? "?" : String(letters).uppercased()
     }
 
+    #if os(tvOS)
+    private static let size: CGFloat = 44
+    #else
+    private static let size: CGFloat = 30
+    #endif
+
     var body: some View {
         Text(initials)
             .font(.caption.weight(.bold))
             .foregroundStyle(.white)
-            .frame(width: 30, height: 30)
+            .frame(width: Self.size, height: Self.size)
             .background(Circle().fill(Theme.accent.gradient))
             .overlay(Circle().strokeBorder(.white.opacity(0.25)))
     }
 }
-#endif
