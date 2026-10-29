@@ -14,20 +14,12 @@ struct ShowSettingsAction: Equatable {
 }
 
 extension View {
-    /// Adds the provider switcher at the trailing end of the toolbar; on Apple TV, whose tab bar has no room,
-    /// level with the tab bar at the top right (over the content, which keeps its full height).
+    /// Adds the provider switcher at the trailing end of the toolbar (on Apple TV, see `tvProviderSwitcher`).
     /// `barHasTitle`: false when the navigation bar holds nothing but the switcher (Home), so it can go
     /// when the switcher moves out of it.
     func providerToolbar(barHasTitle: Bool = true) -> some View {
         #if os(tvOS)
-        overlay {
-            // Same inset from the top and the right edge as the tab bar from the top.
-            ProviderMenu()
-                .padding(.top, 53)
-                .padding(.trailing, 53)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .ignoresSafeArea()
-        }
+        self  // Placed once on the tab view: `tvProviderSwitcher(isShown:)`.
         #elseif os(iOS)
         modifier(ProviderToolbarModifier(barHasTitle: barHasTitle))
         #else
@@ -39,6 +31,25 @@ extension View {
         #endif
     }
 }
+
+#if os(tvOS)
+extension View {
+    /// Apple TV: the switcher level with the tab bar at the top right, set on the tab view itself so it
+    /// doesn't move while a tab's content lays out (on each screen it briefly showed lower).
+    func tvProviderSwitcher(isShown: Bool) -> some View {
+        overlay {
+            if isShown {
+                // Same inset from the top and the right edge as the tab bar from the top.
+                ProviderMenu()
+                    .padding(.top, 53)
+                    .padding(.trailing, 53)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .ignoresSafeArea()
+            }
+        }
+    }
+}
+#endif
 
 #if os(iOS)
 /// The switcher in the toolbar, except on iPhone Duo in landscape, where the status bar and the tab bar

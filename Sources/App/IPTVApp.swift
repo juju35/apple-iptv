@@ -72,6 +72,9 @@ struct MainTabView: View {
                 .tag(MainTab.settings)
         }
         .brandTint()
+        #if os(tvOS)
+        .tvProviderSwitcher(isShown: [.home, .live, .movies, .series].contains(tab))
+        #endif
         .background(Theme.background)
         .environment(\.showSettings, ShowSettingsAction { tab = .settings })
         #if os(macOS)
