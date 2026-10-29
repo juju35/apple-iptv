@@ -54,7 +54,7 @@ private struct ProviderToolbarModifier: ViewModifier {
     private static func trailingStatusBarFrame() -> CGRect {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
-        let window = scene?.effectiveGeometry.coordinateSpace.bounds ?? .zero
+        let window = (scene?.keyWindow ?? scene?.windows.first)?.bounds ?? .zero
         let reported = scene?.statusBarManager?.statusBarFrame ?? .zero
         print("[ProviderMenu] window \(window), status bar \(reported)")
         if reported.height > reported.width, reported.minX > window.midX, reported.maxX <= window.maxX + 1 {
