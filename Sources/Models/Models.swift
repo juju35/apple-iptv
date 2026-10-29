@@ -160,6 +160,8 @@ struct PlaybackRequest: Identifiable {
     var progress: PlaybackProgressContext?
     /// Seconds to resume from.
     var startPosition: Double = 0
+    /// Poster, episode still or channel logo of what plays (iPhone Duo controls).
+    var artworkURL: URL?
     /// The live channel playing, and the list it was started from, for zapping.
     var channel: MediaItem?
     var channelList: [MediaItem] = []

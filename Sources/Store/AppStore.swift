@@ -399,6 +399,7 @@ extension AppStore {
         var request = PlaybackRequest(url: url, title: item.name, headers: client.streamHeaders)
         request.progress = progress
         request.startPosition = start
+        request.artworkURL = item.posterURL
         if item.kind == .live {
             request.channel = item
             recordRecentChannel(item)

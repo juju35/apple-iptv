@@ -244,6 +244,7 @@ struct VLCPlayerView: View {
             } controls: {
                 FoldControlsPanel(
                     title: request.title,
+                    artworkURL: request.artworkURL,
                     isPlaying: controller.isPlaying,
                     isSeekable: controller.isSeekable,
                     position: Binding(

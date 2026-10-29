@@ -239,7 +239,9 @@ struct SystemPlayerView: View {
             if let player = controller.player {
                 #if os(iOS)
                 if #available(iOS 27.1, *) {
-                    FoldAwarePlayerView(player: player, title: request.title) { dismiss() }
+                    FoldAwarePlayerView(player: player, title: request.title, artworkURL: request.artworkURL) {
+                        dismiss()
+                    }
                 } else {
                     StandardPlayerView(player: player) { dismiss() }
                 }

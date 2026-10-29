@@ -269,10 +269,11 @@ struct MediaDetailView: View {
     private func playEpisode(_ episode: Episode) {
         let context = PlaybackProgressContext.episode(episode, of: item)
         play(ref: episode.playbackRef, ext: episode.containerExtension, progress: context,
-             from: store.progress(for: context.key)?.position ?? 0)
+             from: store.progress(for: context.key)?.position ?? 0, artwork: episode.posterURL)
     }
 
-    private func play(ref: String, ext: String?, progress: PlaybackProgressContext? = nil, from start: Double = 0) {
+    private func play(ref: String, ext: String?, progress: PlaybackProgressContext? = nil, from start: Double = 0,
+                      artwork: URL? = nil) {
         guard !isResolving else { return }
         isResolving = true
         loadError = nil
@@ -282,6 +283,7 @@ struct MediaDetailView: View {
             do {
                 var request = try await store.playbackRequest(for: item, ref: ref, containerExtension: ext,
                                                               progress: progress, from: start)
+                if let artwork { request.artworkURL = artwork }
                 if item.kind == .live {
                     // Zap through the channel's list.
                     request.channelList = store.liveItems.filter { channel in

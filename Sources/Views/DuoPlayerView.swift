@@ -76,6 +76,8 @@ struct FoldAwarePlayerLayout<Video: View, Controls: View, Flat: View>: View {
 /// Netflix-style transport panel shown on the controls side of the fold.
 struct FoldControlsPanel: View {
     let title: String
+    /// Small artwork of what plays, under the title.
+    var artworkURL: URL?
     let isPlaying: Bool
     let isSeekable: Bool
     /// Playback progress, 0…1; only used when `isSeekable`.
@@ -89,15 +91,20 @@ struct FoldControlsPanel: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            HStack {
-                Text(title)
-                    .font(.headline)
-                    .lineLimit(1)
-                Spacer()
-                Button(action: onClose) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white.opacity(0.8))
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text(title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Spacer()
+                    Button(action: onClose) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.white.opacity(0.8))
+                    }
+                }
+                if let artworkURL {
+                    thumbnail(artworkURL)
                 }
             }
 
@@ -138,6 +145,20 @@ struct FoldControlsPanel: View {
         .foregroundStyle(.white)
     }
 
+    /// Poster, still or logo, letterboxed in a small rounded tile.
+    private func thumbnail(_ url: URL) -> some View {
+        AsyncImage(url: url) { phase in
+            if case .success(let image) = phase {
+                image.resizable().scaledToFit()
+            } else {
+                Color.white.opacity(0.06)
+            }
+        }
+        .frame(maxWidth: 140, maxHeight: 72, alignment: .leading)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .accessibilityHidden(true)
+    }
+
     private func transportButton(_ systemName: String, size: CGFloat = 32,
                                  action: @escaping () -> Void) -> some View {
         Button(action: action) {
@@ -155,13 +176,14 @@ struct FoldControlsPanel: View {
 struct FoldAwarePlayerView: View {
     let player: AVPlayer
     let title: String
+    var artworkURL: URL?
     let onClose: () -> Void
 
     var body: some View {
         FoldAwarePlayerLayout {
             VideoSurface(player: player)
         } controls: {
-            AVTransportControls(player: player, title: title, onClose: onClose)
+            AVTransportControls(player: player, title: title, artworkURL: artworkURL, onClose: onClose)
         } flat: {
             StandardPlayerView(player: player, onClose: onClose)
         }
@@ -203,6 +225,7 @@ struct VideoSurface: UIViewRepresentable {
 struct AVTransportControls: View {
     let player: AVPlayer
     let title: String
+    var artworkURL: URL?
     let onClose: () -> Void
 
     @State private var isPlaying = true
@@ -216,6 +239,7 @@ struct AVTransportControls: View {
     var body: some View {
         FoldControlsPanel(
             title: title,
+            artworkURL: artworkURL,
             isPlaying: isPlaying,
             isSeekable: isSeekable,
             position: Binding(
