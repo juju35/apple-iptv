@@ -13,17 +13,25 @@ jobs:
       - uses: actions/checkout@v7
       - run: |
           brew install xcodegen
-          xcodegen
-          for scheme in IPTV IPTV-tvOS IPTV-macOS; do
-            case $scheme in IPTV) sdk=iphonesimulator;; IPTV-tvOS) sdk=appletvsimulator;; *) sdk=macosx;; esac
-            xcodebuild -exportLocalizations -project AppleIPTV.xcodeproj -scheme "$scheme" -sdk "$sdk" \
-              -localizationPath "out/$scheme" -exportLanguage en CODE_SIGNING_ALLOWED=NO > "log-$scheme.txt" 2>&1 || true
-          done
+          python3 -m pip install --break-system-packages pyyaml
           mkdir -p l10n
-          for scheme in IPTV IPTV-tvOS IPTV-macOS; do tail -60 "log-$scheme.txt" > "l10n/log-$scheme.txt"; done
-          find out -maxdepth 4 | head -50 > l10n/tree.txt
-          for scheme in IPTV IPTV-tvOS IPTV-macOS; do
-            find "out/$scheme" -name '*.xliff' -exec cp {} "l10n/$scheme.xliff" \; || true
+          # One project per target: -exportLocalizations builds every target for one SDK, and the three apps
+          # share their product name.
+          for target in IPTV IPTV-tvOS IPTV-macOS; do
+            python3 - "$target" <<'PY'
+          import sys, yaml
+          target = sys.argv[1]
+          spec = yaml.safe_load(open("project.yml"))
+          spec["targets"] = {target: spec["targets"][target]}
+          spec["name"] = "Extract"
+          yaml.safe_dump(spec, open("extract.yml", "w"))
+          PY
+            xcodegen --spec extract.yml --quiet
+            xcodebuild -exportLocalizations -project Extract.xcodeproj -localizationPath "out/$target" \
+              -exportLanguage en CODE_SIGNING_ALLOWED=NO > "l10n/log-$target.txt" 2>&1 || true
+            tail -15 "l10n/log-$target.txt"
+            find "out/$target" -name '*.xliff' -exec cp {} "l10n/$target.xliff" \; || true
+            rm -rf Extract.xcodeproj
           done
           ls -la l10n
           git config user.name "github-actions[bot]"
