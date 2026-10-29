@@ -6,6 +6,15 @@ enum Theme {
     static let surface = Color(red: 0.11, green: 0.11, blue: 0.13)
     static let accent = Color(red: 0.90, green: 0.12, blue: 0.20)
     static let textSecondary = Color.white.opacity(0.65)
+    /// Secondary text in list rows: on Apple TV the focused row turns white, so follow the row's own
+    /// (focus-aware) foreground instead of a fixed light grey.
+    static var rowSecondary: AnyShapeStyle {
+        #if os(tvOS)
+        AnyShapeStyle(.secondary)
+        #else
+        AnyShapeStyle(textSecondary)
+        #endif
+    }
 
     static let posterAspect: CGFloat = 2.0 / 3.0
     static let cardCornerRadius: CGFloat = 10

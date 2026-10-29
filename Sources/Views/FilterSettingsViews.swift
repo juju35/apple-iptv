@@ -10,7 +10,7 @@ struct TagFilterView: View {
         List {
             if options.isEmpty {
                 Text("No tags found in this provider's names.")
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(Theme.rowSecondary)
             } else {
                 Section {
                     Button("Show all") { hidden.subtract(options.map(\.tag)) }
@@ -22,7 +22,7 @@ struct TagFilterView: View {
                             HStack {
                                 Text(option.tag)
                                 Spacer()
-                                Text("\(option.count)").foregroundStyle(Theme.textSecondary)
+                                Text("\(option.count)").foregroundStyle(Theme.rowSecondary)
                             }
                         }
                     }
@@ -104,7 +104,7 @@ struct ListNameCleanupView: View {
                             Text(option.name)
                             Text(option.originalName)
                                 .font(.caption)
-                                .foregroundStyle(Theme.textSecondary)
+                                .foregroundStyle(Theme.rowSecondary)
                                 .strikethrough()
                         }
                     }
@@ -122,7 +122,7 @@ struct ListNameCleanupView: View {
                             HStack {
                                 Text(name).foregroundStyle(.primary)
                                 Spacer()
-                                Image(systemName: "text.cursor").foregroundStyle(Theme.textSecondary)
+                                Image(systemName: "text.cursor").foregroundStyle(Theme.rowSecondary)
                             }
                         }
                         .accessibilityHint("Copies the name into the text field")
@@ -167,7 +167,7 @@ struct ListFilterView: View {
         List {
             if options.isEmpty {
                 Text("No lists for this provider.")
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(Theme.rowSecondary)
             } else {
                 Section {
                     Button(search.isEmpty ? "Show all" : "Show these") { hidden.subtract(filtered.map(\.key)) }
@@ -179,7 +179,7 @@ struct ListFilterView: View {
                             HStack {
                                 Text(option.name)
                                 Spacer()
-                                Text("\(option.count)").foregroundStyle(Theme.textSecondary)
+                                Text("\(option.count)").foregroundStyle(Theme.rowSecondary)
                             }
                         }
                     }

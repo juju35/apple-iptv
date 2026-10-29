@@ -19,7 +19,7 @@ struct SettingsView: View {
                                     Text(provider.name).font(.headline)
                                     Text(provider.kind.label)
                                         .font(.caption)
-                                        .foregroundStyle(Theme.textSecondary)
+                                        .foregroundStyle(Theme.rowSecondary)
                                     if let info = store.accountInfo[provider.id] {
                                         ExpiryLabel(info: info)
                                     }
@@ -68,7 +68,7 @@ struct SettingsView: View {
                             Text("Clean up list names")
                             Spacer()
                             Text(store.listNameRemovals.isEmpty ? "Off" : "\(store.listNameRemovals.count)")
-                                .foregroundStyle(Theme.textSecondary)
+                                .foregroundStyle(Theme.rowSecondary)
                         }
                     }
                 } header: {
@@ -120,7 +120,7 @@ struct SettingsView: View {
                 Text(title)
                 Spacer()
                 Text(shown == options.count ? "All" : "\(shown) of \(options.count)")
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(Theme.rowSecondary)
             }
         }
     }
@@ -131,7 +131,7 @@ struct SettingsView: View {
             Text(title)
             Spacer()
             Text(shown == options.count ? "All" : "\(shown) of \(options.count)")
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(Theme.rowSecondary)
         }
     }
 }
@@ -142,14 +142,15 @@ struct ExpiryLabel: View {
 
     var body: some View {
         if info.isUnlimited {
-            Label("No expiry", systemImage: "infinity").font(.caption).foregroundStyle(Theme.textSecondary)
+            Label("No expiry", systemImage: "infinity").font(.caption).foregroundStyle(Theme.rowSecondary)
         } else if let date = info.expiresAt {
             let remaining = date.timeIntervalSinceNow
             Label(remaining < 0 ? "Expired \(date.formatted(date: .abbreviated, time: .omitted))"
                                 : "Expires \(date.formatted(date: .abbreviated, time: .omitted))",
                   systemImage: remaining < 0 ? "exclamationmark.circle.fill" : "calendar")
                 .font(.caption)
-                .foregroundStyle(remaining < 0 ? .red : remaining < 14 * 24 * 3600 ? .orange : Theme.textSecondary)
+                .foregroundStyle(remaining < 0 ? AnyShapeStyle(.red)
+                                 : remaining < 14 * 24 * 3600 ? AnyShapeStyle(.orange) : Theme.rowSecondary)
         }
     }
 }
@@ -206,7 +207,7 @@ struct ProviderFormView: View {
                             }
                         Text("Portal URL usually ends with /stalker_portal or /c")
                             .font(.caption)
-                            .foregroundStyle(Theme.textSecondary)
+                            .foregroundStyle(Theme.rowSecondary)
                     }
                 }
 
@@ -312,7 +313,7 @@ struct OnboardingView: View {
                 .font(.largeTitle.weight(.bold))
             Text("Add an Xtream Codes or Stalker (MAC) provider to start watching.")
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(Theme.rowSecondary)
             Button {
                 showingAdd = true
             } label: {
