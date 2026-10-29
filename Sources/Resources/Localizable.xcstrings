@@ -871,6 +871,28 @@
         }
       }
     },
+    "Hide test channels" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testsender ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar los canales de prueba"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les chaînes de test"
+          }
+        }
+      }
+    },
     "Hide these" : {
       "localizations" : {
         "de" : {

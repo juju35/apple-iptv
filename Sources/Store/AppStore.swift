@@ -34,6 +34,10 @@ final class AppStore: ObservableObject {
     @Published var hiddenCategories: Set<String> {
         didSet { persistFilters(); applyFilters() }
     }
+    /// Hide live channels and lists named "test" (see `ContentTags.isTest`).
+    @Published var hidesTestChannels: Bool {
+        didSet { persistFilters(); applyFilters() }
+    }
     /// Text removed from list names for display ("FR |", "VIP"…); synced through iCloud.
     @Published var listNameRemovals: [String] {
         didSet {
@@ -102,6 +106,7 @@ final class AppStore: ObservableObject {
         hiddenLanguages = filters.hiddenLanguages
         hiddenQualities = filters.hiddenQualities
         hiddenCategories = filters.hiddenCategories
+        hidesTestChannels = filters.hidesTestChannels
         listNameRemovals = Demo.isOn ? [] : listNameRemovalsSync.load()
         cacheLifetime = UserDefaults.standard.object(forKey: Self.cacheLifetimeKey) as? TimeInterval
             ?? CatalogCache.defaultLifetime
@@ -165,7 +170,8 @@ final class AppStore: ObservableObject {
     private func persistFilters() {
         guard !Demo.isOn else { return }
         filterSync.save(FilterSyncStore.Filters(hiddenLanguages: hiddenLanguages, hiddenQualities: hiddenQualities,
-                                                hiddenCategories: hiddenCategories))
+                                                hiddenCategories: hiddenCategories,
+                                                hidesTestChannels: hidesTestChannels))
     }
 
     /// Applies filters changed on another device via iCloud.
@@ -173,6 +179,7 @@ final class AppStore: ObservableObject {
         if hiddenLanguages != remote.hiddenLanguages { hiddenLanguages = remote.hiddenLanguages }
         if hiddenQualities != remote.hiddenQualities { hiddenQualities = remote.hiddenQualities }
         if hiddenCategories != remote.hiddenCategories { hiddenCategories = remote.hiddenCategories }
+        if hidesTestChannels != remote.hidesTestChannels { hidesTestChannels = remote.hidesTestChannels }
     }
 
     /// Merges providers changed on another device via iCloud.
@@ -359,9 +366,16 @@ extension AppStore {
 
         let hiddenLanguages = hiddenLanguages
         let hiddenQualities = hiddenQualities
+        let hidesTest = hidesTestChannels
+        let testLiveLists: Set<String> = hidesTest
+            ? Set(catalog.liveCategories.filter { ContentTags.isTest($0.name) }.map(\.id)) : []
         func isVisible(_ item: MediaItem) -> Bool {
             // Hidden as soon as one of its lists is.
             if item.categoryIds.contains(where: { isHiddenList(item.kind, $0) }) { return false }
+            if hidesTest, item.kind == .live,
+               ContentTags.isTest(item.name) || item.categoryIds.contains(where: testLiveLists.contains) {
+                return false
+            }
             if let tag = language(of: item), hiddenLanguages.contains(tag) { return false }
             if item.kind == .live, let tag = ContentTags.quality(of: item.name), hiddenQualities.contains(tag) {
                 return false
@@ -373,7 +387,9 @@ extension AppStore {
             return !hiddenLanguages.contains(tag)
         }
 
-        liveCategories = catalog.liveCategories.filter { isVisible($0) && !isHiddenList(.live, $0.id) }.map(displayed)
+        liveCategories = catalog.liveCategories
+            .filter { isVisible($0) && !isHiddenList(.live, $0.id) && !testLiveLists.contains($0.id) }
+            .map(displayed)
         movieCategories = catalog.movieCategories.filter { isVisible($0) && !isHiddenList(.movie, $0.id) }
             .map(displayed)
         seriesCategories = catalog.seriesCategories.filter { isVisible($0) && !isHiddenList(.series, $0.id) }

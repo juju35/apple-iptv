@@ -33,6 +33,12 @@ enum ContentTags {
         return nil
     }
 
+    /// Whether a channel or list name marks a provider's test stream ("TEST 1", "FR | Test", "Tests HD"):
+    /// the whole word only, so "Testament" stays.
+    static func isTest(_ name: String) -> Bool {
+        name.uppercased().split { !$0.isLetter && !$0.isNumber }.contains { $0 == "TEST" || $0 == "TESTS" }
+    }
+
     /// Two or three capital letters opening the name, followed by a separator.
     private static let leadingCode = /^\s*[\[\(|]?\s*([A-Z]{2,3})\s*(?:[\]\)|:•]|\s-\s)/
     private static let releaseTag = /(?i)\b(VOSTFR|VOST|VFF|VFQ|VFI|VF|VO|MULTI(?:SUBS)?)\b/

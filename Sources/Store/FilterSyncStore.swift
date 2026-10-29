@@ -9,13 +9,17 @@ final class FilterSyncStore {
         var hiddenQualities: Set<String> = []
         /// Categories (lists), as `<provider id>|<kind>|<category id>` (see `CategoryListOption.key`).
         var hiddenCategories: Set<String> = []
+        /// Hide live channels and lists named "test" (see `ContentTags.isTest`).
+        var hidesTestChannels = false
     }
 
     static let languagesKey = "iptv.hiddenLanguages"
     static let qualitiesKey = "iptv.hiddenQualities"
     static let categoriesKey = "iptv.hiddenCategories"
+    static let testChannelsKey = "iptv.hidesTestChannels"
     /// Live TV lists only, as `<provider id>|<category id>`; read once into `categoriesKey`.
     private static let legacyLiveCategoriesKey = "iptv.hiddenLiveCategories"
+    /// String-array keys; `testChannelsKey` is a Bool.
     private static let keys = [languagesKey, qualitiesKey, categoriesKey]
 
     private let kvs = NSUbiquitousKeyValueStore.default
@@ -34,7 +38,8 @@ final class FilterSyncStore {
         ) { [weak self] notification in
             guard let self else { return }
             let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
-            guard changedKeys.map({ !Set($0).isDisjoint(with: Self.keys) }) ?? true else { return }
+            guard changedKeys.map({ !Set($0).isDisjoint(with: Self.keys + [Self.testChannelsKey]) }) ?? true
+            else { return }
             self.onExternalChange?(self.load())
         }
         kvs.synchronize()
@@ -59,7 +64,9 @@ final class FilterSyncStore {
     func load() -> Filters {
         Filters(hiddenLanguages: tags(forKey: Self.languagesKey),
                 hiddenQualities: tags(forKey: Self.qualitiesKey),
-                hiddenCategories: tags(forKey: Self.categoriesKey).union(legacyLiveCategories()))
+                hiddenCategories: tags(forKey: Self.categoriesKey).union(legacyLiveCategories()),
+                hidesTestChannels: kvs.object(forKey: Self.testChannelsKey) as? Bool
+                    ?? defaults.bool(forKey: Self.testChannelsKey))
     }
 
     /// The Live TV lists hidden before movie and series lists could be: `<provider>|<category>`
@@ -78,6 +85,8 @@ final class FilterSyncStore {
             kvs.set(tags.sorted(), forKey: key)
             defaults.set(tags.sorted(), forKey: key)
         }
+        kvs.set(filters.hidesTestChannels, forKey: Self.testChannelsKey)
+        defaults.set(filters.hidesTestChannels, forKey: Self.testChannelsKey)
         // Migrated into `categoriesKey`.
         kvs.removeObject(forKey: Self.legacyLiveCategoriesKey)
         defaults.removeObject(forKey: Self.legacyLiveCategoriesKey)

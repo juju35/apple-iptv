@@ -58,6 +58,7 @@ struct SettingsView: View {
                         filterRow(String(localized: "Live TV quality"), options: store.qualityOptions, hidden: store.hiddenQualities)
                     }
                     listFilterLink(String(localized: "Live TV lists"), kind: .live)
+                    Toggle("Hide test channels", isOn: $store.hidesTestChannels)
                     listFilterLink(String(localized: "Movie lists"), kind: .movie)
                     listFilterLink(String(localized: "Series lists"), kind: .series)
                     NavigationLink {
