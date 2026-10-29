@@ -78,88 +78,6 @@ struct MediaDetailView: View {
         }
     }
 
-    #if os(tvOS)
-    // MARK: - Apple TV
-
-    private var tvBody: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 56) {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text(item.name)
-                        .font(.title.weight(.bold))
-                        .lineLimit(2)
-                    if !tvMetadata.isEmpty {
-                        Text(tvMetadata)
-                            .font(.callout.weight(.medium))
-                            .foregroundStyle(.white.opacity(0.75))
-                    }
-                    if let plot = item.plot, !plot.isEmpty {
-                        Text(plot)
-                            .font(.callout)
-                            .foregroundStyle(.white.opacity(0.8))
-                            .lineLimit(4)
-                    }
-                    if let loadError {
-                        Label(loadError, systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.orange)
-                    }
-                    HStack(spacing: 30) {
-                        primaryActions
-                        if item.kind == .series {
-                            seriesPlayAction
-                        }
-                        favoriteButton
-                    }
-                    .padding(.top, 10)
-                }
-                .frame(maxWidth: 1100, alignment: .leading)
-                // The first screen shows the artwork, with the title and actions low on the left.
-                .frame(maxWidth: .infinity, minHeight: 640, alignment: .bottomLeading)
-
-                if item.kind == .live, !epg.isEmpty {
-                    epgSection
-                }
-                if item.kind == .series {
-                    seasonEpisodes
-                }
-            }
-            .padding(.horizontal, 80)
-            .padding(.vertical, 60)
-        }
-        .scrollClipDisabled()
-        .background { tvBackdrop }
-    }
-
-    /// The artwork across the whole screen, softened and shaded from the left and the bottom for the text.
-    private var tvBackdrop: some View {
-        ZStack {
-            Theme.background
-            AsyncImage(url: item.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill().blur(radius: 20)
-                } else {
-                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
-                }
-            }
-            .opacity(0.7)
-            LinearGradient(colors: [Theme.background.opacity(0.95), Theme.background.opacity(0.4), .clear],
-                           startPoint: .leading, endPoint: .trailing)
-            LinearGradient(colors: [.clear, Theme.background.opacity(0.85), Theme.background],
-                           startPoint: .top, endPoint: .bottom)
-        }
-        .ignoresSafeArea()
-    }
-
-    /// "2025 · ★ 4.3 · Drama".
-    private var tvMetadata: String {
-        var parts: [String] = []
-        if let year = item.year, !year.isEmpty { parts.append(year) }
-        if let rating = item.rating, rating > 0 { parts.append("★ " + String(format: "%.1f", rating)) }
-        parts.append(store.categoryName(item.categoryId, kind: item.kind))
-        return parts.joined(separator: " · ")
-    }
-    #endif
-
     // MARK: - Sections
 
     /// The artwork, blurred and faded into the background, behind the whole sheet.
@@ -361,9 +279,11 @@ struct MediaDetailView: View {
             ProgressView().frame(maxWidth: .infinity)
         }
     }
+}
 
-    // MARK: - Actions
+// MARK: - Actions
 
+extension MediaDetailView {
     private func loadDetails() async {
         guard let provider = store.selectedProvider else { return }
         let client = store.client(for: provider)
@@ -437,3 +357,88 @@ extension View {
         #endif
     }
 }
+
+#if os(tvOS)
+// MARK: - Apple TV
+
+/// Full-screen detail (kept apart from the struct's body, which is long enough).
+extension MediaDetailView {
+    private var tvBody: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 56) {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(item.name)
+                        .font(.title.weight(.bold))
+                        .lineLimit(2)
+                    if !tvMetadata.isEmpty {
+                        Text(tvMetadata)
+                            .font(.callout.weight(.medium))
+                            .foregroundStyle(.white.opacity(0.75))
+                    }
+                    if let plot = item.plot, !plot.isEmpty {
+                        Text(plot)
+                            .font(.callout)
+                            .foregroundStyle(.white.opacity(0.8))
+                            .lineLimit(4)
+                    }
+                    if let loadError {
+                        Label(loadError, systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.orange)
+                    }
+                    HStack(spacing: 30) {
+                        primaryActions
+                        if item.kind == .series {
+                            seriesPlayAction
+                        }
+                        favoriteButton
+                    }
+                    .padding(.top, 10)
+                }
+                .frame(maxWidth: 1100, alignment: .leading)
+                // The first screen shows the artwork, with the title and actions low on the left.
+                .frame(maxWidth: .infinity, minHeight: 640, alignment: .bottomLeading)
+
+                if item.kind == .live, !epg.isEmpty {
+                    epgSection
+                }
+                if item.kind == .series {
+                    seasonEpisodes
+                }
+            }
+            .padding(.horizontal, 80)
+            .padding(.vertical, 60)
+        }
+        .scrollClipDisabled()
+        .background { tvBackdrop }
+    }
+
+    /// The artwork across the whole screen, softened and shaded from the left and the bottom for the text.
+    private var tvBackdrop: some View {
+        ZStack {
+            Theme.background
+            AsyncImage(url: item.posterURL) { phase in
+                if case .success(let image) = phase {
+                    image.resizable().scaledToFill().blur(radius: 20)
+                } else {
+                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
+                }
+            }
+            .opacity(0.7)
+            LinearGradient(colors: [Theme.background.opacity(0.95), Theme.background.opacity(0.4), .clear],
+                           startPoint: .leading, endPoint: .trailing)
+            LinearGradient(colors: [.clear, Theme.background.opacity(0.85), Theme.background],
+                           startPoint: .top, endPoint: .bottom)
+        }
+        .ignoresSafeArea()
+    }
+
+    /// "2025 · ★ 4.3 · Drama".
+    private var tvMetadata: String {
+        var parts: [String] = []
+        if let year = item.year, !year.isEmpty { parts.append(year) }
+        if let rating = item.rating, rating > 0 { parts.append("★ " + String(format: "%.1f", rating)) }
+        parts.append(store.categoryName(item.categoryId, kind: item.kind))
+        return parts.joined(separator: " · ")
+    }
+}
+#endif
