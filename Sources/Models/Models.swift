@@ -168,6 +168,29 @@ struct PlaybackRequest: Identifiable {
     }
 }
 
+/// Subscription details of a provider account.
+struct AccountInfo: Codable, Hashable {
+    /// nil with `isUnlimited` false: the provider doesn't say.
+    var expiresAt: Date?
+    var isUnlimited = false
+    var maxConnections: Int?
+
+    /// Parses the date formats portals use ("2026-12-31 23:59:59", "2026-12-31",
+    /// "December 31, 2026, 11:59 pm", or a Unix timestamp).
+    static func date(from value: Any?) -> Date? {
+        guard let value else { return nil }
+        let text = "\(value)".trimmingCharacters(in: .whitespaces)
+        if let seconds = Double(text), seconds > 0 { return Date(timeIntervalSince1970: seconds) }
+        for format in ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "MMMM d, yyyy, h:mm a", "dd.MM.yyyy", "dd/MM/yyyy"] {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = format
+            if let date = formatter.date(from: text) { return date }
+        }
+        return nil
+    }
+}
+
 struct EPGEntry: Identifiable, Hashable {
     let id: String
     let title: String

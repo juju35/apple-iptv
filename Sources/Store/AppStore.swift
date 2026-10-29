@@ -78,6 +78,11 @@ final class AppStore: ObservableObject {
     @Published private(set) var recentChannelIDs: [String] = []
     private let recentChannelsSync = CloudStringListStore(key: CloudStringListStore.recentChannelsKey)
 
+    /// Subscription details by provider, refreshed when Settings opens and kept between launches.
+    @Published var accountInfo: [Provider.ID: AccountInfo] =
+        (UserDefaults.standard.data(forKey: "iptv.accountInfo"))
+            .flatMap { try? JSONDecoder().decode([Provider.ID: AccountInfo].self, from: $0) } ?? [:]
+
     @Published var isLoading = false
     @Published var lastError: String?
 
@@ -486,5 +491,4 @@ extension AppStore {
         playbackProgress = PlaybackProgress.pruned(playbackProgress)
         progressSync.save(Array(playbackProgress.values))
     }
-
 }

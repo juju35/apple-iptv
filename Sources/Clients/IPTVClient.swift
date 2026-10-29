@@ -9,6 +9,8 @@ protocol IPTVClient {
     /// Resolves the final playable URL for an item or episode playback reference.
     func streamURL(kind: MediaKind, playbackRef: String, containerExtension: String?) async throws -> URL
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry]
+    /// Expiry date and limits of the account.
+    func accountInfo() async throws -> AccountInfo
     /// HTTP headers the player should send when fetching the stream (e.g. a portal-specific User-Agent).
     var streamHeaders: [String: String] { get }
 }

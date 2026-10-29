@@ -54,6 +54,16 @@ final class XtreamClient: IPTVClient {
         }
     }
 
+    func accountInfo() async throws -> AccountInfo {
+        guard let userInfo = (try await fetchJSON(action: nil) as? [String: Any])?["user_info"] as? [String: Any] else {
+            throw IPTVError.decoding("user_info")
+        }
+        // `exp_date` is a Unix timestamp, or null / empty for accounts that never expire.
+        let expiresAt = AccountInfo.date(from: userInfo["exp_date"].flatMap { $0 is NSNull ? nil : $0 })
+        return AccountInfo(expiresAt: expiresAt, isUnlimited: expiresAt == nil,
+                           maxConnections: Self.int(userInfo["max_connections"]))
+    }
+
     /// Live output formats the panel allows for this account (e.g. ["m3u8", "ts"]).
     private var allowedOutputFormats: [String] = []
 

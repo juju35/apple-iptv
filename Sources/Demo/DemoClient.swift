@@ -22,6 +22,10 @@ struct DemoClient: IPTVClient {
         throw IPTVError.unsupported("Playback in demo mode")
     }
 
+    func accountInfo() async throws -> AccountInfo {
+        AccountInfo(expiresAt: Date().addingTimeInterval(300 * 24 * 3600))
+    }
+
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry] {
         DemoCatalog.epg(channel: ref)
     }
