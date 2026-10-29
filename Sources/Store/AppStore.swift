@@ -403,6 +403,11 @@ extension AppStore {
         if item.kind == .live {
             request.channel = item
             recordRecentChannel(item)
+            #if os(iOS)
+            // Live channels play in VLC on iPhone and iPad, like movies and series often do: same controls
+            // for everything (channel bar, tap to show), whatever the stream's format.
+            request.engine = .vlc
+            #endif
         }
         return request
     }
