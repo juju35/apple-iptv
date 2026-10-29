@@ -63,9 +63,12 @@ struct BrowseView: View {
     }
 
     #if os(tvOS)
-    /// Apple TV: rows of posters in a lazy stack. `LazyVGrid` lays out and tracks focus for the whole
+    /// Apple TV: rows of posters in a lazy stack, built 20 at a time. `LazyVGrid` lays out and tracks focus for the whole
     /// catalogue (thousands of movies) and made scrolling crawl; a lazy stack of fixed rows doesn't.
     @State private var gridWidth: CGFloat = 1700
+    /// Rows built so far: 20 at first, 20 more each time the last ones come on screen.
+    @State private var shownRows = Self.rowPage
+    private static let rowPage = 20
 
     private struct PosterRow: Identifiable {
         let id: String
@@ -79,13 +82,21 @@ struct BrowseView: View {
             let slice = Array(filtered[start..<min(start + perRow, filtered.count)])
             return PosterRow(id: slice[0].id, items: slice)
         }
+        let shown = rows.prefix(shownRows)
         return LazyVStack(alignment: .leading, spacing: LockupMetrics.gridRowSpacing) {
-            ForEach(rows) { row in
+            ForEach(shown) { row in
                 HStack(alignment: .top, spacing: spacing) {
                     ForEach(row.items) { cell($0) }
                 }
+                .onAppear {
+                    // A few rows before the end, so the next page is there before the focus gets to it.
+                    if row.id == shown.dropLast(min(3, shown.count - 1)).last?.id, shownRows < rows.count {
+                        shownRows += Self.rowPage
+                    }
+                }
             }
         }
+        .onChange(of: inputs) { shownRows = Self.rowPage }
         .frame(maxWidth: .infinity, alignment: .leading)
         .onGeometryChange(for: CGFloat.self, of: \.size.width) { gridWidth = $0 }
     }
