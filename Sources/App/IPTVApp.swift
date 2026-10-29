@@ -77,7 +77,7 @@ struct MainTabView: View {
         .background(Theme.background)
         .environment(\.showSettings, ShowSettingsAction { tab = .settings })
         #if os(macOS)
-        .environment(\.presentPlayer) { windowPlayback = $0 }
+        .environment(\.presentPlayer, PresentPlayerAction { windowPlayback = $0 })
         .overlay {
             if let request = windowPlayback {
                 PlayerView(request: request)

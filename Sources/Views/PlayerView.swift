@@ -214,12 +214,22 @@ struct PlayerView: View {
 
 extension EnvironmentValues {
     /// Opens the player over the whole window (macOS); nil where players are presented modally.
-    @Entry var presentPlayer: ((PlaybackRequest) -> Void)?
+    @Entry var presentPlayer: PresentPlayerAction?
     /// Closes the window-overlay player; nil when the player is a sheet or full-screen cover.
     @Entry var closePlayer: ClosePlayerAction?
     /// Whether the window chrome (title bar, tabs) shows over the window-overlay player (macOS).
     /// Players keep it in step with their own controls, so it appears on click and hides while playing.
     @Entry var playerChromeVisible: Binding<Bool>?
+}
+
+/// Equatable wrapper so re-setting the environment value doesn't invalidate readers on every update.
+/// All instances compare equal: `MainTabView` always installs the same behavior (show the overlay player).
+struct PresentPlayerAction: Equatable {
+    let action: (PlaybackRequest) -> Void
+
+    func callAsFunction(_ request: PlaybackRequest) { action(request) }
+
+    static func == (lhs: Self, rhs: Self) -> Bool { true }
 }
 
 /// Equatable wrapper so re-setting the environment value doesn't invalidate readers on every update.
