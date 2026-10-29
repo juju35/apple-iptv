@@ -46,7 +46,8 @@ extension View {
 /// when it's on the leading edge.
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
-    /// Where the switcher's centre goes, in window coordinates, when it leaves the toolbar.
+    /// Where the switcher's centre goes, in window coordinates (as measured on screenshots), when it
+    /// leaves the toolbar.
     @State private var sideCentre: CGPoint?
 
     private static func windowBounds() -> CGRect {
@@ -84,11 +85,14 @@ private struct ProviderToolbarModifier: ViewModifier {
             .toolbar(sideCentre != nil && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
             .overlay {
                 if let sideCentre {
-                    Color.clear
-                        .overlay(alignment: .topLeading) {
-                            ProviderMenu().position(sideCentre)
-                        }
-                        .ignoresSafeArea()
+                    // The view doesn't start at the window's origin (the side tab bar takes room):
+                    // convert from window coordinates.
+                    GeometryReader { proxy in
+                        let origin = proxy.frame(in: .global).origin
+                        ProviderMenu()
+                            .position(x: sideCentre.x - origin.x, y: sideCentre.y - origin.y)
+                    }
+                    .ignoresSafeArea()
                 }
             }
     }
