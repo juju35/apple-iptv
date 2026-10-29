@@ -18,7 +18,8 @@ struct SearchView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     let shelves: [(String, [MediaItem])] = [
-                        ("Channels", results(.live)), ("Movies", results(.movie)), ("Series", results(.series)),
+                        (String(localized: "Channels"), results(.live)), (String(localized: "Movies"), results(.movie)),
+                        (String(localized: "Series"), results(.series)),
                     ]
                     ForEach(shelves, id: \.0) { title, items in
                         if !items.isEmpty {

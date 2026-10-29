@@ -9,6 +9,8 @@ options:
     macOS: "14.0"
     tvOS: "17.0"
   createIntermediateGroups: true
+  # English source strings, translated in Sources/Resources/Localizable.xcstrings.
+  developmentLanguage: en
 
 settings:
   base:
@@ -19,6 +21,9 @@ settings:
     # Kept here so regenerating the project with xcodegen doesn't drop the signing team.
     DEVELOPMENT_TEAM: 7D9CMN8LDB
     ENABLE_USER_SCRIPT_SANDBOXING: true
+    # The compiler extracts the strings into the String Catalog.
+    SWIFT_EMIT_LOC_STRINGS: true
+    LOCALIZATION_PREFERS_STRING_CATALOGS: true
 
 packages:
   # VLCKit (LGPL 2.1) as a prebuilt xcframework for iOS, macOS and tvOS.
@@ -40,6 +45,8 @@ targets:
     info:
       path: Support/iOS/Info.plist
       properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, fr, es, de]
         UILaunchScreen: {}
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
@@ -73,6 +80,8 @@ targets:
     info:
       path: Support/macOS/Info.plist
       properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, fr, es, de]
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     entitlements:
@@ -98,6 +107,8 @@ targets:
     info:
       path: Support/tvOS/Info.plist
       properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, fr, es, de]
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     entitlements:

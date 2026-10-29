@@ -22,13 +22,13 @@ enum CatalogCache {
 
     /// Lifetimes offered in Settings, in seconds; 0 turns the cache off.
     static let lifetimes: [(label: String, seconds: TimeInterval)] = [
-        ("Off", 0),
-        ("1 hour", 3600),
-        ("6 hours", 6 * 3600),
-        ("12 hours", 12 * 3600),
-        ("1 day", 24 * 3600),
-        ("3 days", 3 * 24 * 3600),
-        ("1 week", 7 * 24 * 3600),
+        (String(localized: "Off"), 0),
+        (String(localized: "1 hour"), 3600),
+        (String(localized: "6 hours"), 6 * 3600),
+        (String(localized: "12 hours"), 12 * 3600),
+        (String(localized: "1 day"), 24 * 3600),
+        (String(localized: "3 days"), 3 * 24 * 3600),
+        (String(localized: "1 week"), 7 * 24 * 3600),
     ]
     static let defaultLifetime: TimeInterval = 12 * 3600
 

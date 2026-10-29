@@ -46,20 +46,20 @@ struct SettingsView: View {
 
                 Section {
                     NavigationLink {
-                        TagFilterView(title: "Languages", options: store.languageOptions,
+                        TagFilterView(title: String(localized: "Languages"), options: store.languageOptions,
                                       hidden: $store.hiddenLanguages)
                     } label: {
-                        filterRow("Languages", options: store.languageOptions, hidden: store.hiddenLanguages)
+                        filterRow(String(localized: "Languages"), options: store.languageOptions, hidden: store.hiddenLanguages)
                     }
                     NavigationLink {
-                        TagFilterView(title: "Live TV quality", options: store.qualityOptions,
+                        TagFilterView(title: String(localized: "Live TV quality"), options: store.qualityOptions,
                                       hidden: $store.hiddenQualities)
                     } label: {
-                        filterRow("Live TV quality", options: store.qualityOptions, hidden: store.hiddenQualities)
+                        filterRow(String(localized: "Live TV quality"), options: store.qualityOptions, hidden: store.hiddenQualities)
                     }
-                    listFilterLink("Live TV lists", kind: .live)
-                    listFilterLink("Movie lists", kind: .movie)
-                    listFilterLink("Series lists", kind: .series)
+                    listFilterLink(String(localized: "Live TV lists"), kind: .live)
+                    listFilterLink(String(localized: "Movie lists"), kind: .movie)
+                    listFilterLink(String(localized: "Series lists"), kind: .series)
                     NavigationLink {
                         ListNameCleanupView()
                     } label: {
@@ -73,8 +73,10 @@ struct SettingsView: View {
                 } header: {
                     Text("Filters")
                 } footer: {
-                    Text("Tags are read from category and channel names; untagged content is always shown. "
-                         + "Lists are those of the selected provider.")
+                    Text("""
+                        Tags are read from category and channel names; untagged content is always shown. \
+                        Lists are those of the selected provider.
+                        """)
                 }
 
                 Section {
@@ -164,6 +166,7 @@ struct ProviderFormView: View {
     @State private var password = ""
     @State private var macAddress = ""
     @State private var testResult: String?
+    @State private var testSucceeded = false
     @State private var testing = false
 
     private var isValid: Bool {
@@ -212,7 +215,7 @@ struct ProviderFormView: View {
                     if let testResult {
                         Text(testResult)
                             .font(.caption)
-                            .foregroundStyle(testResult.hasPrefix("OK") ? .green : .orange)
+                            .foregroundStyle(testSucceeded ? .green : .orange)
                     }
                 }
             }
@@ -268,8 +271,10 @@ struct ProviderFormView: View {
         Task {
             do {
                 try await client.authenticate()
-                testResult = "OK — authenticated successfully"
+                testSucceeded = true
+                testResult = String(localized: "OK — authenticated successfully")
             } catch {
+                testSucceeded = false
                 testResult = error.localizedDescription
             }
             testing = false
@@ -379,13 +384,14 @@ private struct ProgrammeGuideSection: View {
             if let error = guide.lastError {
                 Text("The guide couldn't be downloaded: \(error)")
             } else if let updatedAt = guide.updatedAt {
-                Text("Guide for \(guide.guide.count) channels, updated "
-                     + "\(updatedAt.formatted(.relative(presentation: .named))).")
+                Text("Guide for \(guide.guide.count) channels, updated \(updatedAt.formatted(.relative(presentation: .named))).")
             } else if guide.lifetime == 0 {
                 Text("Off: channels only show the short guide the provider sends for each one.")
             } else {
-                Text("The provider's whole guide is downloaded and kept on this device; "
-                     + "without one, channels show their short guide.")
+                Text("""
+                    The provider's whole guide is downloaded and kept on this device; \
+                    without one, channels show their short guide.
+                    """)
             }
         }
     }

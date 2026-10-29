@@ -30,21 +30,21 @@ struct HomeView: View {
 
                     let favorites = store.favorites(nil)
                     if !favorites.isEmpty {
-                        MediaRow(title: "Favorites", items: favorites) { selectedItem = $0 }
+                        MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
                     }
 
                     let recentChannels = store.recentChannels()
                     if !recentChannels.isEmpty {
-                        MediaRow(title: "Recently Watched Channels", items: recentChannels) { selectedItem = $0 }
+                        MediaRow(title: String(localized: "Recently Watched Channels"), items: recentChannels) { selectedItem = $0 }
                     }
 
                     if !store.liveItems.isEmpty {
-                        MediaRow(title: "Live TV", items: Array(store.liveItems.prefix(25))) {
+                        MediaRow(title: String(localized: "Live TV"), items: Array(store.liveItems.prefix(25))) {
                             selectedItem = $0
                         }
                     }
                     if !store.movieItems.isEmpty {
-                        MediaRow(title: "Movies", items: Array(store.movieItems.prefix(25))) {
+                        MediaRow(title: String(localized: "Movies"), items: Array(store.movieItems.prefix(25))) {
                             selectedItem = $0
                         }
                         ForEach(store.movieCategories.prefix(6)) { category in
@@ -57,7 +57,7 @@ struct HomeView: View {
                         }
                     }
                     if !store.seriesItems.isEmpty {
-                        MediaRow(title: "Series", items: Array(store.seriesItems.prefix(25))) {
+                        MediaRow(title: String(localized: "Series"), items: Array(store.seriesItems.prefix(25))) {
                             selectedItem = $0
                         }
                     }
@@ -171,9 +171,9 @@ struct HeroBanner: View {
         if let year = item.year, !year.isEmpty { parts.append(year) }
         if let rating = item.rating, rating > 0 { parts.append("★ " + String(format: "%.1f", rating)) }
         switch item.kind {
-        case .movie: parts.append("Movie")
-        case .series: parts.append("Series")
-        case .live: parts.append("Live")
+        case .movie: parts.append(String(localized: "Movie"))
+        case .series: parts.append(String(localized: "Series"))
+        case .live: parts.append(String(localized: "Live"))
         }
         return parts.joined(separator: " · ")
     }

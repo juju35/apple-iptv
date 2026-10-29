@@ -63,10 +63,10 @@ struct MainTabView: View {
             LiveTVView()
                 .tabItem { Label("Live TV", systemImage: "tv") }
                 .tag(MainTab.live)
-            BrowseView(kind: .movie, title: "Movies")
+            BrowseView(kind: .movie, title: String(localized: "Movies"))
                 .tabItem { Label("Movies", systemImage: "film") }
                 .tag(MainTab.movies)
-            BrowseView(kind: .series, title: "Series")
+            BrowseView(kind: .series, title: String(localized: "Series"))
                 .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
                 .tag(MainTab.series)
             SettingsView()

@@ -106,7 +106,7 @@ final class PlayerController {
     private static let unsupportedContainers: Set<String> = ["mkv", "avi", "wmv", "flv", "ts", "mpg", "mpeg", "webm", "ogm", "divx"]
 
     private static func describe(_ error: Error?, url: URL) -> String {
-        guard let error else { return "Unknown playback error." }
+        guard let error else { return String(localized: "Unknown playback error.") }
         let nsError = error as NSError
         let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError
         var parts = [error.localizedDescription, "\((underlying ?? nsError).domain) \((underlying ?? nsError).code)"]
@@ -117,10 +117,12 @@ final class PlayerController {
             candidates += items.compactMap { $0.value?.components(separatedBy: ".").last?.lowercased() }
         }
         if let container = candidates.first(where: { unsupportedContainers.contains($0) }) {
-            parts.append("The system player can't play .\(container) files; only MP4/MOV and HLS streams are supported.")
+            parts.append(String(localized: """
+                The system player can't play .\(container) files; only MP4/MOV and HLS streams are supported.
+                """))
         } else if nsError.domain == AVFoundationErrorDomain,
                   nsError.code == AVError.Code.fileFormatNotRecognized.rawValue {
-            parts.append("This container isn't supported by the system player.")
+            parts.append(String(localized: "This container isn't supported by the system player."))
         }
         return parts.joined(separator: " · ")
     }

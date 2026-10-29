@@ -54,15 +54,15 @@ struct LiveTVView: View {
     /// Categories that still have channels once filters apply, with their channel counts.
     private var groups: [ChipOption<ChannelGroup>] {
         let counts = Dictionary(store.liveItems.flatMap(\.categoryIds).map { ($0, 1) }, uniquingKeysWith: +)
-        var options = [ChipOption(id: ChannelGroup.all, title: "All Channels", systemImage: "tv",
+        var options = [ChipOption(id: ChannelGroup.all, title: String(localized: "All Channels"), systemImage: "tv",
                                   count: store.liveItems.count)]
         let favorites = store.favorites(.live).count
         if favorites > 0 {
-            options.append(ChipOption(id: .favorites, title: "Favorites", systemImage: "heart.fill", count: favorites))
+            options.append(ChipOption(id: .favorites, title: String(localized: "Favorites"), systemImage: "heart.fill", count: favorites))
         }
         let recent = store.recentChannels().count
         if recent > 0 {
-            options.append(ChipOption(id: .recent, title: "Recently Watched", systemImage: "clock.arrow.circlepath",
+            options.append(ChipOption(id: .recent, title: String(localized: "Recently Watched"), systemImage: "clock.arrow.circlepath",
                                       count: recent))
         }
         options += store.liveCategories.compactMap { category in

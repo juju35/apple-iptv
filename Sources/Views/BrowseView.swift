@@ -24,7 +24,7 @@ struct BrowseView: View {
     /// "All" then the categories that still have items once filters apply.
     private var categoryOptions: [ChipOption<String?>] {
         let used = Set(store.items(for: kind).flatMap(\.categoryIds))
-        return [ChipOption(id: nil, title: "All")]
+        return [ChipOption(id: nil, title: String(localized: "All"))]
             + store.categories(for: kind).filter { used.contains($0.id) }
                 .map { ChipOption(id: Optional($0.id), title: $0.name) }
     }
@@ -44,7 +44,7 @@ struct BrowseView: View {
                         ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
                         let favorites = store.favorites(kind)
                         if !favorites.isEmpty {
-                            MediaRow(title: "Favorites", items: favorites) { selectedItem = $0 }
+                            MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
                         }
                     }
                     LazyVGrid(columns: columns, spacing: LockupMetrics.gridRowSpacing) {

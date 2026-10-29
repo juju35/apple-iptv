@@ -202,7 +202,7 @@ final class StalkerClient: IPTVClient {
         let inline = ((seasonEntry["series"] as? [Any]) ?? []).compactMap { Int("\($0)") }
         if !inline.isEmpty, let cmd = seasonEntry["cmd"] as? String, !cmd.isEmpty {
             return inline.map { number in
-                Episode(id: "\(seasonId)-\(number)", title: "Episode \(number)", season: season, episode: number,
+                Episode(id: "\(seasonId)-\(number)", title: String(localized: "Episode \(number)"), season: season, episode: number,
                         plot: seasonEntry["description"] as? String, posterURL: poster,
                         playbackRef: "\(cmd)|episode=\(number)", containerExtension: nil)
             }
