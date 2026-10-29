@@ -44,7 +44,8 @@ enum ContentTags {
     /// A name framed by decoration on both sides: "-•★● … ●★•-", "==== … ====", "▬▬ … ▬▬".
     /// Brackets, parentheses and "+" don't count, so "[FR] Canal+" or "(FR) TF1 (HD)" stay channels.
     static func isSeparator(_ name: String) -> Bool {
-        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        // Providers' names often end with "\r" or invisible marks (zero-width space, BOM).
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines.union(.controlCharacters))
         func isDecoration(_ char: Character) -> Bool {
             !char.isLetter && !char.isNumber && !char.isWhitespace && !"[]()+".contains(char)
         }
