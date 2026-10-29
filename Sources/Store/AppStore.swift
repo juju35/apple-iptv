@@ -407,8 +407,10 @@ extension AppStore {
         ]
     }
 
+    #if os(macOS)
     /// Live qualities streamed in HEVC, which only the VLC engine plays on macOS.
     private static let vlcOnlyLiveQualities: Set<String> = ["8K", "4K", "HEVC"]
+    #endif
 
     /// Resolves the stream URL of `item` (or of one of its episodes, through `ref`) for the player.
     func playbackRequest(for item: MediaItem, ref: String? = nil, containerExtension: String? = nil,
