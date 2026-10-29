@@ -73,7 +73,7 @@ private struct ProviderToolbarModifier: ViewModifier {
         // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
         // Centred on the tab bar (48 pt from the edge, measured on 3x screenshots). On the left the front
         // camera sits in the top corner, so the switcher goes lower, just above the tab bar.
-        return CGPoint(x: insets.leading > 40 ? 48 : bounds.maxX - 48, y: insets.leading > 40 ? 160 : 40)
+        return CGPoint(x: insets.leading > 40 ? 48 : bounds.maxX - 48, y: insets.leading > 40 ? 146 : 40)
     }
 
     func body(content: Content) -> some View {
