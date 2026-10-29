@@ -33,10 +33,24 @@ enum ContentTags {
         return nil
     }
 
-    /// Whether a channel or list name marks a provider's test stream ("TEST 1", "FR | Test", "Tests HD"):
-    /// the whole word only, so "Testament" stays.
+    /// Whether a channel or list name marks a provider's test stream ("TEST 1", "FR | Test", "Tests HD"),
+    /// the whole word only so "Testament" stays, or a section header posing as a channel
+    /// ("--•★● FR | TNT FRANCE | FR ●★•--", "##### SPORTS #####").
     static func isTest(_ name: String) -> Bool {
-        name.uppercased().split { !$0.isLetter && !$0.isNumber }.contains { $0 == "TEST" || $0 == "TESTS" }
+        isSeparator(name)
+            || name.uppercased().split { !$0.isLetter && !$0.isNumber }.contains { $0 == "TEST" || $0 == "TESTS" }
+    }
+
+    /// A name framed by decoration on both sides: "-•★● … ●★•-", "==== … ====", "▬▬ … ▬▬".
+    /// Brackets, parentheses and "+" don't count, so "[FR] Canal+" or "(FR) TF1 (HD)" stay channels.
+    static func isSeparator(_ name: String) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        func isDecoration(_ char: Character) -> Bool {
+            !char.isLetter && !char.isNumber && !char.isWhitespace && !"[]()+".contains(char)
+        }
+        guard let first = trimmed.first, let last = trimmed.last,
+              isDecoration(first), isDecoration(last) else { return false }
+        return trimmed.contains { $0.isLetter }
     }
 
     /// Two or three capital letters opening the name, followed by a separator.
