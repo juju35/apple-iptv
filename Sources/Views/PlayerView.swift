@@ -216,10 +216,20 @@ extension EnvironmentValues {
     /// Opens the player over the whole window (macOS); nil where players are presented modally.
     @Entry var presentPlayer: ((PlaybackRequest) -> Void)?
     /// Closes the window-overlay player; nil when the player is a sheet or full-screen cover.
-    @Entry var closePlayer: (() -> Void)?
+    @Entry var closePlayer: ClosePlayerAction?
     /// Whether the window chrome (title bar, tabs) shows over the window-overlay player (macOS).
     /// Players keep it in step with their own controls, so it appears on click and hides while playing.
     @Entry var playerChromeVisible: Binding<Bool>?
+}
+
+/// Equatable wrapper so re-setting the environment value doesn't invalidate readers on every update.
+/// All instances compare equal: `MainTabView` always installs the same behavior (dismiss the overlay player).
+struct ClosePlayerAction: Equatable {
+    let action: () -> Void
+
+    func callAsFunction() { action() }
+
+    static func == (lhs: Self, rhs: Self) -> Bool { true }
 }
 
 /// AVFoundation-backed player (HLS, MP4). Reports failures through `onFailure`.
