@@ -274,9 +274,17 @@ struct VLCPlayerView: View {
             VLCVideoSurface(controller: controller)
                 .ignoresSafeArea()
 
+            #if os(tvOS)
+            // The system player's transport, driven from the remote.
+            if controller.errorMessage == nil {
+                TVTransportOverlay(controller: controller, title: request.title, switcher: channelSwitcher,
+                                   onClose: dismiss)
+            }
+            #else
             if controlsVisible && controller.errorMessage == nil {
                 controls
             }
+            #endif
         }
         #if !os(tvOS)
         .contentShape(Rectangle())
