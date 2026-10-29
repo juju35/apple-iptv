@@ -7,7 +7,7 @@ actor ImageLoader {
     static let shared = ImageLoader()
 
     /// NSCache is thread-safe; read without hopping onto the actor so a cached poster shows at once.
-    private nonisolated(unsafe) let cache = NSCache<NSString, CGImageBox>()
+    nonisolated(unsafe) private let cache = NSCache<NSString, CGImageBox>()
     private var inFlight: [String: Task<CGImage?, Never>] = [:]
     private let session: URLSession = {
         let configuration = URLSessionConfiguration.default
@@ -40,7 +40,7 @@ actor ImageLoader {
         return image
     }
 
-    private nonisolated static func key(_ url: URL, _ size: Int) -> String { "\(size)|\(url.absoluteString)" }
+    nonisolated private static func key(_ url: URL, _ size: Int) -> String { "\(size)|\(url.absoluteString)" }
 
     /// Decodes straight to the displayed size, off the main thread.
     private static func downsample(_ data: Data, maxPixelSize: Int) -> CGImage? {
