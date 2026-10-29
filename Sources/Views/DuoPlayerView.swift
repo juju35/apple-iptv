@@ -154,8 +154,8 @@ struct FoldControlsPanel: View {
                 Color.white.opacity(0.06)
             }
         }
-        .frame(maxWidth: 140, maxHeight: 72, alignment: .leading)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .frame(maxWidth: 350, maxHeight: 180, alignment: .leading)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .accessibilityHidden(true)
     }
 
