@@ -56,6 +56,8 @@ struct GeneratedArtwork: View {
                         .padding(side * 0.1)
                 }
             }
+            // One flattened layer instead of gradients, symbol and shadowed text composited per frame.
+            .drawingGroup()
         }
     }
 }

@@ -10,7 +10,27 @@ struct BrowseView: View {
     @State private var search = ""
     @State private var selectedItem: MediaItem?
 
-    private var filtered: [MediaItem] {
+    /// Recomputed only when their inputs change: every store update re-renders this view, and filtering
+    /// thousands of movies on each one weighed on scrolling.
+    @State private var filtered: [MediaItem] = []
+    @State private var categoryOptions: [ChipOption<String?>] = []
+
+    private struct Inputs: Hashable {
+        let category: String?
+        let search: String
+        let count: Int
+        let firstID: String?
+        let lastID: String?
+        let categoryCount: Int
+    }
+
+    private var inputs: Inputs {
+        let items = store.items(for: kind)
+        return Inputs(category: selectedCategory, search: search, count: items.count, firstID: items.first?.id,
+                      lastID: items.last?.id, categoryCount: store.categories(for: kind).count)
+    }
+
+    private func computeFiltered() -> [MediaItem] {
         var items = store.items(for: kind)
         if let selectedCategory {
             items = items.filter { $0.belongs(to: selectedCategory) }
@@ -22,7 +42,7 @@ struct BrowseView: View {
     }
 
     /// "All" then the categories that still have items once filters apply.
-    private var categoryOptions: [ChipOption<String?>] {
+    private func computeCategoryOptions() -> [ChipOption<String?>] {
         let used = Set(store.items(for: kind).flatMap(\.categoryIds))
         return [ChipOption(id: nil, title: String(localized: "All"))]
             + store.categories(for: kind).filter { used.contains($0.id) }
@@ -66,6 +86,10 @@ struct BrowseView: View {
             .modifier(BrowseSearch(text: $search))
             .detailPresentation(item: $selectedItem) { item in
                 MediaDetailView(item: item)
+            }
+            .onChange(of: inputs, initial: true) {
+                filtered = computeFiltered()
+                categoryOptions = computeCategoryOptions()
             }
             .task(id: filtered.count) {
                 // Screenshot mode: `-demoScreen detail` opens the first series.

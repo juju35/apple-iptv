@@ -173,8 +173,12 @@ struct LiveTVView: View {
         }
         #if os(tvOS)
         .scrollClipDisabled()
-        .onChange(of: focusedChannelID) { _, id in
-            guard let id, let channel = channels.first(where: { $0.id == id }) else { return }
+        // Once the focus rests: updating the info panel on every step of a fast scroll re-rendered the
+        // whole screen and reloaded the programme each time.
+        .task(id: focusedChannelID) {
+            guard let id = focusedChannelID, id != highlighted?.id else { return }
+            try? await Task.sleep(for: .milliseconds(250))
+            guard !Task.isCancelled, let channel = channels.first(where: { $0.id == id }) else { return }
             highlighted = channel
             playError = nil
         }
