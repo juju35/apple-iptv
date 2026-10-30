@@ -76,6 +76,16 @@ final class StalkerClient: IPTVClient {
         _ = try? await fetchJS(type: "stb", action: "get_profile")
     }
 
+    /// The MAG box watchdog: without it, many portals end the stream after a minute or so.
+    func keepAlive() async {
+        let extra = [URLQueryItem(name: "init", value: "0"), URLQueryItem(name: "cur_play_type", value: "1"),
+                     URLQueryItem(name: "event_active_id", value: "0")]
+        if (try? await fetchJS(type: "watchdog", action: "get_events", extra: extra)) == nil {
+            // An expired token: log in again so the next call goes through.
+            try? await authenticate()
+        }
+    }
+
     private func ensureToken() async throws {
         if token == nil { try await authenticate() }
     }

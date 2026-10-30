@@ -16,10 +16,15 @@ protocol IPTVClient {
     func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]]
     /// HTTP headers the player should send when fetching the stream (e.g. a portal-specific User-Agent).
     var streamHeaders: [String: String] { get }
+    /// Called every 30 seconds while something plays: Stalker portals cut the stream of a box that
+    /// stops reporting in.
+    func keepAlive() async
 }
 
 extension IPTVClient {
     var streamHeaders: [String: String] { [:] }
+
+    func keepAlive() async {}
 
     func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]] { [:] }
 }

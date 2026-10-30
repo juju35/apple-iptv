@@ -70,4 +70,10 @@ extension AppStore {
         playbackProgress = PlaybackProgress.pruned(playbackProgress)
         progressSync.save(Array(playbackProgress.values))
     }
+
+    /// Keeps the selected provider's session alive during playback (see `IPTVClient.keepAlive`).
+    func keepPlaybackAlive() async {
+        guard let provider = selectedProvider else { return }
+        await client(for: provider).keepAlive()
+    }
 }

@@ -183,6 +183,14 @@ struct PlayerView: View {
             }
         }
         .animation(.easeOut(duration: 0.2), value: showsChannelList)
+        .task {
+            // Reports in to the portal while playing (Stalker), whichever engine plays.
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(30))
+                guard !Task.isCancelled else { return }
+                await store.keepPlaybackAlive()
+            }
+        }
         #if os(macOS)
         // Escape closes the window-overlay player, as it would a sheet.
         .onExitCommand { closePlayer?() }

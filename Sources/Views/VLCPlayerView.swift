@@ -42,7 +42,9 @@ final class VLCPlayerController: NSObject, VLCMediaPlayerDelegate {
 
     func start(_ request: PlaybackRequest) {
         let media = VLCMedia(url: request.url)
-        media.addOption(":network-caching=1500")
+        // A bigger buffer rides out the hiccups of IPTV servers instead of freezing on them.
+        media.addOption(":network-caching=3000")
+        media.addOption(":live-caching=3000")
         media.addOption(":http-reconnect")
         if let userAgent = request.headers["User-Agent"] {
             media.addOption(":http-user-agent=\(userAgent)")
