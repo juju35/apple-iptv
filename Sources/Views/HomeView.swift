@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Netflix-style landing page: hero banner + horizontal carousels.
+/// Netflix-style landing page: hero banner + movie and series carousels (no channels).
 struct HomeView: View {
     @EnvironmentObject private var store: AppStore
     @EnvironmentObject private var layout: HomeLayoutStore
@@ -92,19 +92,6 @@ struct HomeView: View {
                         MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
                     }
 
-                    #if !os(tvOS)
-                    // Apple TV's Home keeps to movies and series.
-                    let recentChannels = store.recentChannels()
-                    if !recentChannels.isEmpty {
-                        MediaRow(title: String(localized: "Recently Watched Channels"), items: recentChannels) { selectedItem = $0 }
-                    }
-
-                    if !store.liveItems.isEmpty {
-                        MediaRow(title: String(localized: "Live TV"), items: Array(store.liveItems.prefix(25))) {
-                            selectedItem = $0
-                        }
-                    }
-                    #endif
                     listRows(.movie)
                     listRows(.series)
                 }
