@@ -15,6 +15,7 @@ struct SettingsView: View {
                             store.selectedProviderID = provider.id
                         } label: {
                             HStack {
+                                ProviderAvatar(provider: provider)
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(provider.name).font(.headline)
                                     Text(provider.kind.label)
@@ -171,6 +172,7 @@ struct ProviderFormView: View {
     @State private var username = ""
     @State private var password = ""
     @State private var macAddress = ""
+    @State private var avatar: Provider.Avatar?
     @State private var testResult: String?
     @State private var testSucceeded = false
     @State private var testing = false
@@ -196,6 +198,8 @@ struct ProviderFormView: View {
                     TextField("Server URL (http://host:port)", text: $serverURL)
                         .textContentTypeCompat()
                 }
+
+                AvatarPickerSection(name: name, avatar: $avatar)
 
                 switch kind {
                 case .xtream:
@@ -247,6 +251,7 @@ struct ProviderFormView: View {
         username = provider.username
         password = provider.password
         macAddress = provider.macAddress
+        avatar = provider.avatar
     }
 
     private func currentProvider() -> Provider {
@@ -257,6 +262,7 @@ struct ProviderFormView: View {
         p.username = username
         p.password = password
         p.macAddress = macAddress
+        p.avatar = avatar
         return p
     }
 

@@ -179,11 +179,11 @@ struct ProviderMenu: View {
             #if os(tvOS)
             // A labelled button on Apple TV: initials alone are cryptic from the couch.
             HStack(spacing: 14) {
-                ProviderAvatar(name: selected?.name ?? "")
+                ProviderAvatar(provider: selected)
                 Text(selected?.name ?? String(localized: "Providers"))
             }
             #else
-            ProviderAvatar(name: selected?.name ?? "")
+            ProviderAvatar(provider: selected)
             #endif
         }
         .menuIndicator(.hidden)
@@ -191,9 +191,22 @@ struct ProviderMenu: View {
     }
 }
 
-/// Initials of a provider name in an accent-colored circle.
+/// The provider's gallery avatar, or the initials of its name in an accent-colored circle.
 struct ProviderAvatar: View {
     let name: String
+    var avatar: Provider.Avatar?
+    var size: CGFloat = Self.defaultSize
+
+    init(provider: Provider?) {
+        name = provider?.name ?? ""
+        avatar = provider?.avatar
+    }
+
+    init(name: String, avatar: Provider.Avatar?, size: CGFloat = Self.defaultSize) {
+        self.name = name
+        self.avatar = avatar
+        self.size = size
+    }
 
     private var initials: String {
         let words = name.split(whereSeparator: { !$0.isLetter && !$0.isNumber })
@@ -202,17 +215,127 @@ struct ProviderAvatar: View {
     }
 
     #if os(tvOS)
-    private static let size: CGFloat = 40
+    static let defaultSize: CGFloat = 40
     #else
-    private static let size: CGFloat = 30
+    static let defaultSize: CGFloat = 30
     #endif
 
     var body: some View {
-        Text(initials)
-            .font(.caption.weight(.bold))
-            .foregroundStyle(.white)
-            .frame(width: Self.size, height: Self.size)
-            .background(Circle().fill(Theme.accent.gradient))
-            .overlay(Circle().strokeBorder(.white.opacity(0.25)))
+        Group {
+            if let avatar {
+                Image(systemName: AvatarGallery.symbol(avatar.symbol))
+                    .font(.system(size: size * 0.48, weight: .semibold))
+            } else {
+                // The usual caption in the toolbar; scaled with the circle in the avatar picker.
+                Text(initials)
+                    .font(size == Self.defaultSize ? .caption.weight(.bold) : .system(size: size * 0.4, weight: .bold))
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(width: size, height: size)
+        .background(Circle().fill((avatar.map { AvatarGallery.color($0.color) } ?? Theme.accent).gradient))
+        .overlay(Circle().strokeBorder(.white.opacity(0.25)))
+    }
+}
+
+/// The avatars a provider can take: a symbol on a colored circle.
+enum AvatarGallery {
+    static let symbols = [
+        "tv.fill", "play.tv.fill", "film.fill", "popcorn.fill", "theatermasks.fill", "sportscourt.fill",
+        "soccerball", "basketball.fill", "gamecontroller.fill", "music.note", "star.fill", "heart.fill",
+        "flame.fill", "bolt.fill", "crown.fill", "sparkles", "moon.stars.fill", "sun.max.fill",
+        "leaf.fill", "pawprint.fill", "fish.fill", "globe.europe.africa.fill", "house.fill", "rocket.fill",
+    ]
+
+    /// `name` is what's stored; `label` is for VoiceOver.
+    static let colors: [(name: String, label: LocalizedStringResource, color: Color)] = [
+        ("red", "Red", Theme.accent), ("orange", "Orange", .orange), ("yellow", "Yellow", .yellow),
+        ("green", "Green", .green), ("mint", "Mint", .mint), ("teal", "Teal", .teal),
+        ("blue", "Blue", .blue), ("indigo", "Indigo", .indigo), ("purple", "Purple", .purple),
+        ("pink", "Pink", .pink), ("brown", "Brown", .brown), ("gray", "Gray", .gray),
+    ]
+
+    /// A symbol from another version's gallery falls back to the TV, rather than a blank circle.
+    static func symbol(_ name: String) -> String {
+        symbols.contains(name) ? name : "tv.fill"
+    }
+
+    static func color(_ name: String) -> Color {
+        colors.first { $0.name == name }?.color ?? Theme.accent
+    }
+}
+
+/// Form section to pick the provider's avatar: initials, or a gallery symbol and its color.
+struct AvatarPickerSection: View {
+    let name: String
+    @Binding var avatar: Provider.Avatar?
+
+    #if os(tvOS)
+    private static let cell: CGFloat = 70
+    #else
+    private static let cell: CGFloat = 40
+    #endif
+
+    var body: some View {
+        Section("Avatar") {
+            HStack {
+                Spacer()
+                ProviderAvatar(name: name, avatar: avatar, size: Self.cell * 2)
+                Spacer()
+            }
+            .accessibilityHidden(true)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: Self.cell), spacing: 12)], spacing: 12) {
+                cell(selected: avatar == nil, label: Text("Initials")) {
+                    ProviderAvatar(name: name, avatar: nil, size: Self.cell)
+                } action: {
+                    avatar = nil
+                }
+                ForEach(AvatarGallery.symbols, id: \.self) { symbol in
+                    let choice = Provider.Avatar(symbol: symbol, color: avatar?.color ?? AvatarGallery.colors[0].name)
+                    // The symbol's own VoiceOver label names it.
+                    cell(selected: avatar?.symbol == symbol, label: nil) {
+                        ProviderAvatar(name: name, avatar: choice, size: Self.cell)
+                    } action: {
+                        avatar = choice
+                    }
+                }
+            }
+            .padding(.vertical, 6)
+
+            if let current = avatar {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: Self.cell), spacing: 12)], spacing: 12) {
+                    ForEach(AvatarGallery.colors, id: \.name) { entry in
+                        cell(selected: current.color == entry.name, label: Text(entry.label)) {
+                            Circle().fill(entry.color.gradient)
+                                .frame(width: Self.cell, height: Self.cell)
+                        } action: {
+                            avatar = Provider.Avatar(symbol: current.symbol, color: entry.name)
+                        }
+                    }
+                }
+                .padding(.vertical, 6)
+            }
+        }
+    }
+
+    /// A gallery entry, ringed when chosen.
+    @ViewBuilder
+    private func cell<Content: View>(selected: Bool, label: Text?,
+                                     @ViewBuilder content: () -> Content,
+                                     action: @escaping () -> Void) -> some View {
+        let button = Button(action: action) {
+            content()
+                .padding(3)
+                .overlay(Circle().strokeBorder(selected ? Color.white : .clear, lineWidth: 2))
+                .lockupArtwork()
+        }
+        .lockupButtonStyle()
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        if let label {
+            button.accessibilityLabel(label)
+        } else {
+            button
+        }
     }
 }

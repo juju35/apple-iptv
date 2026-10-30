@@ -31,6 +31,16 @@ struct Provider: Identifiable, Codable, Hashable {
     // Stalker credentials
     var macAddress: String = ""
 
+    /// Avatar picked from the in-app gallery; nil shows the name's initials.
+    var avatar: Avatar?
+
+    /// Stored as plain strings so a symbol or color unknown to another version of the app
+    /// doesn't make the whole provider undecodable (providers sync through iCloud).
+    struct Avatar: Codable, Hashable {
+        var symbol: String
+        var color: String
+    }
+
     var baseURL: URL? { URL(string: serverURL.trimmingCharacters(in: .whitespacesAndNewlines)) }
 }
 
