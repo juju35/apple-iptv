@@ -326,14 +326,19 @@ final class AppStore: ObservableObject {
 extension AppStore {
     // MARK: - Filters
 
-    /// Recomputes the published content and the available tags from `catalog`.
-    private func applyFilters() {
+    /// Kinds the provider has nothing of, once its lists are known (their tabs are hidden).
+    private func updateMissingKinds() {
         var missing: Set<MediaKind> = []
         if catalogUpdatedAt != nil {
             if catalog.movieItems.isEmpty { missing.insert(.movie) }
             if catalog.seriesItems.isEmpty { missing.insert(.series) }
         }
         if missing != missingKinds { missingKinds = missing }
+    }
+
+    /// Recomputes the published content and the available tags from `catalog`.
+    private func applyFilters() {
+        updateMissingKinds()
 
         let all = [catalog.liveCategories, catalog.movieCategories, catalog.seriesCategories]
         let categoryLanguage: [String: String] = Dictionary(
