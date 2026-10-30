@@ -43,9 +43,8 @@ actor ImageLoader {
         return image
     }
 
-    // swiftlint:disable:next unused_declaration
     /// Loads artwork about to come on screen, in the background (Apple TV's poster grid).
-    nonisolated func prefetch(_ urls: [URL], maxPixelSize: Int = 600) {
+    nonisolated func prefetch(_ urls: [URL], maxPixelSize: Int = 600) { // swiftlint:disable:this unused_declaration
         let missing = urls.filter { cached($0, maxPixelSize: maxPixelSize) == nil }
         guard !missing.isEmpty else { return }
         Task(priority: .utility) {
