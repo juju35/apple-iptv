@@ -248,7 +248,7 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
 private final class PosterCell: UICollectionViewCell {
     private let poster = TVPosterView()
     private let heart = UIImageView(image: UIImage(systemName: "heart.fill"))
-    private let progressView = UIProgressView(progressViewStyle: .bar)
+    private let progressView = UIProgressView(progressViewStyle: .default)
     private var loading: Task<Void, Never>?
     private var url: URL?
 
