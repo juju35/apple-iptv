@@ -43,6 +43,7 @@ enum MainTab: Hashable {
 }
 
 struct MainTabView: View {
+    @EnvironmentObject private var store: AppStore
     #if os(tvOS)
     // No Settings tab on Apple TV (see `showingSettings`).
     @State private var tab: MainTab = Demo.isOn && Demo.screen.tab != .settings ? Demo.screen.tab : .home
@@ -88,14 +89,19 @@ struct MainTabView: View {
                 .id(resets[.live, default: 0])
                 .tabItem { Label("Live TV", systemImage: "tv") }
                 .tag(MainTab.live)
-            BrowseView(kind: .movie, title: String(localized: "Movies"))
-                .id(resets[.movies, default: 0])
-                .tabItem { Label("Movies", systemImage: "film") }
-                .tag(MainTab.movies)
-            BrowseView(kind: .series, title: String(localized: "Series"))
-                .id(resets[.series, default: 0])
-                .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
-                .tag(MainTab.series)
+            // No empty tabs: a provider with no movies or no series doesn't get their tab.
+            if !store.missingKinds.contains(.movie) {
+                BrowseView(kind: .movie, title: String(localized: "Movies"))
+                    .id(resets[.movies, default: 0])
+                    .tabItem { Label("Movies", systemImage: "film") }
+                    .tag(MainTab.movies)
+            }
+            if !store.missingKinds.contains(.series) {
+                BrowseView(kind: .series, title: String(localized: "Series"))
+                    .id(resets[.series, default: 0])
+                    .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
+                    .tag(MainTab.series)
+            }
             #if !os(tvOS)
             // Apple TV opens Settings from the provider menu: the tab bar keeps to content.
             SettingsView()
@@ -106,6 +112,12 @@ struct MainTabView: View {
         }
         .brandTint()
         .onChange(of: tab) { left, _ in resets[left, default: 0] += 1 }
+        // The shown tab went away (e.g. switched to a provider without series): back to Home.
+        .onChange(of: store.missingKinds) { _, missing in
+            if (tab == .movies && missing.contains(.movie)) || (tab == .series && missing.contains(.series)) {
+                tab = .home
+            }
+        }
         #if os(tvOS)
         .tvProviderSwitcher(isShown: [.home, .live, .movies, .series].contains(tab))
         #endif

@@ -58,6 +58,9 @@ final class AppStore: ObservableObject {
     private var catalogProviderID: Provider.ID?
     /// When the shown lists were fetched from the provider (from the cache or just now).
     @Published private(set) var catalogUpdatedAt: Date?
+    /// Kinds the provider has nothing of (before filtering), so their tabs can be hidden.
+    /// Empty until the lists are known: tabs stay while loading or after a failed load.
+    @Published private(set) var missingKinds: Set<MediaKind> = []
 
     /// How long cached lists are used without asking the provider; 0 disables the cache.
     @Published var cacheLifetime: TimeInterval {
@@ -325,6 +328,13 @@ extension AppStore {
 
     /// Recomputes the published content and the available tags from `catalog`.
     private func applyFilters() {
+        var missing: Set<MediaKind> = []
+        if catalogUpdatedAt != nil {
+            if catalog.movieItems.isEmpty { missing.insert(.movie) }
+            if catalog.seriesItems.isEmpty { missing.insert(.series) }
+        }
+        if missing != missingKinds { missingKinds = missing }
+
         let all = [catalog.liveCategories, catalog.movieCategories, catalog.seriesCategories]
         let categoryLanguage: [String: String] = Dictionary(
             all.joined().compactMap { category in
