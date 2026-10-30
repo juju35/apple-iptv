@@ -62,7 +62,7 @@ struct HomeView: View {
         if isWaitingForCatalog {
             // In place of Home only: the tabs and the provider switcher stay.
             VStack(spacing: 16) {
-                ProgressView()
+                AppLogo()
                 Text("Loading…")
                     .font(.headline)
                     .foregroundStyle(Theme.textSecondary)
