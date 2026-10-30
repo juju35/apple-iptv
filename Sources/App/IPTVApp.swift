@@ -100,7 +100,11 @@ struct MainTabView: View {
         .background(Theme.background)
         #if os(tvOS)
         .environment(\.showSettings, ShowSettingsAction { showingSettings = true })
-        .fullScreenCover(isPresented: $showingSettings) { SettingsView() }
+        .fullScreenCover(isPresented: $showingSettings) {
+            // Opaque: a full-screen cover is transparent on Apple TV and the tab showed through.
+            SettingsView()
+                .background(Theme.background.ignoresSafeArea())
+        }
         #else
         .environment(\.showSettings, ShowSettingsAction { tab = .settings })
         #endif
