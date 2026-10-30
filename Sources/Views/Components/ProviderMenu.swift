@@ -19,7 +19,7 @@ extension View {
     /// when the switcher moves out of it.
     func providerToolbar(barHasTitle: Bool = true) -> some View {
         #if os(tvOS)
-        self  // Placed once on the tab view: `tvProviderSwitcher(isShown:)`.
+        self  // Placed once on the tab view: `tvProviderSwitcher()`.
         #elseif os(iOS)
         modifier(ProviderToolbarModifier(barHasTitle: barHasTitle))
         #else
@@ -36,16 +36,15 @@ extension View {
 extension View {
     /// Apple TV: the switcher level with the tab bar at the top right, set on the tab view itself so it
     /// doesn't move while a tab's content lays out (on each screen it briefly showed lower).
-    func tvProviderSwitcher(isShown: Bool) -> some View {
+    /// Shown on every tab, Search included.
+    func tvProviderSwitcher() -> some View {
         overlay {
-            if isShown {
-                // Same inset from the top and the right edge as the tab bar from the top.
-                ProviderMenu()
-                    .padding(.top, 53)
-                    .padding(.trailing, 53)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                    .ignoresSafeArea()
-            }
+            // Same inset from the top and the right edge as the tab bar from the top.
+            ProviderMenu()
+                .padding(.top, 53)
+                .padding(.trailing, 53)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                .ignoresSafeArea()
         }
     }
 }

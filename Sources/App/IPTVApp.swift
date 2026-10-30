@@ -119,7 +119,7 @@ struct MainTabView: View {
             }
         }
         #if os(tvOS)
-        .tvProviderSwitcher(isShown: [.home, .live, .movies, .series].contains(tab))
+        .tvProviderSwitcher()
         #endif
         .background(Theme.background)
         #if os(tvOS)
