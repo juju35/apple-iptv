@@ -18,6 +18,9 @@ struct PlaybackProgress: Codable, Hashable {
     /// Removed from Continue Watching by the user: kept (and synced) so other devices drop it too, never resumed.
     /// Optional for entries saved before it existed.
     var isDismissed: Bool?
+    /// The movie or series as it was played, to list it under Continue Watching even when the loaded
+    /// lists don't hold it (Stalker portals page their catalogue). Optional for older entries.
+    var item: MediaItem?
 
     /// Offered to resume and listed under Continue Watching.
     var isResumable: Bool { !isFinished && isDismissed != true }
@@ -65,16 +68,17 @@ struct ContinueWatchingEntry: Identifiable {
 struct PlaybackProgressContext {
     let key: String
     let itemId: String
+    var item: MediaItem?
     var episodeId: String?
     var season: Int?
     var episode: Int?
 
     static func movie(_ item: MediaItem) -> Self {
-        Self(key: item.id, itemId: item.id)
+        Self(key: item.id, itemId: item.id, item: item)
     }
 
     static func episode(_ episode: Episode, of series: MediaItem) -> Self {
-        Self(key: "\(series.id)#\(episode.id)", itemId: series.id, episodeId: episode.id,
+        Self(key: "\(series.id)#\(episode.id)", itemId: series.id, item: series, episodeId: episode.id,
              season: episode.season, episode: episode.episode)
     }
 }

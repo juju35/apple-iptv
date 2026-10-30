@@ -21,11 +21,15 @@ extension AppStore {
     /// Started movies and series, most recent first (`kind` nil for both).
     func continueWatching(_ kind: MediaKind?) -> [ContinueWatchingEntry] {
         var seen: Set<String> = []
+        // Item ids start with their provider's id: entries of other providers stay out.
+        let providerPrefix = selectedProvider.map { "\($0.id)-" } ?? "\u{0}"
         return playbackProgress.values
             .filter(\.isResumable)
             .sorted { $0.updatedAt > $1.updatedAt }
             .compactMap { progress in
-                guard let item = visibleItemsById[progress.itemId], kind == nil || item.kind == kind,
+                // The loaded lists first; else the item saved with the progress.
+                let saved = progress.item.flatMap { $0.id.hasPrefix(providerPrefix) ? $0 : nil }
+                guard let item = visibleItemsById[progress.itemId] ?? saved, kind == nil || item.kind == kind,
                       seen.insert(item.id).inserted else { return nil }
                 return ContinueWatchingEntry(item: item, progress: progress)
             }
@@ -60,7 +64,8 @@ extension AppStore {
             position: position,
             duration: duration,
             updatedAt: Date(),
-            isFinished: position / duration >= 0.95
+            isFinished: position / duration >= 0.95,
+            item: context.item ?? existing?.item
         )
         playbackProgress = PlaybackProgress.pruned(playbackProgress)
         progressSync.save(Array(playbackProgress.values))
