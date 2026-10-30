@@ -52,7 +52,9 @@ struct SeasonEpisodesView: View {
     private var tvBody: some View {
         VStack(alignment: .leading, spacing: 30) {
             HStack(spacing: 30) {
-                if seasons.count > 1 {
+                if seasons.count > Self.tvSegmentedMaxSeasons {
+                    tvSeasonRow
+                } else if seasons.count > 1 {
                     Picker("Season", selection: $season) {
                         ForEach(seasons, id: \.self) { value in
                             Text(seasonName(value)).tag(value)
@@ -63,9 +65,12 @@ struct SeasonEpisodesView: View {
                 } else {
                     Text(seasonName(season)).font(.headline)
                 }
-                Text(episodes.count == 1 ? "1 episode" : "\(episodes.count) episodes")
-                    .font(.callout)
-                    .foregroundStyle(.white.opacity(0.6))
+                if seasons.count <= Self.tvSegmentedMaxSeasons {
+                    episodeCount
+                }
+            }
+            if seasons.count > Self.tvSegmentedMaxSeasons {
+                episodeCount
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -81,6 +86,57 @@ struct SeasonEpisodesView: View {
             }
             .scrollClipDisabled()
         }
+    }
+
+    /// Beyond this, the segmented control runs off the screen: the seasons scroll in a row instead.
+    private static let tvSegmentedMaxSeasons = 6
+
+    @FocusState private var focusedSeason: Int?
+
+    private var episodeCount: some View {
+        Text(episodes.count == 1 ? "1 episode" : "\(episodes.count) episodes")
+            .font(.callout)
+            .foregroundStyle(.white.opacity(0.6))
+    }
+
+    /// Many seasons: a scrolling row of buttons, the shown one underlined. As with the segmented control,
+    /// moving the focus over a season shows it.
+    private var tvSeasonRow: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 20) {
+                    ForEach(seasons, id: \.self) { value in
+                        seasonButton(value)
+                            .focused($focusedSeason, equals: value)
+                            .id(value)
+                    }
+                }
+                .padding(.vertical, 20)
+            }
+            .scrollClipDisabled()
+            .onChange(of: focusedSeason) { _, focused in
+                if let focused, focused != season { season = focused }
+            }
+            // A season further along (the one being watched) starts in view.
+            .onAppear { proxy.scrollTo(season, anchor: .leading) }
+        }
+    }
+
+    /// One style for every season, so the button keeps its identity (and the focus) when it becomes the
+    /// shown one: bold and underlined then.
+    private func seasonButton(_ value: Int) -> some View {
+        Button { season = value } label: {
+            VStack(spacing: 6) {
+                Text(seasonName(value))
+                    .font(.callout.weight(value == season ? .bold : .medium))
+                Capsule()
+                    .frame(height: 4)
+                    .opacity(value == season ? 1 : 0)
+            }
+            .padding(.horizontal, 8)
+        }
+        .buttonStyle(.bordered)
+        .accessibilityAddTraits(value == season ? .isSelected : [])
     }
 
     private static let tvStillWidth: CGFloat = 420
