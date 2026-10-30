@@ -69,6 +69,20 @@ enum ContentTags {
 
     /// `name` without each of `removals` (case-insensitive), then without the separators and spaces
     /// left at its ends: "FR | Sport" minus "FR" gives "Sport". The original name if nothing is left.
+    /// Decoration providers put in list names: pipes, symbols (® © ★ ● ▬…) and enclosed letters
+    /// ("ⓣⓥ", "🅵🆁"). "+" (Canal+) and other math signs stay.
+    private static func isDecoration(_ scalar: Unicode.Scalar) -> Bool {
+        if "|│┃‖¦".unicodeScalars.contains(scalar) { return true }
+        switch scalar.value {
+        case 0x2460...0x24FF, 0x1F100...0x1F1FF: return true  // Enclosed alphanumerics
+        default: break
+        }
+        switch scalar.properties.generalCategory {
+        case .otherSymbol, .modifierSymbol: return true
+        default: return scalar.properties.isEmojiPresentation
+        }
+    }
+
     static func cleanedName(_ name: String, removing removals: [String]) -> String {
         var result = name
         for removal in removals where !removal.isEmpty {
@@ -81,7 +95,8 @@ enum ContentTags {
             result = regex.stringByReplacingMatches(in: result, range: NSRange(result.startIndex..., in: result),
                                                     withTemplate: " ")
         }
-        let edges = CharacterSet.whitespaces.union(CharacterSet(charactersIn: "|-:•·/[]()"))
+        result = String(String.UnicodeScalarView(result.unicodeScalars.filter { !isDecoration($0) }))
+        let edges = CharacterSet.whitespaces.union(CharacterSet(charactersIn: "-:•·/[]()"))
         result = result.trimmingCharacters(in: edges)
             .split(separator: " ", omittingEmptySubsequences: true).joined(separator: " ")
         return result.isEmpty ? name : result
