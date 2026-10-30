@@ -15,7 +15,7 @@ struct HomeListsView: View {
 
     @ViewBuilder
     private func section(_ title: String, kind: MediaKind) -> some View {
-        let options = (store.listOptions[kind] ?? []).filter { $0.count > 0 }
+        let options = (store.listOptions[kind] ?? []).filter { $0.count >= 1 }
         if !options.isEmpty {
             Section {
                 ForEach(options) { option in
