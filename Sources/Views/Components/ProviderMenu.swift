@@ -135,8 +135,9 @@ private extension View {
     /// The side tab bar's Liquid Glass bubble around the switcher (a toolbar item gets one already).
     @ViewBuilder
     func sideBubble() -> some View {
+        // Behind the menu, not around it: an interactive glass effect took the taps and the menu never opened.
         if #available(iOS 26, *) {
-            padding(8).glassEffect(.regular.interactive(), in: .circle)
+            padding(8).background { Color.clear.glassEffect(.regular, in: .circle).allowsHitTesting(false) }
         } else {
             padding(8).background(.ultraThinMaterial, in: Circle())
         }
