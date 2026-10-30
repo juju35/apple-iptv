@@ -51,6 +51,7 @@ struct MainTabView: View {
     /// in `ImageLoader`'s memory cache and shows again at once.
     @State private var resets: [MainTab: Int] = [:]
     #if os(tvOS)
+    @State private var launchFocusPlaced = false
     /// Screenshot mode: `-demoScreen settings` opens it.
     @State private var showingSettings = Demo.isOn && Demo.screen.tab == .settings
     #endif
@@ -70,6 +71,15 @@ struct MainTabView: View {
             #endif
             HomeView()
                 .id(resets[.home, default: 0])
+                #if os(tvOS)
+                // At launch the focus goes to the Home tab in the tab bar, not to the hero's Play button:
+                // the content can't take it until the tab bar has.
+                .disabled(!launchFocusPlaced)
+                .task {
+                    try? await Task.sleep(for: .milliseconds(600))
+                    launchFocusPlaced = true
+                }
+                #endif
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag(MainTab.home)
             LiveTVView()
