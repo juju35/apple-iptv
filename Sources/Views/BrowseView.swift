@@ -88,9 +88,10 @@ struct BrowseView: View {
     private var content: some View {
         #if os(tvOS)
         // A UIKit collection view: SwiftUI grids crawled through thousands of posters on Apple TV.
-        TVPosterGrid(items: filtered, favoriteIDs: Set(store.favoriteIDs), onSelect: { selectedItem = $0 },
-                     onToggleFavorite: { store.toggleFavorite($0) }) {
-            header.padding(.vertical)
+        let isNarrowed = !search.isEmpty || selectedCategory != nil
+        TVPosterGrid(items: filtered, continueWatching: isNarrowed ? [] : store.continueWatching(kind),
+                     favorites: isNarrowed ? [] : store.favorites(kind), onSelect: { selectedItem = $0 }) {
+            CategoryChips(options: categoryOptions, selection: $selectedCategory)
         }
         .ignoresSafeArea(edges: .bottom)
         #else
