@@ -249,6 +249,9 @@ final class AppStore: ObservableObject {
             catalogUpdatedAt = nil
             applyFilters()
         }
+        // From the start, cache read included: Home shows "Loading" while nothing is there yet.
+        isLoading = true
+        defer { isLoading = false }
         let usesCache = cacheLifetime > 0 && !Demo.isOn
         if usesCache, !force, let cached = await CatalogCache.load(providerID: provider.id),
            selectedProvider?.id == provider.id {
@@ -258,9 +261,7 @@ final class AppStore: ObservableObject {
             if Date().timeIntervalSince(cached.savedAt) < cacheLifetime { return }
         }
 
-        isLoading = true
         lastError = nil
-        defer { isLoading = false }
 
         let client = client(for: provider)
         do {

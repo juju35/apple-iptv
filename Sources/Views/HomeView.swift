@@ -40,8 +40,38 @@ struct HomeView: View {
         }
     }
 
+    /// Nothing to show yet: launch or a provider switch, before its lists arrive.
+    private var isWaitingForCatalog: Bool {
+        store.isLoading && store.liveItems.isEmpty && store.movieItems.isEmpty && store.seriesItems.isEmpty
+    }
+
     var body: some View {
         NavigationStack {
+            content
+                .background(Theme.background.ignoresSafeArea())
+                .refreshableIfSupported { await store.reload(force: true) }
+                .providerToolbar(barHasTitle: false)
+                .detailPresentation(item: $selectedItem) { item in
+                    MediaDetailView(item: item)
+                }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if isWaitingForCatalog {
+            // In place of Home only: the tabs and the provider switcher stay.
+            VStack(spacing: 16) {
+                ProgressView()
+                Text("Loading…")
+                    .font(.headline)
+                    .foregroundStyle(Theme.textSecondary)
+                if let name = store.selectedProvider?.name {
+                    Text(name).font(.subheadline).foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     #if !os(tvOS)
@@ -50,10 +80,6 @@ struct HomeView: View {
                         HeroBanner(item: hero) { selectedItem = hero }
                     }
                     #endif
-
-                    if store.isLoading {
-                        ProgressView().frame(maxWidth: .infinity).padding(.top, 40)
-                    }
 
                     if let error = store.lastError {
                         ErrorBanner(message: error) { Task { await store.reload(force: true) } }
@@ -83,12 +109,6 @@ struct HomeView: View {
                     listRows(.series)
                 }
                 .padding(.bottom, 40)
-            }
-            .background(Theme.background.ignoresSafeArea())
-            .refreshableIfSupported { await store.reload(force: true) }
-            .providerToolbar(barHasTitle: false)
-            .detailPresentation(item: $selectedItem) { item in
-                MediaDetailView(item: item)
             }
         }
     }
