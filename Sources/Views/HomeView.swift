@@ -3,11 +3,41 @@ import SwiftUI
 /// Netflix-style landing page: hero banner + horizontal carousels.
 struct HomeView: View {
     @EnvironmentObject private var store: AppStore
+    @EnvironmentObject private var layout: HomeLayoutStore
     @State private var selectedItem: MediaItem?
 
     private var heroItem: MediaItem? {
         store.movieItems.first { $0.posterURL != nil } ?? store.movieItems.first ?? store.seriesItems.first
             ?? store.liveItems.first
+    }
+
+    /// The lists chosen in Settings › Home lists, else all the movies / series then (movies) the first
+    /// six lists.
+    @ViewBuilder
+    private func listRows(_ kind: MediaKind) -> some View {
+        let items = store.items(for: kind)
+        if !items.isEmpty {
+            if let chosen = layout.chosen(among: store.listOptions[kind] ?? []) {
+                ForEach(chosen) { option in
+                    let id = HomeLayoutStore.categoryID(of: option.key)
+                    let rowItems = items.filter { $0.belongs(to: id) }
+                    if !rowItems.isEmpty {
+                        MediaRow(title: option.name, items: Array(rowItems.prefix(25))) { selectedItem = $0 }
+                    }
+                }
+            } else {
+                MediaRow(title: kind == .movie ? String(localized: "Movies") : String(localized: "Series"),
+                         items: Array(items.prefix(25))) { selectedItem = $0 }
+                if kind == .movie {
+                    ForEach(store.movieCategories.prefix(6)) { category in
+                        let rowItems = items.filter { $0.belongs(to: category.id) }
+                        if !rowItems.isEmpty {
+                            MediaRow(title: category.name, items: Array(rowItems.prefix(25))) { selectedItem = $0 }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     var body: some View {
@@ -36,6 +66,8 @@ struct HomeView: View {
                         MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
                     }
 
+                    #if !os(tvOS)
+                    // Apple TV's Home keeps to movies and series.
                     let recentChannels = store.recentChannels()
                     if !recentChannels.isEmpty {
                         MediaRow(title: String(localized: "Recently Watched Channels"), items: recentChannels) { selectedItem = $0 }
@@ -46,24 +78,9 @@ struct HomeView: View {
                             selectedItem = $0
                         }
                     }
-                    if !store.movieItems.isEmpty {
-                        MediaRow(title: String(localized: "Movies"), items: Array(store.movieItems.prefix(25))) {
-                            selectedItem = $0
-                        }
-                        ForEach(store.movieCategories.prefix(6)) { category in
-                            let items = store.movieItems.filter { $0.belongs(to: category.id) }
-                            if !items.isEmpty {
-                                MediaRow(title: category.name, items: Array(items.prefix(25))) {
-                                    selectedItem = $0
-                                }
-                            }
-                        }
-                    }
-                    if !store.seriesItems.isEmpty {
-                        MediaRow(title: String(localized: "Series"), items: Array(store.seriesItems.prefix(25))) {
-                            selectedItem = $0
-                        }
-                    }
+                    #endif
+                    listRows(.movie)
+                    listRows(.series)
                 }
                 .padding(.bottom, 40)
             }

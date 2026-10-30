@@ -80,6 +80,10 @@ struct SettingsView: View {
                         """)
                 }
 
+                Section("Home") {
+                    NavigationLink("Home lists") { HomeListsView() }
+                }
+
                 Section {
                     Picker("Keep lists for", selection: $store.cacheLifetime) {
                         ForEach(CatalogCache.lifetimes, id: \.seconds) { option in

@@ -937,6 +937,28 @@
         }
       }
     },
+    "Home lists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen auf der Startseite"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listas de inicio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listes de l'accueil"
+          }
+        }
+      }
+    },
     "In Favorites" : {
       "localizations" : {
         "de" : {
@@ -2891,6 +2913,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vu"
+          }
+        }
+      }
+    },
+    "With no list chosen, Home shows its default rows." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne ausgewählte Listen zeigt die Startseite ihre Standardreihen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin listas elegidas, el inicio muestra sus filas predeterminadas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans liste choisie, l'accueil affiche ses rangées par défaut."
           }
         }
       }
