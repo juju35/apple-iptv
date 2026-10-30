@@ -248,11 +248,23 @@ enum AvatarGallery {
     ]
 
     /// `name` is what's stored; `label` is for VoiceOver.
-    static let colors: [(name: String, label: LocalizedStringResource, color: Color)] = [
-        ("red", "Red", Theme.accent), ("orange", "Orange", .orange), ("yellow", "Yellow", .yellow),
-        ("green", "Green", .green), ("mint", "Mint", .mint), ("teal", "Teal", .teal),
-        ("blue", "Blue", .blue), ("indigo", "Indigo", .indigo), ("purple", "Purple", .purple),
-        ("pink", "Pink", .pink), ("brown", "Brown", .brown), ("gray", "Gray", .gray),
+    struct Swatch {
+        let name: String
+        let label: LocalizedStringResource
+        let color: Color
+
+        init(_ name: String, _ label: LocalizedStringResource, _ color: Color) {
+            self.name = name
+            self.label = label
+            self.color = color
+        }
+    }
+
+    static let colors: [Swatch] = [
+        Swatch("red", "Red", Theme.accent), Swatch("orange", "Orange", .orange), Swatch("yellow", "Yellow", .yellow),
+        Swatch("green", "Green", .green), Swatch("mint", "Mint", .mint), Swatch("teal", "Teal", .teal),
+        Swatch("blue", "Blue", .blue), Swatch("indigo", "Indigo", .indigo), Swatch("purple", "Purple", .purple),
+        Swatch("pink", "Pink", .pink), Swatch("brown", "Brown", .brown), Swatch("gray", "Gray", .gray),
     ]
 
     /// A symbol from another version's gallery falls back to the TV, rather than a blank circle.
