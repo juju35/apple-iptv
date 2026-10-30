@@ -45,16 +45,20 @@ extension PlaybackProgress {
         return pruned(result)
     }
 
-    /// Keeps the store well under the iCloud key-value quota: finished entries (the "watched"
-    /// checkmarks) for 180 days, and the 300 most recent overall.
+    /// Keeps the store well under the iCloud key-value quota: per provider, finished entries (the
+    /// "watched" checkmarks) for 180 days, and the 300 most recent overall.
     static func pruned(_ entries: [String: PlaybackProgress]) -> [String: PlaybackProgress] {
         let cutoff = Date().addingTimeInterval(-180 * 24 * 3600)
-        let kept = entries.values
-            .filter { !$0.isFinished || $0.updatedAt > cutoff }
-            .sorted { $0.updatedAt > $1.updatedAt }
-            .prefix(300)
+        let kept = Dictionary(grouping: entries.values, by: \.providerKey).values.flatMap { group in
+            group.filter { !$0.isFinished || $0.updatedAt > cutoff }
+                .sorted { $0.updatedAt > $1.updatedAt }
+                .prefix(300)
+        }
         return Dictionary(kept.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
     }
+
+    /// The provider the entry belongs to: item ids start with their provider's id (a UUID).
+    var providerKey: String { String(itemId.prefix(36)) }
 }
 
 /// A movie or series being watched, with its most recent progress.
@@ -83,10 +87,12 @@ struct PlaybackProgressContext {
     }
 }
 
-/// Persists playback progress in iCloud Key-Value Store (UserDefaults as fallback),
-/// like `ProviderSyncStore` does for providers.
+/// Persists playback progress in iCloud Key-Value Store (UserDefaults as fallback), one key per
+/// provider (`iptv.playbackProgress.<provider id>`), like `ProviderSyncStore` does for providers.
 final class PlaybackProgressSyncStore {
-    static let progressKey = "iptv.playbackProgress"
+    /// Before progress was kept per provider: read once, then split.
+    static let legacyKey = "iptv.playbackProgress"
+    private static let prefix = "iptv.playbackProgress."
 
     private let kvs = NSUbiquitousKeyValueStore.default
     private let defaults = UserDefaults.standard
@@ -104,27 +110,46 @@ final class PlaybackProgressSyncStore {
         ) { [weak self] notification in
             guard let self else { return }
             let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
-            guard changedKeys?.contains(Self.progressKey) ?? true else { return }
+            guard changedKeys?.contains(where: { $0.hasPrefix(Self.legacyKey) }) ?? true else { return }
             self.onExternalChange?(self.load())
         }
         kvs.synchronize()
+        migrate()
     }
 
     deinit {
         if let observer { NotificationCenter.default.removeObserver(observer) }
     }
 
+    /// Every provider's entries.
     func load() -> [PlaybackProgress] {
-        let data = kvs.data(forKey: Self.progressKey) ?? defaults.data(forKey: Self.progressKey)
-        guard let data, let entries = try? JSONDecoder().decode([PlaybackProgress].self, from: data) else {
-            return []
-        }
-        return entries
+        let keys = Set(kvs.dictionaryRepresentation.keys).union(defaults.dictionaryRepresentation().keys)
+            .filter { $0.hasPrefix(Self.prefix) }
+        return keys.flatMap { decode(kvs.data(forKey: $0) ?? defaults.data(forKey: $0)) }
     }
 
+    /// Writes each provider's entries under its own key.
     func save(_ entries: [PlaybackProgress]) {
-        guard let data = try? JSONEncoder().encode(entries) else { return }
-        kvs.set(data, forKey: Self.progressKey)
-        defaults.set(data, forKey: Self.progressKey)
+        for (provider, group) in Dictionary(grouping: entries, by: \.providerKey) {
+            guard let data = try? JSONEncoder().encode(group) else { continue }
+            kvs.set(data, forKey: Self.prefix + provider)
+            defaults.set(data, forKey: Self.prefix + provider)
+        }
+    }
+
+    /// Splits the single list older versions kept into per-provider keys.
+    private func migrate() {
+        let legacy = decode(kvs.data(forKey: Self.legacyKey) ?? defaults.data(forKey: Self.legacyKey))
+        guard !legacy.isEmpty else { return }
+        let merged = PlaybackProgress.merged(legacy, into: Dictionary(load().map { ($0.key, $0) },
+                                                                        uniquingKeysWith: { first, _ in first }))
+        save(Array(merged.values))
+        kvs.removeObject(forKey: Self.legacyKey)
+        defaults.removeObject(forKey: Self.legacyKey)
+    }
+
+    private func decode(_ data: Data?) -> [PlaybackProgress] {
+        guard let data, let entries = try? JSONDecoder().decode([PlaybackProgress].self, from: data) else { return [] }
+        return entries
     }
 }
