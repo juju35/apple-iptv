@@ -7,8 +7,8 @@ struct ChannelList: View {
     /// The channel shown in the info panel, marked in the list (large screens).
     let highlightedID: String?
     let onSelect: (MediaItem) -> Void
-    /// Apple TV: the channel the focus rests on, once it stops moving.
     // swiftlint:disable:next unused_declaration
+    /// Apple TV: the channel the focus rests on, once it stops moving.
     var onFocusRest: (MediaItem) -> Void = { _ in }
 
     var body: some View {
