@@ -41,7 +41,12 @@ enum MainTab: Hashable {
 }
 
 struct MainTabView: View {
+    #if os(tvOS)
+    // No Settings tab on Apple TV (see `showingSettings`).
     @State private var tab: MainTab = Demo.isOn && Demo.screen.tab != .settings ? Demo.screen.tab : .home
+    #else
+    @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
+    #endif
     /// Bumped when a tab is left, so it comes back reset (scroll, filters, selection). Artwork stays
     /// in `ImageLoader`'s memory cache and shows again at once.
     @State private var resets: [MainTab: Int] = [:]
