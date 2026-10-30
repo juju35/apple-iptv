@@ -14,9 +14,12 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
+                    #if !os(tvOS)
+                    // Apple TV opens straight onto the rows: no featured title.
                     if let hero = heroItem {
                         HeroBanner(item: hero) { selectedItem = hero }
                     }
+                    #endif
 
                     if store.isLoading {
                         ProgressView().frame(maxWidth: .infinity).padding(.top, 40)
