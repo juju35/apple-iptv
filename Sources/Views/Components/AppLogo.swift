@@ -11,11 +11,11 @@ struct AppLogo: View {
         Canvas { context, canvasSize in
             // Geometry in the icon's 1024-point space, cropped to the glyph (x 180…844, y 234…772).
             let scale = canvasSize.width / 664
-            func rect(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
-                CGRect(x: (x - 180) * scale, y: (y - 234) * scale, width: width * scale, height: height * scale)
+            func rect(_ left: CGFloat, _ top: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
+                CGRect(x: (left - 180) * scale, y: (top - 234) * scale, width: width * scale, height: height * scale)
             }
-            func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-                CGPoint(x: (x - 180) * scale, y: (y - 234) * scale)
+            func point(_ left: CGFloat, _ top: CGFloat) -> CGPoint {
+                CGPoint(x: (left - 180) * scale, y: (top - 234) * scale)
             }
             let red = GraphicsContext.Shading.color(Theme.accent)
             let screen = Path(roundedRect: rect(196, 250, 632, 430), cornerRadius: 104 * scale, style: .continuous)
