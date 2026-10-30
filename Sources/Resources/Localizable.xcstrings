@@ -164,28 +164,6 @@
         }
       }
     },
-    "12 hours" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "12 Stunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "12 horas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "12 heures"
-          }
-        }
-      }
-    },
     "3 days" : {
       "localizations" : {
         "de" : {
@@ -248,6 +226,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "6 heures"
+          }
+        }
+      }
+    },
+    "12 hours" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 Stunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 horas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 heures"
           }
         }
       }
@@ -1135,28 +1135,6 @@
         }
       }
     },
-    "LIVE" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LIVE"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EN DIRECTO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DIRECT"
-          }
-        }
-      }
-    },
     "Live" : {
       "localizations" : {
         "de" : {
@@ -1175,6 +1153,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Direct"
+          }
+        }
+      }
+    },
+    "LIVE" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LIVE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EN DIRECTO"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DIRECT"
           }
         }
       }
@@ -1994,6 +1994,7 @@
       }
     },
     "Recently Watched Channels" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
