@@ -11,8 +11,7 @@ struct HomeView: View {
             ?? store.liveItems.first
     }
 
-    /// The lists chosen in Settings › Home lists, else all the movies / series then (movies) the first
-    /// six lists.
+    /// The lists chosen in Settings › Home lists, else the first six movie lists and all the series.
     @ViewBuilder
     private func listRows(_ kind: MediaKind) -> some View {
         let items = store.items(for: kind)
@@ -26,9 +25,10 @@ struct HomeView: View {
                     }
                 }
             } else {
-                MediaRow(title: kind == .movie ? String(localized: "Movies") : String(localized: "Series"),
-                         items: Array(items.prefix(25))) { selectedItem = $0 }
-                if kind == .movie {
+                if kind == .series {
+                    MediaRow(title: String(localized: "Series"), items: Array(items.prefix(25))) { selectedItem = $0 }
+                } else {
+                    // No catch-all "Movies" row: the first lists say more.
                     ForEach(store.movieCategories.prefix(6)) { category in
                         let rowItems = items.filter { $0.belongs(to: category.id) }
                         if !rowItems.isEmpty {
