@@ -19,12 +19,16 @@ protocol IPTVClient {
     /// Called every 30 seconds while something plays: Stalker portals cut the stream of a box that
     /// stops reporting in.
     func keepAlive() async
+    /// A movie's summary when the lists don't carry it (Xtream's `get_vod_info`).
+    func plot(for item: MediaItem) async throws -> String?
 }
 
 extension IPTVClient {
     var streamHeaders: [String: String] { [:] }
 
     func keepAlive() async {}
+
+    func plot(for item: MediaItem) async throws -> String? { item.plot }
 
     func fullEPG(for channels: [MediaItem]) async throws -> [String: [EPGEntry]] { [:] }
 }

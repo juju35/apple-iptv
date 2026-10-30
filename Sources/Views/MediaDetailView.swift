@@ -10,6 +10,8 @@ struct MediaDetailView: View {
     let item: MediaItem
 
     @State private var detail: SeriesDetail?
+    /// Fetched when the list didn't carry it (Xtream movies, some series).
+    @State private var loadedPlot: String?
     @State private var selectedSeason: Int?
     @State private var epg: [EPGEntry] = []
     @State private var playback: PlaybackRequest?
@@ -31,7 +33,7 @@ struct MediaDetailView: View {
 
                     primaryActions
 
-                    if let plot = item.plot, !plot.isEmpty {
+                    if let plot = displayedPlot {
                         Text(plot).foregroundStyle(Theme.textSecondary)
                     }
 
@@ -284,11 +286,19 @@ struct MediaDetailView: View {
 // MARK: - Actions
 
 extension MediaDetailView {
+    /// The list's summary, else the one fetched with the details.
+    var displayedPlot: String? {
+        [item.plot, detail?.item.plot, loadedPlot].compactMap { $0 }.first { !$0.isEmpty }
+    }
+
     private func loadDetails() async {
         guard let provider = store.selectedProvider else { return }
         let client = store.client(for: provider)
         if item.kind == .series {
             detail = try? await client.seriesDetail(for: item)
+        }
+        if item.kind == .movie, item.plot?.isEmpty ?? true {
+            loadedPlot = try? await client.plot(for: item)
         }
         if item.kind == .live {
             let cached = guide.entries(for: item).filter { $0.end > Date() }
@@ -377,7 +387,7 @@ extension MediaDetailView {
                             .font(.callout.weight(.medium))
                             .foregroundStyle(.white.opacity(0.75))
                     }
-                    if let plot = item.plot, !plot.isEmpty {
+                    if let plot = displayedPlot {
                         Text(plot)
                             .font(.callout)
                             .foregroundStyle(.white.opacity(0.8))

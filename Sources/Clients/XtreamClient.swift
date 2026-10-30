@@ -122,12 +122,30 @@ final class XtreamClient: IPTVClient {
         }
     }
 
+    /// `get_vod_streams` carries no summary: `get_vod_info` has it.
+    func plot(for item: MediaItem) async throws -> String? {
+        if let plot = item.plot, !plot.isEmpty { return plot }
+        guard item.kind == .movie else { return nil }
+        let json = try await fetchJSON(action: "get_vod_info",
+                                       extra: [URLQueryItem(name: "vod_id", value: item.playbackRef)])
+        let info = (json as? [String: Any])?["info"] as? [String: Any]
+        return Self.summary(in: info)
+    }
+
+    private static func summary(in info: [String: Any]?) -> String? {
+        let text = (info?["plot"] as? String) ?? (info?["description"] as? String)
+        return text.flatMap { $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : $0 }
+    }
+
     func seriesDetail(for item: MediaItem) async throws -> SeriesDetail {
         let json = try await fetchJSON(action: "get_series_info",
                                        extra: [URLQueryItem(name: "series_id", value: item.playbackRef)])
         guard let dict = json as? [String: Any] else {
             return SeriesDetail(item: item, seasons: [:])
         }
+        // The series' own summary, when its list entry had none.
+        var item = item
+        if item.plot?.isEmpty ?? true { item.plot = Self.summary(in: dict["info"] as? [String: Any]) }
         // Panels send `episodes` either as {"1": [...], "2": [...]} or as an array of season arrays.
         let groups: [(key: Int?, list: [[String: Any]])]
         if let byKey = dict["episodes"] as? [String: [[String: Any]]] {
