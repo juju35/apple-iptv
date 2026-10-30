@@ -168,7 +168,12 @@ struct ProviderMenu: View {
             }
             if let showSettings {
                 Button(action: showSettings.action) {
+                    #if os(tvOS)
+                    // Settings live here on Apple TV, not in the tab bar.
+                    Label("Settings", systemImage: "gearshape")
+                    #else
                     Label("Manage Providers", systemImage: "gearshape")
+                    #endif
                 }
             }
         } label: {

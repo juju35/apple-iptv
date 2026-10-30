@@ -41,10 +41,14 @@ enum MainTab: Hashable {
 }
 
 struct MainTabView: View {
-    @State private var tab: MainTab = Demo.isOn ? Demo.screen.tab : .home
+    @State private var tab: MainTab = Demo.isOn && Demo.screen.tab != .settings ? Demo.screen.tab : .home
     /// Bumped when a tab is left, so it comes back reset (scroll, filters, selection). Artwork stays
     /// in `ImageLoader`'s memory cache and shows again at once.
     @State private var resets: [MainTab: Int] = [:]
+    #if os(tvOS)
+    /// Screenshot mode: `-demoScreen settings` opens it.
+    @State private var showingSettings = Demo.isOn && Demo.screen.tab == .settings
+    #endif
     #if os(macOS)
     /// Player shown over the whole window: macOS sheets can't fill it.
     @State private var windowPlayback: PlaybackRequest?
@@ -75,10 +79,13 @@ struct MainTabView: View {
                 .id(resets[.series, default: 0])
                 .tabItem { Label("Series", systemImage: "play.rectangle.on.rectangle") }
                 .tag(MainTab.series)
+            #if !os(tvOS)
+            // Apple TV opens Settings from the provider menu: the tab bar keeps to content.
             SettingsView()
                 .id(resets[.settings, default: 0])
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(MainTab.settings)
+            #endif
         }
         .brandTint()
         .onChange(of: tab) { left, _ in resets[left, default: 0] += 1 }
@@ -86,7 +93,12 @@ struct MainTabView: View {
         .tvProviderSwitcher(isShown: [.home, .live, .movies, .series].contains(tab))
         #endif
         .background(Theme.background)
+        #if os(tvOS)
+        .environment(\.showSettings, ShowSettingsAction { showingSettings = true })
+        .fullScreenCover(isPresented: $showingSettings) { SettingsView() }
+        #else
         .environment(\.showSettings, ShowSettingsAction { tab = .settings })
+        #endif
         #if os(macOS)
         .environment(\.presentPlayer, PresentPlayerAction { windowPlayback = $0 })
         .overlay {
