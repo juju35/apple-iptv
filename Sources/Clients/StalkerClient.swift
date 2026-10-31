@@ -80,10 +80,9 @@ final class StalkerClient: IPTVClient {
     func keepAlive() async {
         let extra = [URLQueryItem(name: "init", value: "0"), URLQueryItem(name: "cur_play_type", value: "1"),
                      URLQueryItem(name: "event_active_id", value: "0")]
-        if (try? await fetchJS(type: "watchdog", action: "get_events", extra: extra)) == nil {
-            // An expired token: log in again so the next call goes through.
-            try? await authenticate()
-        }
+        // Fire and forget: logging in again here (as it first did on a failed watchdog) hands out a
+        // new token, which many portals take as a new box and cut the stream and requests of.
+        _ = try? await fetchJS(type: "watchdog", action: "get_events", extra: extra)
     }
 
     private func ensureToken() async throws {
