@@ -2,6 +2,8 @@
 
 # AppleIPTV
 
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/julienstep9)
+
 Netflix-style IPTV client for **iOS, macOS and Apple TV (tvOS)**, built with SwiftUI and AVKit.
 
 Supports two provider protocols:
@@ -95,3 +97,9 @@ to TestFlight. The build number is the commit count.
 ## License
 
 MIT — © juju35
+
+## Support
+
+If you find this project useful, you can support its development:
+
+<a href="https://buymeacoffee.com/julienstep9"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="50"></a>
