@@ -2,6 +2,8 @@
 
 # AppleIPTV
 
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/julienstep9)
+
 Netflix-style IPTV client for **iOS, macOS and Apple TV (tvOS)**, built with SwiftUI and AVKit.
 
 Supports two provider protocols:
