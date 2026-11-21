@@ -15,8 +15,8 @@
   au toucher et au survol
 
 ### Fixed
-- iPhone Duo en paysage : le sélecteur de fournisseur passe sous le bouton Recherche de la colonne latérale, qui le
-  recouvrait
+- iPhone Duo en paysage : le sélecteur de fournisseur passe juste au-dessus de la barre d'onglets latérale ; sous
+  les icônes réseau, la Dynamic Island le recouvrait
 
 ## 1.0.0
 

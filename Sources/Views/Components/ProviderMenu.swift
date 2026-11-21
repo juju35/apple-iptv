@@ -52,16 +52,25 @@ extension View {
 
 #if os(iOS)
 /// The switcher in the toolbar, except on iPhone Duo in landscape, where the status bar and the tab bar
-/// run down the sides: under the Search button of the status column when the status bar shows on the
-/// trailing edge, else above the side tab bar.
+/// run down the sides: then just above the side tab bar, centred on it. It follows the bar, never the
+/// status column, whose Dynamic Island grows and moves (and covered it when it sat under the icons).
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
-    /// Where the switcher's centre goes, in window coordinates (as measured on screenshots), when it
-    /// leaves the toolbar.
+    @EnvironmentObject private var store: AppStore
+    /// Where the switcher's centre goes, in window coordinates, when it leaves the toolbar.
     @State private var sideCentre: CGPoint?
 
     @State private var viewInsets = EdgeInsets()
     @Environment(\.scenePhase) private var scenePhase
+
+    /// The floating side tab bar, measured on screenshots (UIKit's `UITabBar` isn't where it is drawn):
+    /// pinned 25 pt above the bottom edge, 52 pt per tab, centred 48 pt from the screen edge.
+    private static let barBottomMargin: CGFloat = 25
+    private static let barItemHeight: CGFloat = 52
+    private static let barCentreInset: CGFloat = 48
+    /// Between the bar's top and the switcher's bubble (30 pt avatar + 8 pt padding around).
+    private static let gap: CGFloat = 10
+    private static let bubbleRadius: CGFloat = 23
 
     /// At launch the scene isn't active yet when the first layout reads it: take it anyway (it used to
     /// return nil, leaving the switcher in the toolbar until the next layout).
@@ -75,36 +84,35 @@ private struct ProviderToolbarModifier: ViewModifier {
     /// Only one side inset: a notched iPhone in landscape has them on both. The window's insets count too:
     /// the view's own drop to zero once Home hides its navigation bar and runs under the status bar,
     /// which sent the switcher back to the (hidden) toolbar.
-    private static func sideCentre(for viewInsets: EdgeInsets) -> CGPoint? {
+    private static func sideCentre(for viewInsets: EdgeInsets, tabCount: Int) -> CGPoint? {
         guard let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else { return nil }
         let leading = max(viewInsets.leading, window.safeAreaInsets.left)
         let trailing = max(viewInsets.trailing, window.safeAreaInsets.right)
         guard (trailing > 40) != (leading > 40) else { return nil }
-        let insets = EdgeInsets(top: 0, leading: leading, bottom: 0, trailing: trailing)
         let bounds = window.bounds
-        let statusBarShown = scene.statusBarManager?.isStatusBarHidden == false
-        if insets.trailing > 40 && statusBarShown {
-            // In the status column, under the system's Search button, itself under the network icons
-            // (measured on 3x screenshots: UIKit reports the column as a 2 pt strip at the top). The cover
-            // screen (portrait) sets them lower.
-            let isCoverScreen = bounds.height > bounds.width
-            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 250 : 203)
-        }
-        // At the top of the black band holding the side tab bar, above it and centred on it (measured on
-        // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
-        // Centred on the tab bar (48 pt from the edge, measured on 3x screenshots). On the left the front
-        // camera sits in the top corner, so the switcher goes lower, just above the tab bar.
-        return CGPoint(x: insets.leading > 40 ? 48 : bounds.maxX - 48, y: insets.leading > 40 ? 146 : 40)
+        let barTop = bounds.maxY - barBottomMargin - CGFloat(tabCount) * barItemHeight
+        return CGPoint(x: leading > 40 ? barCentreInset : bounds.maxX - barCentreInset,
+                       y: barTop - gap - bubbleRadius)
+    }
+
+    /// Home, Live TV, Settings, and Movies and Series when the provider has them.
+    private var tabCount: Int {
+        3 + [MediaKind.movie, .series].filter { !store.missingKinds.contains($0) }.count
+    }
+
+    private func updateSideCentre() {
+        sideCentre = Self.sideCentre(for: viewInsets, tabCount: tabCount)
     }
 
     func body(content: Content) -> some View {
         content
             .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) {
                 viewInsets = $0
-                sideCentre = Self.sideCentre(for: $0)
+                updateSideCentre()
             }
             // The window's insets can settle after the first layout (launch, switching screens).
-            .onChange(of: scenePhase) { sideCentre = Self.sideCentre(for: viewInsets) }
+            .onChange(of: scenePhase) { updateSideCentre() }
+            .onChange(of: store.missingKinds) { updateSideCentre() }
             .toolbar {
                 if sideCentre == nil {
                     ToolbarItem(placement: .primaryAction) {
