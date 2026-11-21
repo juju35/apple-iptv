@@ -133,8 +133,16 @@ shoot_duo() {
   runtimes=$(xcrun simctl list runtimes -j | python3 -c '
 import json, sys
 ids = [r["identifier"] for r in json.load(sys.stdin)["runtimes"] if r.get("isAvailable") and r["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-")]
-ok = [i for i in ids if tuple(map(int, i.rsplit("iOS-", 1)[1].split("-")[:2])) >= (27, 1)]
-print("\n".join(sorted(ok, key=lambda i: tuple(map(int, i.rsplit("iOS-", 1)[1].split("-"))), reverse=True)))')
+def version(i):
+    # "iOS-27-1" or a device runtime such as "iOS-27-1-iPhone19…": the leading numbers only.
+    parts = []
+    for p in i.rsplit("iOS-", 1)[1].split("-"):
+        if not p.isdigit():
+            break
+        parts.append(int(p))
+    return tuple(parts)
+ok = [i for i in ids if version(i)[:2] >= (27, 1)]
+print("\n".join(sorted(ok, key=version, reverse=True)))')
   if [ -z "$runtimes" ] || ! command -v duoctl >/dev/null; then
     echo "No iOS 27.1 runtime or no duoctl: no iPhone Duo screenshots"
     return 0
