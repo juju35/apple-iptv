@@ -85,6 +85,13 @@ launch() {
   local attempt udid="$1" screen="$2"
   xcrun simctl terminate "$udid" "$BUNDLE" >/dev/null 2>&1 || true
   for attempt in 1 2 3 4 5; do
+    # The iOS 27.2 simulator sometimes shuts itself down after a failed launch ("Unable to lookup in current
+    # state: Shutdown"): booted again before the next try.
+    if ! xcrun simctl list devices booted | grep -q "$udid"; then
+      echo "$udid shut down, booting it again"
+      (trap - ERR; xcrun simctl boot "$udid" 2>/dev/null) || true
+      xcrun simctl bootstatus "$udid" -b >/dev/null
+    fi
     if xcrun simctl launch "$udid" "$BUNDLE" -demo YES -demoScreen "$screen" \
       -AppleLanguages '(en)' -AppleLocale en_US >/dev/null; then
       return 0
@@ -95,12 +102,23 @@ launch() {
   return 1
 }
 
-# shoot <device type> <folder> <app> <screen>...
+# The plain iOS 27.1 runtime when installed, for the iPhone and the iPad: the newer 27.2 one the image brings
+# crashes on installs and launches. Empty (the default runtime) otherwise.
+ios_runtime() {
+  xcrun simctl list runtimes -j | python3 -c '
+import json, sys
+ids = [r["identifier"] for r in json.load(sys.stdin)["runtimes"] if r.get("isAvailable")]
+print("com.apple.CoreSimulator.SimRuntime.iOS-27-1" if "com.apple.CoreSimulator.SimRuntime.iOS-27-1" in ids else "")'
+}
+
+# shoot <device type> <folder> <app> <runtime or ""> <screen>...
 shoot() {
-  local type="$1" dir="$OUT/$2" app="$3"
-  shift 3
+  local type="$1" dir="$OUT/$2" app="$3" runtime="$4"
+  shift 4
   local udid n=1 screen file
-  udid=$(xcrun simctl create "IPTV screenshots" "$type")
+  # The default runtime when the device type isn't available on the one asked for.
+  udid=$(xcrun simctl create "IPTV screenshots" "$type" ${runtime:+"$runtime"} 2>/dev/null) ||
+    udid=$(xcrun simctl create "IPTV screenshots" "$type")
   trap 'xcrun simctl delete "$udid" >/dev/null 2>&1 || true' RETURN
   prepare "$udid" "$dir" "$app"
   for screen in "$@"; do
@@ -188,10 +206,10 @@ only="${ONLY:-iphone ipad duo tv}"
 for part in ${only//,/ }; do
   case "$part" in
     build) ios_app >/dev/null; tv_app >/dev/null; exit 0 ;;
-    iphone) shoot "$IPHONE" iphone-6.9 "$(ios_app)" home movies detail live settings ;;
-    ipad) shoot "$IPAD" ipad-13 "$(ios_app)" home detail ;;
+    iphone) shoot "$IPHONE" iphone-6.9 "$(ios_app)" "$(ios_runtime)" home movies detail live settings ;;
+    ipad) shoot "$IPAD" ipad-13 "$(ios_app)" "$(ios_runtime)" home detail ;;
     duo) shoot_duo ;;
-    tv) shoot "$TV" apple-tv "$(tv_app)" home movies detail live search ;;
+    tv) shoot "$TV" apple-tv "$(tv_app)" "" home movies detail live search ;;
     *) echo "Unknown ONLY part: $part" >&2; exit 2 ;;
   esac
 done
