@@ -140,16 +140,19 @@ struct LiveTVView: View {
         }
     }
 
+    /// The chips scroll with the channels: with them above the list, the navigation bar didn't find the
+    /// scroll view and left an empty gap in place of the search field.
     private var compactLayout: some View {
-        VStack(spacing: 0) {
-            CategoryChips(options: groups, selection: $group)
-                .padding(.vertical, 8)
-            channelList
-        }
+        channelList(header: AnyView(CategoryChips(options: groups, selection: $group).padding(.vertical, 8)))
     }
 
     private var channelList: some View {
-        ChannelList(channels: channels, highlightedID: isWide ? highlightedID : nil, onSelect: select) { channel in
+        channelList(header: nil)
+    }
+
+    private func channelList(header: AnyView?) -> some View {
+        ChannelList(channels: channels, highlightedID: isWide ? highlightedID : nil, onSelect: select,
+                    header: header) { channel in
             highlighted = channel
             playError = nil
         }

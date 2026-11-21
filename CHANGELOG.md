@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+- iOS : le clavier se masque sur tous les écrans (clavier scindé de l'iPhone Duo, clavier flottant de l'iPad) — toucher
+  hors du champ, faire défiler, touche Rechercher ou bouton au-dessus du clavier
+- iPhone : le champ de recherche de Live TV s'affiche de nouveau (un espace vide le remplaçait) ; les catégories
+  défilent avec les chaînes
+
 ## 1.1.0
 
 ### Changed
