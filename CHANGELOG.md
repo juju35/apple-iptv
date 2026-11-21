@@ -14,6 +14,10 @@
   la bannière et de la fiche en cache (affiche de la rangée affichée tout de suite), affiches qui réagissent
   au toucher et au survol
 
+### Fixed
+- iPhone Duo en paysage : le sélecteur de fournisseur passe en haut à droite de la page ; dans la colonne latérale,
+  le bouton Recherche de la barre d'onglets le recouvrait
+
 ## 1.0.0
 
 ### New

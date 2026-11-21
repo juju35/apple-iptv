@@ -52,13 +52,12 @@ extension View {
 
 #if os(iOS)
 /// The switcher in the toolbar, except on iPhone Duo in landscape, where the status bar and the tab bar
-/// run down the sides: under the network icons when the status bar shows on the trailing edge, else
-/// under the side tab bar.
+/// run down the sides: then at the top right of the page, as Netflix places the profile. (It used to sit
+/// in the side columns, under the network icons or above the side tab bar, where the tab bar's Search
+/// button now covers it.)
 private struct ProviderToolbarModifier: ViewModifier {
     let barHasTitle: Bool
-    /// Where the switcher's centre goes, in window coordinates (as measured on screenshots), when it
-    /// leaves the toolbar.
-    @State private var sideCentre: CGPoint?
+    @State private var isSideLayout = false
 
     @State private var viewInsets = EdgeInsets()
     @Environment(\.scenePhase) private var scenePhase
@@ -73,57 +72,38 @@ private struct ProviderToolbarModifier: ViewModifier {
     }
 
     /// Only one side inset: a notched iPhone in landscape has them on both. The window's insets count too:
-    /// the view's own drop to zero once Home hides its navigation bar and runs under the status bar,
-    /// which sent the switcher back to the (hidden) toolbar.
-    private static func sideCentre(for viewInsets: EdgeInsets) -> CGPoint? {
-        guard let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else { return nil }
+    /// the view's own drop to zero once Home hides its navigation bar and runs under the status bar.
+    private static func isSideLayout(for viewInsets: EdgeInsets) -> Bool {
+        guard let scene = activeScene(), let window = scene.keyWindow ?? scene.windows.first else { return false }
         let leading = max(viewInsets.leading, window.safeAreaInsets.left)
         let trailing = max(viewInsets.trailing, window.safeAreaInsets.right)
-        guard (trailing > 40) != (leading > 40) else { return nil }
-        let insets = EdgeInsets(top: 0, leading: leading, bottom: 0, trailing: trailing)
-        let bounds = window.bounds
-        let statusBarShown = scene.statusBarManager?.isStatusBarHidden == false
-        if insets.trailing > 40 && statusBarShown {
-            // Under the status column's network icons, measured on screenshots (UIKit reports the column
-            // as a 2 pt strip at the top); the cover screen (portrait) sets them lower.
-            let isCoverScreen = bounds.height > bounds.width
-            // Inner screen measured on 2x screenshots, cover screen on 3x ones; y leaves room for the bubble.
-            return CGPoint(x: bounds.maxX - (isCoverScreen ? 48 : 51), y: isCoverScreen ? 193 : 144)
-        }
-        // At the top of the black band holding the side tab bar, above it and centred on it (measured on
-        // screenshots: UIKit's `UITabBar` isn't where the floating bar is drawn).
-        // Centred on the tab bar (48 pt from the edge, measured on 3x screenshots). On the left the front
-        // camera sits in the top corner, so the switcher goes lower, just above the tab bar.
-        return CGPoint(x: insets.leading > 40 ? 48 : bounds.maxX - 48, y: insets.leading > 40 ? 146 : 40)
+        return (trailing > 40) != (leading > 40)
     }
 
     func body(content: Content) -> some View {
         content
             .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) {
                 viewInsets = $0
-                sideCentre = Self.sideCentre(for: $0)
+                isSideLayout = Self.isSideLayout(for: $0)
             }
             // The window's insets can settle after the first layout (launch, switching screens).
-            .onChange(of: scenePhase) { sideCentre = Self.sideCentre(for: viewInsets) }
+            .onChange(of: scenePhase) { isSideLayout = Self.isSideLayout(for: viewInsets) }
             .toolbar {
-                if sideCentre == nil {
+                if !isSideLayout {
                     ToolbarItem(placement: .primaryAction) {
                         ProviderMenu()
                     }
                 }
             }
-            .toolbar(sideCentre != nil && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
-            .overlay {
-                if let sideCentre {
-                    // The view doesn't start at the window's origin (the side tab bar takes room):
-                    // convert from window coordinates.
-                    GeometryReader { proxy in
-                        let origin = proxy.frame(in: .global).origin
-                        ProviderMenu()
-                            .sideBubble()
-                            .position(x: sideCentre.x - origin.x, y: sideCentre.y - origin.y)
-                    }
-                    .ignoresSafeArea()
+            .toolbar(isSideLayout && !barHasTitle ? .hidden : .automatic, for: .navigationBar)
+            .overlay(alignment: .topTrailing) {
+                if isSideLayout {
+                    // Level with the navigation bar's title where the page has one.
+                    ProviderMenu()
+                        .sideBubble()
+                        .padding(.top, 10)
+                        .padding(.trailing, 16)
+                        .ignoresSafeArea(.container, edges: barHasTitle ? Edge.Set.top : [])
                 }
             }
     }
