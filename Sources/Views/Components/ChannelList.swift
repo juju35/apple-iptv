@@ -7,6 +7,9 @@ struct ChannelList: View {
     /// The channel shown in the info panel, marked in the list (large screens).
     let highlightedID: String?
     let onSelect: (MediaItem) -> Void
+    /// Scrolls with the channels (the category chips on iPhone): the page's root stays the scroll view, which
+    /// the navigation bar needs to show its search field.
+    var header: AnyView?
     /// Apple TV: the channel the focus rests on, once it stops moving.
     var onFocusRest: (MediaItem) -> Void = { _ in } // swiftlint:disable:this unused_declaration
 
@@ -21,19 +24,22 @@ struct ChannelList: View {
 
     private var list: some View {
         ScrollView {
-            LazyVStack(spacing: 4) {
-                ForEach(channels) { channel in
-                    Button {
-                        onSelect(channel)
-                    } label: {
-                        ChannelRow(channel: channel, isHighlighted: channel.id == highlightedID)
+            VStack(spacing: 0) {
+                header
+                LazyVStack(spacing: 4) {
+                    ForEach(channels) { channel in
+                        Button {
+                            onSelect(channel)
+                        } label: {
+                            ChannelRow(channel: channel, isHighlighted: channel.id == highlightedID)
+                        }
+                        .rowButtonStyle()
+                        .favoriteContextMenu(channel)
                     }
-                    .rowButtonStyle()
-                    .favoriteContextMenu(channel)
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 8)
         }
     }
 }
