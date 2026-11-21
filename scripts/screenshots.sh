@@ -67,14 +67,24 @@ tv_app() {
   echo "$TV_APP"
 }
 
-# prepare <udid> <folder> <app>: English system, 9:41 status bar (not on tvOS), the app installed.
+# prepare <udid> <folder> <app>: English system, 9:41 status bar (not on tvOS), the app installed. CoreSimulator can
+# crash while installing ("Invalid device state", "server died", simctl exits with 149), more often on a newly
+# booted device: the device is then booted again and the install tried again, a few times.
 prepare() {
-  local udid="$1" dir="$2" app="$3"
-  xcrun simctl boot "$udid"
-  xcrun simctl bootstatus "$udid" -b >/dev/null
-  xcrun simctl status_bar "$udid" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 \
-    --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100 >/dev/null 2>&1 || true
-  xcrun simctl install "$udid" "$app"
+  local attempt udid="$1" dir="$2" app="$3"
+  for attempt in 1 2 3; do
+    (trap - ERR; xcrun simctl boot "$udid" 2>/dev/null) || true
+    xcrun simctl bootstatus "$udid" -b >/dev/null
+    xcrun simctl status_bar "$udid" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 \
+      --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100 >/dev/null 2>&1 || true
+    if (trap - ERR; xcrun simctl install "$udid" "$app"); then
+      break
+    fi
+    [ "$attempt" -lt 3 ] || return 1
+    echo "Install $attempt failed on $udid, booting it again"
+    (trap - ERR; xcrun simctl shutdown "$udid" 2>/dev/null) || true
+    sleep 10
+  done
   rm -rf "$dir"
   mkdir -p "$dir"
 }
