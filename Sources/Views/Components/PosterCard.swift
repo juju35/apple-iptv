@@ -7,6 +7,9 @@ struct PosterCard: View {
     var progress: Double?
     /// Second caption line, e.g. the episode being watched ("S1 E3").
     var subtitle: String?
+    var width: CGFloat = Theme.posterWidth
+    /// The name under the poster (the grids); Home's rows show the artwork alone, as Netflix does.
+    var showsTitle = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -36,15 +39,18 @@ struct PosterCard: View {
                     }
                 }
                 .lockupArtwork()
-            Text(item.name)
-                .font(Self.titleFont)
-                .lineLimit(1)
-                .foregroundStyle(Self.titleColor)
-                .frame(width: Theme.posterWidth, alignment: .leading)
+            if showsTitle {
+                Text(item.name)
+                    .font(Self.titleFont)
+                    .lineLimit(1)
+                    .foregroundStyle(Self.titleColor)
+                    .frame(width: width, alignment: .leading)
+            }
             if let subtitle {
                 Text(subtitle)
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(Theme.textSecondary.opacity(0.8))
+                    .frame(width: width, alignment: .leading)
             }
         }
     }
@@ -55,7 +61,7 @@ struct PosterCard: View {
         } placeholder: {
             placeholder
         }
-        .frame(width: Theme.posterWidth, height: Theme.posterWidth / Theme.posterAspect)
+        .frame(width: width, height: width / Theme.posterAspect)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius))
         .overlay(
             RoundedRectangle(cornerRadius: Theme.cardCornerRadius)
@@ -77,24 +83,42 @@ struct PosterCard: View {
     #endif
 }
 
+/// A titled shelf of posters. Netflix-style: the artwork alone, no captions (channels keep their names), and a
+/// "See All" header that opens the whole list where there is one.
 struct MediaRow: View {
     let title: String
     let items: [MediaItem]
+    var posterWidth: CGFloat = Theme.posterWidth
+    /// Captions under the posters; channels always keep theirs (a logo alone doesn't say much).
+    var showsTitles = false
+    /// Numbers the posters 1, 2, 3… in large digits (Top 10).
+    var isRanked = false
+    var onSeeAll: (() -> Void)?
     let onSelect: (MediaItem) -> Void
+
+    #if os(tvOS)
+    @Environment(\.lockupFocusAction) private var focusAction
+    @FocusState private var focusedID: String?
+    #endif
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(.title3.weight(.semibold))
-                .padding(.horizontal)
+            RowHeader(title: title, onSeeAll: onSeeAll)
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: LockupMetrics.rowSpacing) {
-                    ForEach(items) { item in
+                LazyHStack(alignment: .top, spacing: isRanked ? LockupMetrics.rowSpacing * 0.6 : LockupMetrics.rowSpacing) {
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         Button { onSelect(item) } label: {
-                            PosterCard(item: item)
+                            if isRanked {
+                                RankedPosterCard(rank: index + 1, item: item, width: posterWidth)
+                            } else {
+                                PosterCard(item: item, width: posterWidth, showsTitle: showsTitles || item.kind == .live)
+                            }
                         }
                         .lockupButtonStyle()
                         .favoriteContextMenu(item)
+                        #if os(tvOS)
+                        .focused($focusedID, equals: item.id)
+                        #endif
                     }
                 }
                 .padding(.horizontal)
@@ -104,29 +128,79 @@ struct MediaRow: View {
             }
             .scrollClipDisabled()
         }
+        #if os(tvOS)
+        .onChange(of: focusedID) { _, id in
+            if let id, let item = items.first(where: { $0.id == id }) { focusAction?(item) }
+        }
+        #endif
+    }
+}
+
+/// A row's title; with a destination, a button ending in a chevron (not on Apple TV, where headers
+/// aren't focusable).
+struct RowHeader: View {
+    let title: String
+    var onSeeAll: (() -> Void)?
+
+    private var label: some View {
+        Text(title)
+            .font(.title3.weight(.bold))
+            .lineLimit(1)
+    }
+
+    var body: some View {
+        Group {
+            #if os(tvOS)
+            label
+            #else
+            if let onSeeAll {
+                Button(action: onSeeAll) {
+                    HStack(spacing: 6) {
+                        label
+                        Image(systemName: "chevron.right")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("See All")
+            } else {
+                label
+            }
+            #endif
+        }
+        .padding(.horizontal)
     }
 }
 
 /// Movies and series being watched, with their progress; hidden when empty.
 struct ContinueWatchingRow: View {
     let entries: [ContinueWatchingEntry]
+    var posterWidth: CGFloat = Theme.posterWidth
     let onSelect: (MediaItem) -> Void
+
+    #if os(tvOS)
+    @Environment(\.lockupFocusAction) private var focusAction
+    @FocusState private var focusedID: String?
+    #endif
 
     var body: some View {
         if !entries.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Continue Watching")
-                    .font(.title3.weight(.semibold))
-                    .padding(.horizontal)
+                RowHeader(title: String(localized: "Continue Watching"))
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(alignment: .top, spacing: LockupMetrics.rowSpacing) {
                         ForEach(entries) { entry in
                             Button { onSelect(entry.item) } label: {
                                 PosterCard(item: entry.item, progress: entry.progress.fraction,
-                                           subtitle: entry.progress.episodeLabel)
+                                           subtitle: entry.progress.episodeLabel, width: posterWidth, showsTitle: false)
                             }
                             .lockupButtonStyle()
                             .favoriteContextMenu(entry.item, inContinueWatching: true)
+                            #if os(tvOS)
+                            .focused($focusedID, equals: entry.item.id)
+                            #endif
                         }
                     }
                     .padding(.horizontal)
@@ -136,9 +210,33 @@ struct ContinueWatchingRow: View {
                 }
                 .scrollClipDisabled()
             }
+            #if os(tvOS)
+            .onChange(of: focusedID) { _, id in
+                if let id, let entry = entries.first(where: { $0.item.id == id }) { focusAction?(entry.item) }
+            }
+            #endif
         }
     }
 }
+
+#if os(tvOS)
+/// Called with the poster that takes the focus in Home's rows, for the billboard above them.
+struct LockupFocusAction {
+    let action: (MediaItem) -> Void
+    func callAsFunction(_ item: MediaItem) { action(item) }
+}
+
+private struct LockupFocusActionKey: EnvironmentKey {
+    static let defaultValue: LockupFocusAction? = nil
+}
+
+extension EnvironmentValues {
+    var lockupFocusAction: LockupFocusAction? {
+        get { self[LockupFocusActionKey.self] }
+        set { self[LockupFocusActionKey.self] = newValue }
+    }
+}
+#endif
 
 /// Thin red bar showing how much of a video was watched.
 struct WatchProgressBar: View {

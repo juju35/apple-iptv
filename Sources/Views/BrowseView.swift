@@ -78,7 +78,7 @@ struct BrowseView: View {
                 ContinueWatchingRow(entries: store.continueWatching(kind)) { selectedItem = $0 }
                 let favorites = store.favorites(kind)
                 if !favorites.isEmpty {
-                    MediaRow(title: String(localized: "Favorites"), items: favorites) { selectedItem = $0 }
+                    MediaRow(title: String(localized: "My List"), items: favorites) { selectedItem = $0 }
                 }
             }
         }

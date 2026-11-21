@@ -11,7 +11,7 @@ extension View {
         #if os(tvOS)
         buttonStyle(.borderless)
         #else
-        buttonStyle(.plain)
+        buttonStyle(PressableCardStyle())
         #endif
     }
 
@@ -35,13 +35,23 @@ extension View {
         #endif
     }
 
-    /// The main action of a screen (Play, Resume): the brand red elsewhere, the system button on Apple TV.
+    /// The main action of a screen (Play, Resume): Netflix's white button elsewhere, the system button on Apple TV.
     @ViewBuilder
     func primaryActionStyle() -> some View {
         #if os(tvOS)
         buttonStyle(.bordered)
         #else
-        buttonStyle(.borderedProminent).tint(Theme.accent)
+        buttonStyle(PrimaryActionButtonStyle())
+        #endif
+    }
+
+    /// The actions beside it (My List, Start Over, More Info): translucent grey, the system button on Apple TV.
+    @ViewBuilder
+    func secondaryActionStyle() -> some View {
+        #if os(tvOS)
+        buttonStyle(.bordered)
+        #else
+        buttonStyle(SecondaryActionButtonStyle())
         #endif
     }
 

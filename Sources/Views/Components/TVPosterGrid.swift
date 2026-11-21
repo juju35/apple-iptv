@@ -85,7 +85,7 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
         ) { [weak self] view, _, indexPath in
             let section = self?.dataSource.sectionIdentifier(for: indexPath.section)
             let title = section == .continueWatching
-                ? String(localized: "Continue Watching") : String(localized: "Favorites")
+                ? String(localized: "Continue Watching") : String(localized: "My List")
             view.contentConfiguration = UIHostingConfiguration {
                 Text(title).font(.title3.weight(.semibold)).frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -219,11 +219,11 @@ final class TVPosterGridController: UIViewController, UICollectionViewDelegate,
         guard let indexPath = indexPaths.first, let found = item(at: indexPath) else { return nil }
         let item = found.item
         let isFavorite = content.favoriteIDs.contains(item.id)
-        let favoriteTitle = isFavorite ? String(localized: "Remove from Favorites") : String(localized: "Add to Favorites")
+        let favoriteTitle = isFavorite ? String(localized: "Remove from My List") : String(localized: "Add to My List")
         let inContinueWatching = found.section == .continueWatching
         return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
             var actions = [
-                UIAction(title: favoriteTitle, image: UIImage(systemName: isFavorite ? "heart.slash" : "heart")) { _ in
+                UIAction(title: favoriteTitle, image: UIImage(systemName: isFavorite ? "checkmark" : "plus")) { _ in
                     self?.onToggleFavorite(item)
                 },
             ]

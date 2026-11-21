@@ -19,6 +19,13 @@ enum Theme {
     static let posterAspect: CGFloat = 2.0 / 3.0
     static let cardCornerRadius: CGFloat = 10
 
+    /// Posters in Home's rows: smaller on Apple TV, so the billboard and a row and a half fit on screen.
+    #if os(tvOS)
+    static let rowPosterWidth: CGFloat = 200
+    #else
+    static let rowPosterWidth: CGFloat = posterWidth
+    #endif
+
     #if os(tvOS)
     static let posterWidth: CGFloat = 260
     static let heroHeight: CGFloat = 780

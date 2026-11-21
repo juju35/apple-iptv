@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0
+
+### Changed
+- Accueil façon Netflix : bannière plein écran sous la barre de navigation (Lecture, Ma liste, Plus d'infos),
+  titre mis en avant tiré au hasard, rangées d'affiches sans légende, Top 10 films et séries (note du
+  fournisseur) avec grands chiffres, « Tout afficher » sur chaque rangée, squelette animé pendant le chargement
+- Apple TV : billboard au-dessus des rangées qui suit l'affiche sous le focus (artwork, titre, infos, résumé)
+- Fiche détail iPhone, iPad et Mac : artwork bord à bord, titre et ligne d'infos, bouton Lecture blanc pleine
+  largeur, Reprendre au début en gris, action Ma liste ; la Lecture de la bannière démarre directement
+- Favoris des films et séries renommés « Ma liste » (+ / ✓), les chaînes gardent leurs favoris
+- Fluidité : rangées de l'accueil calculées une fois par catalogue (plus à chaque rafraîchissement), artwork de
+  la bannière et de la fiche en cache (affiche de la rangée affichée tout de suite), affiches qui réagissent
+  au toucher et au survol
+
 ## 1.0.0
 
 ### New
