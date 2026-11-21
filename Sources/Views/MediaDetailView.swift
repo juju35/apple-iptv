@@ -8,6 +8,8 @@ struct MediaDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentPlayer) private var presentPlayer
     let item: MediaItem
+    /// Starts the title as soon as the sheet opens (Home's banner Play): resume, else the first episode.
+    var autoplay = false
 
     @State private var detail: SeriesDetail?
     /// Fetched when the list didn't carry it (Xtream movies, some series).
@@ -22,46 +24,79 @@ struct MediaDetailView: View {
         #if os(tvOS)
         tvBody
             .task { await loadDetails() }
+            .task(id: detail != nil) { startIfAutoplay() }
             .fullScreenCover(item: $playback) { request in
                 PlayerView(request: request)
             }
         #else
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    header
-
-                    primaryActions
-
-                    if let plot = displayedPlot {
-                        Text(plot).foregroundStyle(Theme.textSecondary)
+                VStack(alignment: .leading, spacing: 0) {
+                    DetailBackdrop(item: item)
+                    VStack(alignment: .leading, spacing: 14) {
+                        DetailHeader(item: item)
+                        HStack(alignment: .top, spacing: 8) {
+                            VStack(spacing: 8) {
+                                primaryActions
+                                if item.kind == .series {
+                                    seriesPlayAction
+                                }
+                            }
+                            DetailMyListButton(item: item)
+                        }
+                        if let plot = displayedPlot {
+                            Text(plot)
+                                .font(.subheadline)
+                                .foregroundStyle(.white.opacity(0.85))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        if let loadError {
+                            Label(loadError, systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(.orange)
+                        }
+                        if item.kind == .live, !epg.isEmpty {
+                            epgSection
+                        }
+                        if item.kind == .series {
+                            seasonEpisodes
+                                .padding(.top, 8)
+                        }
                     }
-
-                    if let loadError {
-                        Label(loadError, systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.orange)
-                    }
-
-                    if item.kind == .live, !epg.isEmpty {
-                        epgSection
-                    }
-
-                    if item.kind == .series {
-                        episodesSection
-                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 30)
+                    // Up into the artwork's fade.
+                    .offset(y: -Self.titleOverlap)
+                    .padding(.bottom, -Self.titleOverlap)
                 }
-                .padding()
             }
-            .background { backdrop }
+            .background(Theme.background.ignoresSafeArea())
+            #if os(iOS)
+            .ignoresSafeArea(edges: .top)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            #endif
             .toolbar {
-                Button { dismiss() } label: { Image(systemName: "xmark.circle.fill") }
+                ToolbarItem(placement: Self.closePlacement) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 30, height: 30)
+                            .background(.black.opacity(0.6), in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Close")
+                }
             }
             .task { await loadDetails() }
+            .task(id: detail != nil) { startIfAutoplay() }
             .fullScreenCoverCompat(item: $playback) { request in
                 PlayerView(request: request)
             }
         }
         .preferredColorScheme(.dark)
+        #if os(macOS)
+        .frame(minWidth: 560, idealWidth: 640, minHeight: 640, idealHeight: 760)
+        #endif
         #endif
     }
 
@@ -82,69 +117,35 @@ struct MediaDetailView: View {
 
     // MARK: - Sections
 
-    /// The artwork, blurred and faded into the background, behind the whole sheet.
-    private var backdrop: some View {
-        ZStack {
-            Theme.background
-            AsyncImage(url: item.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill()
-                        .blur(radius: 50)
-                        .opacity(0.45)
-                }
-            }
-            LinearGradient(colors: [.clear, Theme.background.opacity(0.7), Theme.background],
-                           startPoint: .top, endPoint: .bottom)
-        }
-        .ignoresSafeArea()
-        .clipped()
-    }
+    #if !os(tvOS)
+    private static let titleOverlap: CGFloat = 40
+    /// Top right on iPhone and iPad, as on Netflix; where the system puts it on the Mac.
+    #if os(iOS)
+    private static let closePlacement = ToolbarItemPlacement.topBarTrailing
+    #else
+    private static let closePlacement = ToolbarItemPlacement.cancellationAction
+    #endif
+    #endif
 
-    private var header: some View {
-        HStack(alignment: .top, spacing: 16) {
-            AsyncImage(url: item.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill()
-                } else {
-                    GeneratedArtwork(title: item.name, kind: item.kind)
-                }
-            }
-            .frame(width: Theme.posterWidth, height: Theme.posterWidth / Theme.posterAspect)
-            .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius))
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(item.name).font(.title2.weight(.bold))
-                if let year = item.year, !year.isEmpty {
-                    Text(year).foregroundStyle(Theme.textSecondary)
-                }
-                if let rating = item.rating, rating > 0 {
-                    Label(String(format: "%.1f", rating), systemImage: "star.fill")
-                        .foregroundStyle(.yellow)
-                        .font(.subheadline)
-                }
-                Text(store.categoryName(item.categoryId, kind: item.kind))
-                    .font(.caption)
-                    .padding(.horizontal, 8).padding(.vertical, 3)
-                    .background(Theme.surface, in: Capsule())
-                favoriteButton
-            }
-            Spacer()
-        }
-    }
-
+    #if os(tvOS)
+    /// Channels have favorites; movies and series go to My List, as on Netflix.
     private var favoriteButton: some View {
         let isFavorite = store.isFavorite(item)
         return Button {
             store.toggleFavorite(item)
         } label: {
-            Label(isFavorite ? "In Favorites" : "Add to Favorites",
-                  systemImage: isFavorite ? "heart.fill" : "heart")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(isFavorite ? Theme.accent : .white)
+            Group {
+                if item.kind == .live {
+                    Label(isFavorite ? "In Favorites" : "Add to Favorites", systemImage: isFavorite ? "heart.fill" : "heart")
+                } else {
+                    Label(isFavorite ? "In My List" : "Add to My List", systemImage: isFavorite ? "checkmark" : "plus")
+                }
+            }
+            .font(.subheadline.weight(.semibold))
         }
         .buttonStyle(.bordered)
-        .accessibilityLabel(isFavorite ? "Remove from Favorites" : "Add to Favorites")
     }
+    #endif
 
     /// Play, or Resume + Start Over when the movie was started.
     @ViewBuilder
@@ -172,7 +173,7 @@ struct MediaDetailView: View {
                 .frame(maxWidth: Self.actionMaxWidth)
                 .padding(.vertical, 6)
         }
-        .buttonStyle(.bordered)
+        .secondaryActionStyle()
         .disabled(isResolving)
     }
 
@@ -231,12 +232,6 @@ struct MediaDetailView: View {
                 .padding(.vertical, 4)
             }
         }
-    }
-
-    @ViewBuilder
-    private var episodesSection: some View {
-        seriesPlayAction
-        seasonEpisodes
     }
 
     /// The season shown: picked by the user, else the one being watched, else the first.
@@ -303,6 +298,26 @@ extension MediaDetailView {
         if item.kind == .live {
             let cached = guide.entries(for: item).filter { $0.end > Date() }
             epg = cached.isEmpty ? ((try? await client.shortEPG(forChannelRef: item.playbackRef)) ?? []) : cached
+        }
+    }
+
+    /// Home's banner Play: the main action once the details it needs are in (a series' episodes).
+    private func startIfAutoplay() {
+        guard autoplay, playback == nil, !isResolving else { return }
+        switch item.kind {
+        case .live:
+            play(ref: item.playbackRef, ext: item.containerExtension)
+        case .movie:
+            let context = PlaybackProgressContext.movie(item)
+            play(ref: item.playbackRef, ext: item.containerExtension, progress: context,
+                 from: store.progress(for: context.key)?.position ?? 0)
+        case .series:
+            guard let detail else { return }
+            if let resumed = resumedEpisode(in: detail) {
+                playEpisode(resumed.episode)
+            } else if let season = detail.seasons.keys.min(), let first = detail.seasons[season]?.first {
+                playEpisode(first)
+            }
         }
     }
 
@@ -428,12 +443,11 @@ extension MediaDetailView {
     private var tvBackdrop: some View {
         ZStack {
             Theme.background
-            AsyncImage(url: item.posterURL) { phase in
-                if case .success(let image) = phase {
-                    image.resizable().scaledToFill().blur(radius: 20)
-                } else {
-                    GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
-                }
+            // The poster already loaded for the grid: no wait, no second download.
+            RemoteImage(url: item.posterURL) { image in
+                image.resizable().scaledToFill().blur(radius: 20)
+            } placeholder: {
+                GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: false)
             }
             .opacity(0.7)
             LinearGradient(colors: [Theme.background.opacity(0.95), Theme.background.opacity(0.4), .clear],

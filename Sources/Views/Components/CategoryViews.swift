@@ -146,10 +146,12 @@ private struct FavoriteContextMenu: ViewModifier {
             Button {
                 store.toggleFavorite(item)
             } label: {
-                if store.isFavorite(item) {
-                    Label("Remove from Favorites", systemImage: "heart.slash")
-                } else {
-                    Label("Add to Favorites", systemImage: "heart")
+                // Channels have favorites; movies and series go to My List, as on Netflix.
+                switch (item.kind == .live, store.isFavorite(item)) {
+                case (true, true): Label("Remove from Favorites", systemImage: "heart.slash")
+                case (true, false): Label("Add to Favorites", systemImage: "heart")
+                case (false, true): Label("Remove from My List", systemImage: "checkmark")
+                case (false, false): Label("Add to My List", systemImage: "plus")
                 }
             }
             if inContinueWatching {
