@@ -59,29 +59,6 @@ struct PressableCardStyle: ButtonStyle {
     }
 }
 
-/// Netflix's icon-over-caption actions under the Play button (My List).
-struct IconActionButton: View {
-    let title: LocalizedStringKey
-    let systemImage: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: systemImage)
-                    .font(.title2.weight(.semibold))
-                    .frame(height: 28)
-                    .contentTransition(.symbolEffect(.replace))
-                Text(title)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(Theme.textSecondary)
-            }
-            .frame(minWidth: 76)
-            .foregroundStyle(.white)
-        }
-        .buttonStyle(PressableCardStyle())
-    }
-}
 #endif
 
 // MARK: - Top 10

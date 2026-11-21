@@ -69,31 +69,31 @@ struct DetailHeader: View {
     }
 }
 
-/// The icons under the summary: My List (Favorites for a channel).
-struct DetailIconActions: View {
+/// My List (Favorites for a channel), a square button beside Play.
+struct DetailMyListButton: View {
     @EnvironmentObject private var store: AppStore
     let item: MediaItem
 
     var body: some View {
         let isFavorite = store.isFavorite(item)
-        let title: LocalizedStringKey
         let symbol: String
         let accessibility: LocalizedStringKey
         if item.kind == .live {
-            title = "Favorites"
             symbol = isFavorite ? "heart.fill" : "heart"
             accessibility = isFavorite ? "Remove from Favorites" : "Add to Favorites"
         } else {
-            title = "My List"
             symbol = isFavorite ? "checkmark" : "plus"
             accessibility = isFavorite ? "Remove from My List" : "Add to My List"
         }
-        return HStack(spacing: 18) {
-            IconActionButton(title: title, systemImage: symbol) {
-                store.toggleFavorite(item)
-            }
-            .accessibilityLabel(accessibility)
+        return Button { store.toggleFavorite(item) } label: {
+            Image(systemName: symbol)
+                .font(.headline)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 22)
+                .padding(.vertical, 10)
         }
+        .secondaryActionStyle()
+        .accessibilityLabel(accessibility)
         .sensoryFeedback(.selection, trigger: isFavorite)
     }
 }

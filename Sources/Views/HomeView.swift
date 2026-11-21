@@ -39,6 +39,14 @@ struct HomeView: View {
 
     private static let rowLength = 25
 
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    /// Larger posters on iPad, where the phone's leave the screen half empty.
+    private var rowPosterWidth: CGFloat { sizeClass == .regular ? 160 : Theme.rowPosterWidth }
+    #else
+    private var rowPosterWidth: CGFloat { Theme.rowPosterWidth }
+    #endif
+
     /// What the rows are built from: a new catalogue, other filters or other chosen lists.
     private struct Inputs: Hashable {
         let updatedAt: Date?
@@ -81,7 +89,7 @@ struct HomeView: View {
     private var content: some View {
         if isWaitingForCatalog {
             // In place of Home only: the tabs and the provider switcher stay.
-            HomeSkeleton(posterWidth: Theme.rowPosterWidth)
+            HomeSkeleton(posterWidth: rowPosterWidth)
         } else {
             #if os(tvOS)
             tvContent
@@ -112,19 +120,19 @@ struct HomeView: View {
             ErrorBanner(message: error) { Task { await store.reload(force: true) } }
         }
 
-        ContinueWatchingRow(entries: store.continueWatching(nil), posterWidth: Theme.rowPosterWidth) {
+        ContinueWatchingRow(entries: store.continueWatching(nil), posterWidth: rowPosterWidth) {
             selection = DetailSelection(item: $0)
         }
 
         let favorites = store.favorites(nil).filter { $0.kind != .live }
         if !favorites.isEmpty {
-            MediaRow(title: String(localized: "My List"), items: favorites, posterWidth: Theme.rowPosterWidth) {
+            MediaRow(title: String(localized: "My List"), items: favorites, posterWidth: rowPosterWidth) {
                 selection = DetailSelection(item: $0)
             }
         }
 
         ForEach(rows) { row in
-            MediaRow(title: row.title, items: row.items, posterWidth: Theme.rowPosterWidth, isRanked: row.isRanked,
+            MediaRow(title: row.title, items: row.items, posterWidth: rowPosterWidth, isRanked: row.isRanked,
                      onSeeAll: row.isRanked ? nil : { seeAll = row }) {
                 selection = DetailSelection(item: $0)
             }
@@ -212,8 +220,10 @@ extension HomeView {
             TVBillboardBackdrop(item: billboard)
             VStack(alignment: .leading, spacing: 0) {
                 TVBillboardInfo(item: billboard)
-                    .frame(maxWidth: .infinity, minHeight: 380, maxHeight: 380, alignment: .bottomLeading)
+                    .frame(maxWidth: .infinity, minHeight: 360, maxHeight: 360, alignment: .bottomLeading)
                     .padding(.horizontal, 80)
+                    // Room between the summary and the first row's title.
+                    .padding(.bottom, 40)
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 10) {
                         shelves
@@ -249,18 +259,24 @@ private struct TVBillboardBackdrop: View {
                     }
                     .frame(width: proxy.size.width * 0.68, height: proxy.size.height * 0.62)
                     .clipped()
+                    // Faded on its own left and bottom edges: no seam where the artwork starts.
+                    .mask {
+                        LinearGradient(stops: [.init(color: .clear, location: 0),
+                                               .init(color: .black, location: 0.45)],
+                                       startPoint: .leading, endPoint: .trailing)
+                            .mask {
+                                LinearGradient(stops: [.init(color: .black, location: 0.55),
+                                                       .init(color: .clear, location: 1)],
+                                               startPoint: .top, endPoint: .bottom)
+                            }
+                    }
                     .id(item.id)
                     .transition(.opacity)
                 }
-                // Into the background from the left and the bottom, under the text and the rows.
-                LinearGradient(stops: [.init(color: Theme.background, location: 0.28),
-                                       .init(color: Theme.background.opacity(0.6), location: 0.5),
-                                       .init(color: .clear, location: 0.75)],
+                // A little darker behind the text, so it reads over light artwork.
+                LinearGradient(stops: [.init(color: Theme.background.opacity(0.7), location: 0.3),
+                                       .init(color: .clear, location: 0.65)],
                                startPoint: .leading, endPoint: .trailing)
-                LinearGradient(stops: [.init(color: .clear, location: 0.3),
-                                       .init(color: Theme.background.opacity(0.85), location: 0.55),
-                                       .init(color: Theme.background, location: 0.66)],
-                               startPoint: .top, endPoint: .bottom)
             }
         }
         .ignoresSafeArea()

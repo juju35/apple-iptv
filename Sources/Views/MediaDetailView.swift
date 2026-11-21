@@ -35,11 +35,14 @@ struct MediaDetailView: View {
                     DetailBackdrop(item: item)
                     VStack(alignment: .leading, spacing: 14) {
                         DetailHeader(item: item)
-                        VStack(spacing: 8) {
-                            primaryActions
-                            if item.kind == .series {
-                                seriesPlayAction
+                        HStack(alignment: .top, spacing: 8) {
+                            VStack(spacing: 8) {
+                                primaryActions
+                                if item.kind == .series {
+                                    seriesPlayAction
+                                }
                             }
+                            DetailMyListButton(item: item)
                         }
                         if let plot = displayedPlot {
                             Text(plot)
@@ -51,7 +54,6 @@ struct MediaDetailView: View {
                             Label(loadError, systemImage: "exclamationmark.triangle")
                                 .foregroundStyle(.orange)
                         }
-                        DetailIconActions(item: item)
                         if item.kind == .live, !epg.isEmpty {
                             epgSection
                         }
