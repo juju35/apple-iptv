@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+- iOS : le clavier se masque sur tous les écrans (clavier scindé de l'iPhone Duo, clavier flottant de l'iPad) — toucher
+  hors du champ, faire défiler, touche Rechercher ou bouton au-dessus du clavier
+
 ## 1.1.0
 
 ### Changed

@@ -15,7 +15,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "1.1.0"
+    MARKETING_VERSION: "1.1.1"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
     # Kept here so regenerating the project with xcodegen doesn't drop the signing team.

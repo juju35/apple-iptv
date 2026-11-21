@@ -239,6 +239,7 @@ struct ProviderFormView: View {
                 }
             }
             .onAppear(perform: populate)
+            .keyboardDismissal()
         }
         .preferredColorScheme(.dark)
     }

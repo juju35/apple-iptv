@@ -111,6 +111,7 @@ struct MainTabView: View {
             #endif
         }
         .brandTint()
+        .keyboardDismissal()
         .onChange(of: tab) { left, _ in resets[left, default: 0] += 1 }
         // The shown tab went away (e.g. switched to a provider without series): back to Home.
         .onChange(of: store.missingKinds) { _, missing in
