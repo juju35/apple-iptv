@@ -127,18 +127,32 @@ retry() {
 # iPhone Duo: closed (cover screen), open flat (inner screen), then the player half folded: held as a book
 # (vertical fold, video beside the controls) and set on a table in portrait (horizontal fold, video above them).
 shoot_duo() {
-  local dir="$OUT/iphone-duo" runtime udid app
-  runtime=$(xcrun simctl list runtimes -j | python3 -c '
+  local dir="$OUT/iphone-duo" runtime runtimes udid="" app
+  # Every available runtime from iOS 27.1, newest first: the runner image can bring a newer one the
+  # iPhone Duo doesn't run on ("Incompatible device", as with iOS 27.2), so each is tried in turn.
+  runtimes=$(xcrun simctl list runtimes -j | python3 -c '
 import json, sys
 ids = [r["identifier"] for r in json.load(sys.stdin)["runtimes"] if r.get("isAvailable") and r["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-")]
 ok = [i for i in ids if tuple(map(int, i.rsplit("iOS-", 1)[1].split("-")[:2])) >= (27, 1)]
-print(ok[-1] if ok else "")')
-  if [ -z "$runtime" ] || ! command -v duoctl >/dev/null; then
+print("\n".join(sorted(ok, key=lambda i: tuple(map(int, i.rsplit("iOS-", 1)[1].split("-"))), reverse=True)))')
+  if [ -z "$runtimes" ] || ! command -v duoctl >/dev/null; then
     echo "No iOS 27.1 runtime or no duoctl: no iPhone Duo screenshots"
     return 0
   fi
+  for runtime in $runtimes; do
+    if udid=$(trap - ERR; xcrun simctl create "IPTV screenshots Duo" "iPhone Duo" "$runtime" 2>/dev/null); then
+      echo "iPhone Duo on $runtime"
+      break
+    fi
+    echo "iPhone Duo not available on $runtime"
+    udid=""
+  done
+  if [ -z "$udid" ]; then
+    # The other devices' screenshots still get committed.
+    echo "::warning::No runtime runs the iPhone Duo: no iPhone Duo screenshots"
+    return 0
+  fi
   app=$(ios_app)
-  udid=$(xcrun simctl create "IPTV screenshots Duo" "iPhone Duo" "$runtime")
   trap 'xcrun simctl delete "$udid" >/dev/null 2>&1 || true' RETURN
   prepare "$udid" "$dir" "$app"
   export DUOCTL_UDID="$udid"
