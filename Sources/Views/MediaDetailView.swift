@@ -422,8 +422,12 @@ extension MediaDetailView {
                     .padding(.top, 10)
                 }
                 .frame(maxWidth: 1100, alignment: .leading)
-                // The first screen shows the artwork, with the title and actions low on the left.
+                // The first screen: title and actions low on the left, the poster on the right.
                 .frame(maxWidth: .infinity, minHeight: 640, alignment: .bottomLeading)
+                .overlay(alignment: .bottomTrailing) {
+                    // Channel logos aren't posters.
+                    if item.kind != .live { tvPoster }
+                }
 
                 if item.kind == .live, !epg.isEmpty {
                     epgSection
@@ -437,6 +441,22 @@ extension MediaDetailView {
         }
         .scrollClipDisabled()
         .background { tvBackdrop }
+    }
+
+    /// The poster itself, sharp: the backdrop behind is too blurred and shaded to show it.
+    private var tvPoster: some View {
+        RemoteImage(url: item.posterURL, maxPixelSize: 900) { image in
+            image.resizable().scaledToFill()
+        } placeholder: {
+            RemoteImage(url: item.posterURL) { image in
+                image.resizable().scaledToFill()
+            } placeholder: {
+                GeneratedArtwork(title: item.name, kind: item.kind, showsTitle: true)
+            }
+        }
+        .frame(width: 400, height: 400 / Theme.posterAspect)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.5), radius: 30, y: 12)
     }
 
     /// The artwork across the whole screen, softened and shaded from the left and the bottom for the text.
