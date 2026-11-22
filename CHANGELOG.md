@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0
+
+### Added
+- Écran d'ajout du premier fournisseur : bouton « Recharger depuis iCloud » pour récupérer les fournisseurs
+  enregistrés sur les autres appareils quand la première synchronisation iCloud n'a rien ramené
+
 ## 1.1.2
 
 ### Fixed

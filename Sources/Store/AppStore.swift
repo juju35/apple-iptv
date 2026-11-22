@@ -93,11 +93,11 @@ final class AppStore: ObservableObject {
 
     @Published var isLoading = false
     /// Fresh install signed in to iCloud: its providers haven't arrived yet (see `ProviderSyncStore`).
-    @Published private(set) var isWaitingForCloudProviders = false
+    @Published var isWaitingForCloudProviders = false
     @Published var lastError: String?
 
     private var clients: [Provider.ID: IPTVClient] = [:]
-    private let syncStore = ProviderSyncStore()
+    let syncStore = ProviderSyncStore()
 
     private static let selectedKey = "iptv.selectedProvider"
     private let filterSync = FilterSyncStore()
