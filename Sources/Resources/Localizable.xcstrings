@@ -1883,6 +1883,28 @@
         }
       }
     },
+    "Reload from iCloud" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus iCloud neu laden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a cargar desde iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recharger depuis iCloud"
+          }
+        }
+      }
+    },
     "Remove from My List" : {
       "localizations" : {
         "de" : {

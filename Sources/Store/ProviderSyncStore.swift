@@ -48,6 +48,13 @@ final class ProviderSyncStore {
         return true
     }
 
+    /// Asks iCloud again (onboarding's "Reload from iCloud"), then waits for it as `waitForCloud` does.
+    func reloadFromCloud(timeout: TimeInterval, onReady: @escaping () -> Void) {
+        isAwaitingCloud = true
+        _ = waitForCloud(timeout: timeout, onReady: onReady)
+        kvs.synchronize()
+    }
+
     private func endWaitingForCloud() {
         guard isAwaitingCloud else { return }
         isAwaitingCloud = false

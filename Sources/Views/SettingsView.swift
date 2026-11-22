@@ -341,6 +341,16 @@ struct OnboardingView: View {
                     .padding(.horizontal, 20).padding(.vertical, 8)
             }
             .primaryActionStyle()
+            if store.isCloudAvailable && !store.isWaitingForCloudProviders {
+                Button {
+                    store.reloadProvidersFromCloud()
+                } label: {
+                    Label("Reload from iCloud", systemImage: "icloud.and.arrow.down")
+                        .font(.headline)
+                        .padding(.horizontal, 20).padding(.vertical, 8)
+                }
+                .secondaryActionStyle()
+            }
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
