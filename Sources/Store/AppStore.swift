@@ -92,6 +92,8 @@ final class AppStore: ObservableObject {
             .flatMap { try? JSONDecoder().decode([Provider.ID: AccountInfo].self, from: $0) } ?? [:]
 
     @Published var isLoading = false
+    /// Fresh install signed in to iCloud: its providers haven't arrived yet (see `ProviderSyncStore`).
+    @Published private(set) var isWaitingForCloudProviders = false
     @Published var lastError: String?
 
     private var clients: [Provider.ID: IPTVClient] = [:]
@@ -161,6 +163,9 @@ final class AppStore: ObservableObject {
         }
         syncStore.onExternalChange = { [weak self] remote in
             Task { @MainActor in self?.applyExternal(remote) }
+        }
+        isWaitingForCloudProviders = providers.isEmpty && syncStore.waitForCloud(timeout: 15) { [weak self] in
+            Task { @MainActor in self?.isWaitingForCloudProviders = false }
         }
     }
 
