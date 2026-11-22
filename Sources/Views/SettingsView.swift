@@ -313,6 +313,7 @@ struct ProviderFormView: View {
 }
 
 struct OnboardingView: View {
+    @EnvironmentObject private var store: AppStore
     @State private var showingAdd = false
 
     var body: some View {
@@ -322,9 +323,16 @@ struct OnboardingView: View {
                 .foregroundStyle(Theme.accent)
             Text("AppleIPTV")
                 .font(.largeTitle.weight(.bold))
-            Text("Add an Xtream Codes or Stalker (MAC) provider to start watching.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(Theme.rowSecondary)
+            if store.isWaitingForCloudProviders {
+                ProgressView()
+                Text("Looking for your providers in iCloud…")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Theme.rowSecondary)
+            } else {
+                Text("Add an Xtream Codes or Stalker (MAC) provider to start watching.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Theme.rowSecondary)
+            }
             Button {
                 showingAdd = true
             } label: {

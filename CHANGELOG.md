@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.2
+
+### Fixed
+- Première ouverture sur un nouvel appareil (Apple TV…) : l'app attend les fournisseurs enregistrés dans iCloud
+  (« Recherche de vos fournisseurs dans iCloud… », 15 s au plus) au lieu de proposer tout de suite d'en ajouter un
+- Un fournisseur ajouté avant l'arrivée des fournisseurs iCloud ne les remplace plus sur les autres appareils : les
+  deux listes sont fusionnées
+
 ## 1.1.1
 
 ### Fixed

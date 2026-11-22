@@ -1487,6 +1487,28 @@
         }
       }
     },
+    "Looking for your providers in iCloud…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Anbieter werden in iCloud gesucht…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando tus proveedores en iCloud…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de vos fournisseurs dans iCloud…"
+          }
+        }
+      }
+    },
     "Loading…" : {
       "localizations" : {
         "de" : {
