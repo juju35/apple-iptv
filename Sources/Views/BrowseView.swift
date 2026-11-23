@@ -17,7 +17,6 @@ struct BrowseView: View {
 
     private struct Inputs: Hashable {
         let category: String?
-        let search: String
         let count: Int
         let firstID: String?
         let lastID: String?
@@ -26,19 +25,14 @@ struct BrowseView: View {
 
     private var inputs: Inputs {
         let items = store.items(for: kind)
-        return Inputs(category: selectedCategory, search: search, count: items.count, firstID: items.first?.id,
+        return Inputs(category: selectedCategory, count: items.count, firstID: items.first?.id,
                       lastID: items.last?.id, categoryCount: store.categories(for: kind).count)
     }
 
-    private func computeFiltered() -> [MediaItem] {
-        var items = store.items(for: kind)
-        if let selectedCategory {
-            items = items.filter { $0.belongs(to: selectedCategory) }
-        }
-        if !search.isEmpty {
-            items = MediaSearch.results(items, matching: search)
-        }
-        return items
+    private func categoryItems() -> [MediaItem] {
+        let items = store.items(for: kind)
+        guard let selectedCategory else { return items }
+        return items.filter { $0.belongs(to: selectedCategory) }
     }
 
     /// "All" then the categories that still have items once filters apply.
@@ -115,9 +109,17 @@ struct BrowseView: View {
             .detailPresentation(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }
+            // The search isn't an input: options and the unsearched list don't change while typing.
             .onChange(of: inputs, initial: true) {
-                filtered = computeFiltered()
+                if search.isEmpty { filtered = categoryItems() }
                 categoryOptions = computeCategoryOptions()
+            }
+            .onChange(of: search) {
+                if search.isEmpty { filtered = categoryItems() }
+            }
+            .task(id: [AnyHashable(inputs), AnyHashable(search)]) {
+                guard !search.isEmpty else { return }
+                if let found = await SearchDebounce.results(categoryItems(), matching: search) { filtered = found }
             }
             .task(id: filtered.count) {
                 // Screenshot mode: `-demoScreen detail` opens the first series.
@@ -126,6 +128,19 @@ struct BrowseView: View {
                 }
             }
         }
+    }
+}
+
+/// Searches once the typing pauses, off the main thread: searching the whole catalog at every
+/// character made typing lag. Nil when a newer search replaced this one (its task was cancelled).
+enum SearchDebounce {
+    static let delay = Duration.milliseconds(300)
+
+    static func results(_ items: [MediaItem], matching query: String, limit: Int? = nil) async -> [MediaItem]? {
+        try? await Task.sleep(for: delay)
+        guard !Task.isCancelled else { return nil }
+        let found = await MediaSearch.results(items, matching: query, limit: limit)
+        return Task.isCancelled ? nil : found
     }
 }
 

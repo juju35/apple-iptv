@@ -22,13 +22,13 @@ struct SearchView: View {
 
     private func updateResults() async {
         guard !query.isEmpty else { results = [:]; resultsQuery = ""; return }
-        // Debounce: dictation and the on-screen keyboard send one character at a time.
-        try? await Task.sleep(for: .milliseconds(250))
-        guard !Task.isCancelled else { return }
+        try? await Task.sleep(for: SearchDebounce.delay)
         var found: [MediaKind: [MediaItem]] = [:]
         for kind in [MediaKind.live, .movie, .series] {
-            found[kind] = MediaSearch.results(store.items(for: kind), matching: query, limit: 40)
+            guard !Task.isCancelled else { return }
+            found[kind] = await MediaSearch.results(store.items(for: kind), matching: query, limit: 40)
         }
+        guard !Task.isCancelled else { return }
         results = found
         resultsQuery = query
     }
@@ -56,6 +56,9 @@ struct SearchView: View {
             .background(Theme.background.ignoresSafeArea())
             .searchable(text: $query, prompt: "Channels, movies and series")
             .task(id: inputs) { await updateResults() }
+            .task(id: inputs.counts) {
+                for kind in [MediaKind.live, .movie, .series] { await MediaSearch.prepare(store.items(for: kind)) }
+            }
             .detailPresentation(item: $selectedItem) { item in
                 MediaDetailView(item: item)
             }

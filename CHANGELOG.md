@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+
+### Fixed
+- Saisie de la recherche fluide (Apple TV, Live TV, Films, Séries) : la recherche attend une pause de 300 ms dans la
+  frappe et tourne en arrière-plan, une recherche dépassée est abandonnée ; les catégories ne sont plus recalculées à
+  chaque caractère ; sur Apple TV les noms sont préparés dès l'ouverture de l'onglet Rechercher
+
 ## 1.3.0
 
 ### Changed
