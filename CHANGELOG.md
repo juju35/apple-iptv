@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+### Fixed
+- Apple TV : la fiche d'un film ou d'une série affiche de nouveau sa jaquette, nette, à droite du titre (l'arrière-plan
+  flouté et assombri ne la laissait pas voir)
+
 ## 1.2.0
 
 ### Added
