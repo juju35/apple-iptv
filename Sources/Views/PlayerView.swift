@@ -389,7 +389,11 @@ struct StandardPlayerView: View {
 
             if controlsVisible {
                 #if os(macOS)
-                closeButton
+                HStack(alignment: .top) {
+                    closeButton
+                    Spacer()
+                    FullScreenButton()
+                }
                 #endif
                 ChannelSwitchBar()
                     .padding(.top, 12)
