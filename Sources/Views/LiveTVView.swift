@@ -41,7 +41,6 @@ struct LiveTVView: View {
 
     private struct ListInputs: Hashable {
         let group: ChannelGroup
-        let search: String
         let liveCount: Int
         let firstID: String?
         let lastID: String?
@@ -51,24 +50,19 @@ struct LiveTVView: View {
     }
 
     private var listInputs: ListInputs {
-        ListInputs(group: group, search: search, liveCount: store.liveItems.count,
+        ListInputs(group: group, liveCount: store.liveItems.count,
                    firstID: store.liveItems.first?.id, lastID: store.liveItems.last?.id,
                    categoryCount: store.liveCategories.count, favoriteIDs: store.favoriteIDs,
                    recentIDs: store.recentChannelIDs)
     }
 
-    private func computeChannels() -> [MediaItem] {
-        var items: [MediaItem]
+    private func groupChannels() -> [MediaItem] {
         switch group {
-        case .all: items = store.liveItems
-        case .favorites: items = store.favorites(.live)
-        case .recent: items = store.recentChannels()
-        case .category(let id): items = store.liveItems.filter { $0.belongs(to: id) }
+        case .all: store.liveItems
+        case .favorites: store.favorites(.live)
+        case .recent: store.recentChannels()
+        case .category(let id): store.liveItems.filter { $0.belongs(to: id) }
         }
-        if !search.isEmpty {
-            items = MediaSearch.results(items, matching: search)
-        }
-        return items
     }
 
     /// Categories that still have channels once filters apply, with their channel counts.
@@ -112,9 +106,17 @@ struct LiveTVView: View {
                 PlayerView(request: request)
             }
         }
+        // The search isn't an input: the sidebar and the unsearched list don't change while typing.
         .onChange(of: listInputs, initial: true) {
-            channels = computeChannels()
+            if search.isEmpty { channels = groupChannels() }
             groups = computeGroups()
+        }
+        .onChange(of: search) {
+            if search.isEmpty { channels = groupChannels() }
+        }
+        .task(id: [AnyHashable(listInputs), AnyHashable(search)]) {
+            guard !search.isEmpty else { return }
+            if let found = await SearchDebounce.results(groupChannels(), matching: search) { channels = found }
         }
     }
 
