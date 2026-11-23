@@ -66,7 +66,7 @@ struct LiveTVView: View {
         case .category(let id): items = store.liveItems.filter { $0.belongs(to: id) }
         }
         if !search.isEmpty {
-            items = items.filter { $0.name.localizedCaseInsensitiveContains(search) }
+            items = MediaSearch.results(items, matching: search)
         }
         return items
     }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0
+
+### Changed
+- Recherche plus tolérante (Apple TV, Live TV, Films, Séries) : sans tenir compte des accents, de la ponctuation, des
+  espaces ni de l'ordre des mots (« pokemon » trouve « Pokémon », « spider man » ou « spiderman » trouvent
+  « Spider-Man », « lete » trouve « L'Été »)
+- Meilleurs résultats en premier : titre exact, puis titres qui commencent par la recherche, puis mots qui commencent
+  par elle ; sur Apple TV les 40 résultats affichés par rangée ne sont plus les 40 premiers du catalogue
+- Apple TV : la recherche attend une courte pause dans la saisie et ne recalcule plus à chaque déplacement du focus ;
+  plus d'« Aucun résultat » affiché pendant la frappe
+
 ## 1.2.1
 
 ### Fixed

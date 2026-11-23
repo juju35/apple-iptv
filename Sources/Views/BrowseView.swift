@@ -36,7 +36,7 @@ struct BrowseView: View {
             items = items.filter { $0.belongs(to: selectedCategory) }
         }
         if !search.isEmpty {
-            items = items.filter { $0.name.localizedCaseInsensitiveContains(search) }
+            items = MediaSearch.results(items, matching: search)
         }
         return items
     }
