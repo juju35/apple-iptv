@@ -315,6 +315,9 @@ struct VLCPlayerView: View {
                     ChannelSwitchBar()
                 }
                 Spacer()
+                #if os(macOS)
+                FullScreenButton()
+                #endif
             }
             .padding()
 

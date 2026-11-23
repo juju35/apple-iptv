@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+### Added
+- Mac : bouton plein écran dans le lecteur (en haut à droite, touche F), avec le lecteur système comme avec VLC
+
 ## 1.3.1
 
 ### Fixed

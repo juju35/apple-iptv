@@ -22,6 +22,33 @@ struct AppKitPlayerView: NSViewRepresentable {
         if nsView.controlsStyle != style { nsView.controlsStyle = style }
     }
 }
+
+/// Enters or leaves full screen for the player's window (F key too). AVKit's own toggle doesn't show
+/// for a player inside the window, and VLC has none.
+struct FullScreenButton: View {
+    @State private var isFullScreen = NSApp.keyWindow?.styleMask.contains(.fullScreen) ?? false
+
+    var body: some View {
+        Button {
+            (NSApp.keyWindow ?? NSApp.mainWindow)?.toggleFullScreen(nil)
+        } label: {
+            Image(systemName: isFullScreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                .font(.title2)
+                .foregroundStyle(.white.opacity(0.8))
+                .padding()
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .keyboardShortcut("f", modifiers: [])
+        .help(isFullScreen ? Text("Exit Full Screen") : Text("Enter Full Screen"))
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { _ in
+            isFullScreen = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { _ in
+            isFullScreen = false
+        }
+    }
+}
 #endif
 
 #if os(iOS)
