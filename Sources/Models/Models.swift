@@ -220,6 +220,13 @@ struct EPGEntry: Identifiable, Hashable, Codable {
     let start: Date
     let end: Date
     let description: String?
+
+    /// How far the programme has gone at `date`, from 0 to 1.
+    func progress(at date: Date) -> Double {
+        let length = end.timeIntervalSince(start)
+        guard length > 0 else { return 0 }
+        return min(max(date.timeIntervalSince(start) / length, 0), 1)
+    }
 }
 
 // MARK: - Errors

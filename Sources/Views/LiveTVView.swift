@@ -220,19 +220,15 @@ struct ChannelRow: View {
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(1)
                 // What's on from the guide, else the channel's list.
-                if let now = guide.current(for: channel) {
-                    Text(now.title)
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                        .lineLimit(1)
-                    WatchProgressBar(fraction: Date().timeIntervalSince(now.start) / now.end.timeIntervalSince(now.start))
-                        .frame(maxWidth: 120)
-                        .clipShape(Capsule())
-                } else {
-                    Text(store.categoryName(channel.categoryId, kind: .live))
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                        .lineLimit(1)
+                TimelineView(.everyMinute) { context in
+                    if let now = guide.current(for: channel, at: context.date) {
+                        ProgrammeLine(entry: now, date: context.date)
+                    } else {
+                        Text(store.categoryName(channel.categoryId, kind: .live))
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                            .lineLimit(1)
+                    }
                 }
             }
             Spacer(minLength: 8)
@@ -264,6 +260,31 @@ struct ChannelRow: View {
         )
         #endif
         .contentShape(Rectangle())
+        .task(id: channel.id) { await guide.loadShortIfNeeded(for: channel) }
+    }
+}
+
+/// The programme on now in a channel row: its title, then how far it has gone and its time slot.
+struct ProgrammeLine: View {
+    let entry: EPGEntry
+    let date: Date
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(entry.title)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.white.opacity(0.85))
+                .lineLimit(1)
+            HStack(spacing: 8) {
+                WatchProgressBar(fraction: entry.progress(at: date))
+                    .frame(maxWidth: 120)
+                    .clipShape(Capsule())
+                (Text(entry.start, style: .time) + Text(verbatim: " – ") + Text(entry.end, style: .time))
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(1)
+            }
+        }
     }
 }
 
@@ -377,8 +398,7 @@ struct ChannelInfoPanel: View {
                 Text(current.title).font(.title3.weight(.semibold))
                 HStack {
                     Text(current.start, style: .time)
-                    WatchProgressBar(fraction: now.timeIntervalSince(current.start)
-                                     / current.end.timeIntervalSince(current.start))
+                    WatchProgressBar(fraction: current.progress(at: now))
                         .clipShape(Capsule())
                     Text(current.end, style: .time)
                 }

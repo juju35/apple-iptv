@@ -387,6 +387,26 @@ extension StalkerClient {
         return guide
     }
 
+    /// `itv/get_short_epg` by the channel's portal id (the end of its `MediaItem.id`).
+    func shortEPG(for channel: MediaItem) async throws -> [EPGEntry] {
+        let prefix = "\(provider.id)-live-"
+        guard channel.id.hasPrefix(prefix) else { return [] }
+        let channelId = String(channel.id.dropFirst(prefix.count))
+        try await ensureToken()
+        let js = try await fetchJS(type: "itv", action: "get_short_epg",
+                                   extra: [URLQueryItem(name: "ch_id", value: channelId),
+                                           URLQueryItem(name: "size", value: "10")])
+        let programmes = (js as? [[String: Any]]) ?? ((js as? [String: Any])?["data"] as? [[String: Any]]) ?? []
+        return programmes.compactMap { programme -> EPGEntry? in
+            guard let start = Self.epgDate(programme["start_timestamp"] ?? programme["time"]),
+                  let end = Self.epgDate(programme["stop_timestamp"] ?? programme["time_to"]) else { return nil }
+            let title = (programme["name"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "—"
+            return EPGEntry(id: "\(channelId)-\(programme["id"].map { "\($0)" } ?? "\(start.timeIntervalSince1970)")",
+                            title: title, start: start, end: end,
+                            description: (programme["descr"] as? String).flatMap { $0.isEmpty ? nil : $0 })
+        }
+    }
+
     /// A Unix timestamp or a "2026-10-29 12:00:00" portal date.
     private static func epgDate(_ value: Any?) -> Date? {
         guard let value else { return nil }
