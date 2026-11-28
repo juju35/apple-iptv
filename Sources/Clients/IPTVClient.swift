@@ -9,6 +9,9 @@ protocol IPTVClient {
     /// Resolves the final playable URL for an item or episode playback reference.
     func streamURL(kind: MediaKind, playbackRef: String, containerExtension: String?) async throws -> URL
     func shortEPG(forChannelRef ref: String) async throws -> [EPGEntry]
+    /// The next few programmes of `channel`; `shortEPG(forChannelRef:)` unless the provider needs more
+    /// than the playback reference (Stalker's channel id).
+    func shortEPG(for channel: MediaItem) async throws -> [EPGEntry]
     /// Expiry date and limits of the account.
     func accountInfo() async throws -> AccountInfo
     /// The whole programme guide around now, by `MediaItem.id` of `channels`; empty when the
@@ -27,6 +30,10 @@ extension IPTVClient {
     var streamHeaders: [String: String] { [:] }
 
     func keepAlive() async {}
+
+    func shortEPG(for channel: MediaItem) async throws -> [EPGEntry] {
+        try await shortEPG(forChannelRef: channel.playbackRef)
+    }
 
     func plot(for item: MediaItem) async throws -> String? { item.plot }
 

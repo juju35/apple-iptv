@@ -345,7 +345,13 @@ struct VLCPlayerView: View {
                 .buttonStyle(.plain)
 
                 HStack {
-                    Text(controller.elapsedText).font(.caption.monospacedDigit())
+                    if controller.isSeekable {
+                        Text(controller.elapsedText).font(.caption.monospacedDigit())
+                    } else {
+                        Label("LIVE", systemImage: "circle.fill")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Theme.accent)
+                    }
                     #if !os(tvOS)
                     if controller.isSeekable {
                         Slider(

@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.5.0
+
+### Added
+- Live TV : chaque chaîne affiche le programme en cours (titre, horaires, progression) à la place de sa catégorie,
+  y compris quand le fournisseur n'a pas de guide complet : le guide court de la chaîne est alors demandé à
+  l'affichage de la ligne (4 à la fois, redemandé toutes les 10 min ou à la fin du dernier programme connu)
+- Lecteur : programme en cours avec horaires, barre de progression et résumé, puis le programme suivant ; mis à
+  jour à chaque changement de chaîne et à la fin d'un programme
+- Stalker : guide court par chaîne (`itv/get_short_epg`)
+
+### Changed
+- Xtream : les chaînes sont associées au guide XMLTV sans tenir compte de la casse ni des espaces
+- Lecteur VLC : « DIRECT » en pastille rouge
+
 ## 1.4.0
 
 ### Added

@@ -271,11 +271,19 @@ extension XtreamClient {
         }
         let window = EPGWindow.current
         let byGuideId = await Task.detached(priority: .utility) { XMLTVParser.parse(data, window: window) }.value
+        // Panels often differ from their own list in case or surrounding spaces ("TF1.fr" / "tf1.fr ").
+        let byKey = Dictionary(byGuideId.map { (Self.guideKey($0.key), $0.value) }, uniquingKeysWith: { lhs, _ in lhs })
         var guide: [String: [EPGEntry]] = [:]
         for channel in channels {
-            if let guideId = channel.epgChannelId, let entries = byGuideId[guideId] { guide[channel.id] = entries }
+            guard let guideId = channel.epgChannelId,
+                  let entries = byGuideId[guideId] ?? byKey[Self.guideKey(guideId)] else { continue }
+            guide[channel.id] = entries
         }
         return guide
+    }
+
+    private static func guideKey(_ id: String) -> String {
+        id.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }
 
